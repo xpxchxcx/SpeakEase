@@ -1,0 +1,11 @@
+nodes:
+- input.visual:
+    source: 0
+- model.yolo
+- model.posenet
+- dabble.fps
+- custom_nodes.dabble.movement
+- draw.poses
+- draw.legend:
+    show: ["fps"]
+- output.screen
