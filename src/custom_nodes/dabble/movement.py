@@ -158,13 +158,25 @@ class Node(AbstractNode):
         if arms_folded:
             self._display_text(x, y - 2 * round(30 * self._FONT_SCALE), 'Arms Folded', self._BLUE)
 
+    def _display_face_info(self,
+                           bbox: Tuple[int, int, int, int],
+                           *,
+                           face_blocked: Optional[bool] = False) -> None:
+
+        x1, y1, x2, y2 = bbox
+        x, _ = self._map_coord_onto_img(x1, y1)
+        _, y = self._map_coord_onto_img(x2, y2)
+
+        if face_blocked:
+            self._display_text(x, y - 2 * round(30 * self._FONT_SCALE), 'Face Slanted', self._BLUE)
+
     def _obtain_keypoint(self,
-                         keypoint: Tuple[int, int],
+                         keypoint: Tuple[float, float],
                          score: float) -> Optional[Tuple[int, int]]:
         """Obtains a detected PoseNet keypoint if its confidence score meets or exceeds the threshold
 
         Parameters
-            keypoint : Tuple[int, int]
+            keypoint : Tuple[float, float]
                 Relative coordinate of the detected PoseNet keypoint
             score : float
                 Confidence score of the detected PoseNet keypoint
@@ -272,6 +284,15 @@ class Node(AbstractNode):
         right_folded = right_angle < threshold and x2 <= x6 <= x1 and right_dist * 2 >= shoulder_dist
         return left_folded and right_folded
 
+    def is_face_blocked(self,
+                        left_ear: Optional[Tuple[int, int]],
+                        right_ear: Optional[Tuple[int, int]]) -> bool:
+        
+        # Check if keypoints are defined
+        if left_ear is None or right_ear is None:
+            return True
+
+
     def run(self, inputs: Mapping[str, Any]) -> Mapping[str, Any]:
         """Displays calculated PoseNet keypoints and TODO write documentation for custom node class
 
@@ -290,7 +311,7 @@ class Node(AbstractNode):
         bbox_scores = inputs.get('bbox_scores', [])
         all_keypoints = inputs.get('keypoints', [])
         all_keypoint_scores = inputs.get('keypoint_scores', [])
-
+ 
         # Handle the detection of each person
         for bbox, bbox_score, keypoints, keypoint_scores in \
                 zip(bboxes, bbox_scores, all_keypoints, all_keypoint_scores):
@@ -313,8 +334,12 @@ class Node(AbstractNode):
                                                keypoint_list[self._KP_RIGHT_SHOULDER],
                                                keypoint_list[self._KP_RIGHT_ELBOW],
                                                keypoint_list[self._KP_RIGHT_WRIST])
+            
+            face_blocked = self.is_face_blocked(keypoint_list[self._KP_LEFT_EAR],
+                                                keypoint_list[self._KP_RIGHT_EAR])
 
             # Display the results on the image
             self._display_bbox_info(bbox, bbox_score, arms_folded=arms_folded)
+            self._display_face_info(bbox, face_blocked=face_blocked)
 
         return {}
