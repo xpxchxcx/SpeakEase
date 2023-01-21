@@ -1,7 +1,11 @@
+import math
+
 import cv2
 from math import acos, pi, sqrt
 from peekingduck.pipeline.nodes.abstract_node import AbstractNode
 from typing import Any, Mapping, Optional, Tuple
+
+sway_count = 0
 
 
 class Node(AbstractNode):
@@ -264,13 +268,93 @@ class Node(AbstractNode):
         left_dist = sqrt((x5 - x3) * (x5 - x3) + (y5 - y3) * (y5 - y3))
         right_dist = sqrt((x6 - x4) * (x6 - x4) + (y6 - y4) * (y6 - y4))
         shoulder_dist = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
-        print(f'left distance: {left_dist}, right distance: {right_dist}, shoulder_dist: {shoulder_dist}')  # TODO remove
+        print(
+            f'left distance: {left_dist}, right distance: {right_dist}, shoulder_dist: {shoulder_dist}')  # TODO remove
 
         # Check if either arm is folded
         threshold = 2 * pi / 3
         left_folded = left_angle < threshold and x2 <= x5 <= x1 and left_dist * 2 >= shoulder_dist
         right_folded = right_angle < threshold and x2 <= x6 <= x1 and right_dist * 2 >= shoulder_dist
         return left_folded and right_folded
+
+    def detect_sway(self, left_shoulder: Optional[Tuple[int, int]],
+                    right_shoulder: Optional[Tuple[int, int]],
+                    left_hip: Optional[Tuple[int, int]],
+                    right_hip: Optional[Tuple[int, int]],
+                    left_knee: Optional[Tuple[int, int]],
+                    right_knee: Optional[Tuple[int, int]],
+                    sway_buffer=[0, 0, 0, 0, 0, 0, 0, 0]) -> bool:
+
+        """Detects the number of times a person is swaying
+
+        Parameters
+            left_shoulder : tuple
+                Tuple containing the x and y coordinates of the left shoulder
+            right_shoulder : tuple
+                Tuple containing the x and y coordinates of the right shoulder
+            left_hip : tuple
+                Tuple containing the x and y coordinates of the left hip
+            right_hip : tuple
+                Tuple containing the x and y coordinates of the right hip
+            left_knee : tuple
+                Tuple containing the x and y coordinates of the left knee
+            right_knee : tuple
+                Tuple containing the x and y coordinates of the right knee
+            sway_buffer : int
+                Number of frames to buffer before incrementing sway count , default value is 2
+                Returns int
+                Number of times the person is swaying
+         """
+
+        # Initialize sway count
+        global sway_count
+
+        # Check if keypoints are defined
+        if left_shoulder is None or left_hip is None or left_knee is None or \
+                right_shoulder is None or right_hip is None or right_knee is None:
+            return False
+
+        # Define threshold for detecting sway, set to 25 degrees
+        sway_threshold = 20
+
+        # Initialize buffer
+
+        # Get left and right shoulder keypoints
+        left_shoulder_x, left_shoulder_y = left_shoulder
+        right_shoulder_x, right_shoulder_y = right_shoulder
+
+        # Get left and right hip keypoints
+        left_hip_x, left_hip_y = left_hip
+        right_hip_x, right_hip_y = right_hip
+
+        # Get left and right knee keypoints
+        left_knee_x, left_knee_y = left_knee
+        right_knee_x, right_knee_y = right_knee
+
+        # Calculate the angle between left shoulder to left hip to left knee and right shoulder to right hip to right knee
+        left_angle = self._angle_between_vectors_in_rad(left_shoulder_x - left_hip_x, left_shoulder_y - left_hip_y,
+                                                        left_knee_x - left_hip_x, left_knee_y - left_hip_y) * (180 / pi)
+        right_angle = self._angle_between_vectors_in_rad(right_shoulder_x - right_hip_x,
+                                                         right_shoulder_y - right_hip_y,
+                                                         right_knee_x - right_hip_x, right_knee_y - right_hip_y) * (
+                              180 / pi)
+        if left_angle < 180 - sway_threshold or right_angle < 180 - sway_threshold or left_angle > 180 + sway_threshold \
+                or right_angle > 180 + sway_threshold:
+            sway = True
+
+        else:
+            sway = False
+
+        # Add sway value to buffer
+        sway_buffer.pop(0)
+        sway_buffer.append(sway)
+        print(sway_buffer, len(sway_buffer))
+
+        # If more than half of the buffer contains sway, Sway is True, increment sway count
+        if sum(sway_buffer) > len(sway_buffer)/2:
+            sway = True
+
+        return sway
 
     def run(self, inputs: Mapping[str, Any]) -> Mapping[str, Any]:
         """Displays calculated PoseNet keypoints and TODO write documentation for custom node class
@@ -314,7 +398,16 @@ class Node(AbstractNode):
                                                keypoint_list[self._KP_RIGHT_ELBOW],
                                                keypoint_list[self._KP_RIGHT_WRIST])
 
+            # Count how many times the user swayed
+            is_tilted = self.detect_sway(keypoint_list[self._KP_LEFT_SHOULDER],
+                                         keypoint_list[self._KP_RIGHT_SHOULDER],
+                                         keypoint_list[self._KP_LEFT_HIP],
+                                         keypoint_list[self._KP_RIGHT_HIP],
+                                         keypoint_list[self._KP_LEFT_KNEE],
+                                         keypoint_list[self._KP_RIGHT_KNEE])
+
             # Display the results on the image
             self._display_bbox_info(bbox, bbox_score, arms_folded=arms_folded)
-
+            self._display_text(30, 30, f"Tilted: {is_tilted}", (255, 0, 0))
+            self._display_text(30, 40, f"Sway Count: {sway_count}", (255, 0, 0))
         return {}
