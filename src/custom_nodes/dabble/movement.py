@@ -1,9 +1,7 @@
-import math
-
 import cv2
 from math import acos, pi, sqrt
 from peekingduck.pipeline.nodes.abstract_node import AbstractNode
-from typing import Any, Mapping, Optional, Tuple
+from typing import Any, List, Mapping, Optional, Tuple
 
 sway_count = 0
 
@@ -53,6 +51,7 @@ class Node(AbstractNode):
         """Initialises the custom node class
 
         Parameters
+        ----------
             config : Optional[Mapping[str, Any]]
                 Node custom configuration
             kwargs : Any
@@ -78,12 +77,14 @@ class Node(AbstractNode):
         """Maps relative coordinates onto the displayed image
 
         Parameters
+        ----------
             x : float
                 Relative horizontal position of the coordinate; 0 <= x <= 1
             y : float
                 Relative vertical position of the coordinate; 0 <= y <= 1
 
         Returns
+        -------
             Tuple[int, int]
                 Absolute coordinate (x1, y1) on the image; 0 <= x1 <= width and 0 <= y1 <= height
        """
@@ -96,12 +97,13 @@ class Node(AbstractNode):
                       text: str,
                       font_colour: Tuple[int, int, int],
                       *,
-                      font_face: Optional[int] = _FONT_FACE,
-                      font_scale: Optional[float] = _FONT_SCALE,
-                      font_thickness: Optional[int] = _FONT_THICKNESS) -> None:
+                      font_face: int = _FONT_FACE,
+                      font_scale: float = _FONT_SCALE,
+                      font_thickness: int = _FONT_THICKNESS) -> None:
         """Displays text at a specified coordinate on top of the displayed image
 
         Parameters
+        ----------
             x : int
                 x-coordinate to display the text at
             y : int
@@ -110,13 +112,13 @@ class Node(AbstractNode):
                 Text to display
             font_colour : Tuple[int, int, int]
                 Colour of the text to display
-            font_face : Optional[int]
+            font_face : int
                 Font type of the text to display
                 Limited to a subset of Hershey Fonts as supported by OpenCV
                 https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv
-            font_scale : Optional[float]
+            font_scale : float
                 Relative size of the text to display
-            font_thickness : Optional[int]
+            font_thickness : int
                 Relative thickness of the text to display
         """
 
@@ -132,7 +134,7 @@ class Node(AbstractNode):
                            bbox: Tuple[int, int, int, int],
                            score: float,
                            *,
-                           arms_folded: Optional[bool] = False) -> None:
+                           arms_folded: bool = False) -> None:
         """Displays the information associated with the given bounding box
 
         All information will be displayed in the bottom-left corner (x1, y2) of the bounding box
@@ -142,13 +144,14 @@ class Node(AbstractNode):
             - TODO include more information to display
 
         Parameters
+        ----------
             bbox : Tuple[int, int, int, int]
                 Bounding box, represented by its top-left (x1, y1) and bottom-right (x2, y2) coordinates
                 The parameter is specified in the format (x1, y1, x2, y2);
                 0 <= x1 <= x2 <= self.width and 0 <= y1 <= y2 <= self.height
             score : float
                 Confidence score of the bounding box
-            arms_folded : Optional[bool]
+            arms_folded : bool
                 True if the person is detected to have folded their arms, False otherwise
         """
 
@@ -163,17 +166,19 @@ class Node(AbstractNode):
             self._display_text(x, y - 2 * round(30 * self._FONT_SCALE), 'Arms Folded', self._BLUE)
 
     def _obtain_keypoint(self,
-                         keypoint: Tuple[int, int],
+                         keypoint: Tuple[float, float],
                          score: float) -> Optional[Tuple[int, int]]:
         """Obtains a detected PoseNet keypoint if its confidence score meets or exceeds the threshold
 
         Parameters
-            keypoint : Tuple[int, int]
+        ----------
+            keypoint : Tuple[float, float]
                 Relative coordinate of the detected PoseNet keypoint
             score : float
                 Confidence score of the detected PoseNet keypoint
 
         Returns
+        -------
             Optional[Tuple[int, int]]
                 Absolute coordinates of the detected PoseNet keypoint
                 if its confidence score meets or exceeds the threshold confidence
@@ -193,6 +198,7 @@ class Node(AbstractNode):
             cos(angle) = (x1 * x2 + y1 * y2) / [sqrt(x1^2 + y1^2) * sqrt(x2^2 + y2^2)]
 
         Parameters
+        ----------
             x1 : int
                 The magnitude of vector v1 in the x-axis
             y1 : int
@@ -203,6 +209,7 @@ class Node(AbstractNode):
                 The magnitude of vector v2 in the y-axis
 
         Returns
+        -------
             float
                 The angle between vectors v1 and v2
         """
@@ -228,6 +235,7 @@ class Node(AbstractNode):
             - The distance between the wrist and the elbow is at least half that between the shoulders
 
         Parameters
+        ----------
             left_shoulder : Optional[Tuple[int, int]]
                 (x, y) coordinate of the left shoulder
             left_elbow : Optional[Tuple[int, int]]
@@ -242,6 +250,7 @@ class Node(AbstractNode):
                 (x, y) coordinate of the right wrist
 
         Returns
+        -------
             bool
                 True if both arms are folded, False otherwise
         """
@@ -277,32 +286,37 @@ class Node(AbstractNode):
         right_folded = right_angle < threshold and x2 <= x6 <= x1 and right_dist * 2 >= shoulder_dist
         return left_folded and right_folded
 
-    def detect_sway(self, left_shoulder: Optional[Tuple[int, int]],
+    def detect_sway(self,
+                    left_shoulder: Optional[Tuple[int, int]],
                     right_shoulder: Optional[Tuple[int, int]],
                     left_hip: Optional[Tuple[int, int]],
                     right_hip: Optional[Tuple[int, int]],
                     left_knee: Optional[Tuple[int, int]],
                     right_knee: Optional[Tuple[int, int]],
-                    sway_buffer=[0, 0, 0, 0, 0, 0, 0, 0]) -> bool:
+                    sway_buffer: List[int] = [0, 0, 0, 0, 0, 0, 0, 0]) -> bool:
 
         """Detects the number of times a person is swaying
 
         Parameters
-            left_shoulder : tuple
+        ----------
+            left_shoulder : Optional[Tuple[int, int]]
                 Tuple containing the x and y coordinates of the left shoulder
-            right_shoulder : tuple
+            right_shoulder : Optional[Tuple[int, int]]
                 Tuple containing the x and y coordinates of the right shoulder
-            left_hip : tuple
+            left_hip : Optional[Tuple[int, int]]
                 Tuple containing the x and y coordinates of the left hip
-            right_hip : tuple
+            right_hip : Optional[Tuple[int, int]]
                 Tuple containing the x and y coordinates of the right hip
-            left_knee : tuple
+            left_knee : Optional[Tuple[int, int]]
                 Tuple containing the x and y coordinates of the left knee
-            right_knee : tuple
+            right_knee : Optional[Tuple[int, int]]
                 Tuple containing the x and y coordinates of the right knee
-            sway_buffer : int
-                Number of frames to buffer before incrementing sway count , default value is 2
-                Returns int
+            sway_buffer : List[int]
+                Number of frames to buffer before incrementing sway count, default value is 2
+        
+        Returns
+        -------
+            int
                 Number of times the person is swaying
          """
 
@@ -360,10 +374,12 @@ class Node(AbstractNode):
         """Displays calculated PoseNet keypoints and TODO write documentation for custom node class
 
         Parameters
+        ----------
             inputs : Mapping[str, Any]
                 Input dictionary with keys "img", "bboxes", "bbox_scores", "keypoints", "keypoint_scores"
 
         Returns
+        -------
             Mapping[str, Any]
                 Empty dictionary
         """
@@ -410,4 +426,9 @@ class Node(AbstractNode):
             self._display_bbox_info(bbox, bbox_score, arms_folded=arms_folded)
             self._display_text(30, 30, f"Tilted: {is_tilted}", (255, 0, 0))
             self._display_text(30, 40, f"Sway Count: {sway_count}", (255, 0, 0))
+        
         return {}
+
+
+if __name__ == '__main__':
+    pass
