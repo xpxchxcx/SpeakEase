@@ -160,15 +160,19 @@ class Node(AbstractNode):
 
     def _display_face_info(self,
                            bbox: Tuple[int, int, int, int],
+                           score: float,
                            *,
-                           face_blocked: Optional[bool] = False) -> None:
+                           face_touched: Optional[bool] = False) -> None:
 
+        # Obtain bottom-left coordinate of bounding box
         x1, y1, x2, y2 = bbox
         x, _ = self._map_coord_onto_img(x1, y1)
         _, y = self._map_coord_onto_img(x2, y2)
 
-        if face_blocked:
-            self._display_text(x, y - 2 * round(30 * self._FONT_SCALE), 'Face Slanted', self._BLUE)
+        # Display information
+        self._display_text(x, y - 3 * round(30 * self._FONT_SCALE), f'BBox {score:0.2f}', self._WHITE)
+        if face_touched:
+            self._display_text(x, y - round(30 * self._FONT_SCALE), 'Touching Face', self._BLUE)
 
     def _obtain_keypoint(self,
                          keypoint: Tuple[float, float],
@@ -284,13 +288,45 @@ class Node(AbstractNode):
         right_folded = right_angle < threshold and x2 <= x6 <= x1 and right_dist * 2 >= shoulder_dist
         return left_folded and right_folded
 
-    def is_face_blocked(self,
-                        left_ear: Optional[Tuple[int, int]],
-                        right_ear: Optional[Tuple[int, int]]) -> bool:
+    def is_face_touched(self,
+                        left_elbow: Optional[Tuple[int, int]],
+                        right_elbow: Optional[Tuple[int, int]],
+                        left_wrist: Optional[Tuple[int, int]],
+                        right_wrist: Optional[Tuple[int, int]],
+                        nose: Optional[Tuple[int, int]]) -> bool:
         
         # Check if keypoints are defined
-        if left_ear is None or right_ear is None:
+        if left_elbow is None or right_elbow is None or \
+            left_wrist is None or right_wrist is None or \
+                nose is None:
+            return False
+
+        # Obtain coordinates
+        x1, y1 = left_elbow
+        x2, y2 = right_elbow
+        x3, y3 = left_wrist
+        x4, y4 = right_wrist
+        x5, y5 = nose
+
+        # # Calculate angles
+        # left_angle = self._angle_between_vectors_in_rad(x1 - x3, y1 - y3, x5 - x3, y5 - y3)
+        # right_angle = self._angle_between_vectors_in_rad(x2 - x4, y2 - y4, x6 - x4, y6 - y4)
+        # print(f'left angle: {left_angle}, right angle: {right_angle}')  # TODO remove
+
+        # Calculate distances
+        left_elbow_dist = sqrt((x1 - x5) * (x1 - x5) + (y1 - y5) * (y1 - y5))
+        right_elbow_dist = sqrt((x2 - x5) * (x2 - x5) + (y2 - y5) * (y2 - y5))
+        left_wrist_dist = sqrt((x3 - x5) * (x3 - x5) + (y3 - y5) * (y3 - y5))
+        right_wrist_dist = sqrt((x4 - x5) * (x4 - x5) + (y4 - y5) * (y4 - y5))
+        print(f'left elbow distance: {left_elbow_dist}, right elbow distance: {right_elbow_dist}, left wrist distance: {left_wrist_dist}, right wrist distance: {right_wrist_dist}')  # TODO remove
+
+        # Check if either face is touched
+        threshold = 150
+        if left_elbow_dist < threshold or right_elbow_dist < threshold or left_wrist_dist < threshold or right_wrist_dist < threshold:
             return True
+        # left_folded = left_angle < threshold and x2 <= x5 <= x1 and left_dist * 2 >= shoulder_dist
+        # right_folded = right_angle < threshold and x2 <= x6 <= x1 and right_dist * 2 >= shoulder_dist
+        # return left_folded and right_folded
 
 
     def run(self, inputs: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -335,11 +371,14 @@ class Node(AbstractNode):
                                                keypoint_list[self._KP_RIGHT_ELBOW],
                                                keypoint_list[self._KP_RIGHT_WRIST])
             
-            face_blocked = self.is_face_blocked(keypoint_list[self._KP_LEFT_EAR],
-                                                keypoint_list[self._KP_RIGHT_EAR])
+            face_touched = self.is_face_touched(keypoint_list[self._KP_LEFT_ELBOW],
+                                                keypoint_list[self._KP_RIGHT_ELBOW],
+                                                keypoint_list[self._KP_LEFT_WRIST],
+                                                keypoint_list[self._KP_RIGHT_WRIST],
+                                                keypoint_list[self._KP_NOSE])
 
             # Display the results on the image
             self._display_bbox_info(bbox, bbox_score, arms_folded=arms_folded)
-            self._display_face_info(bbox, face_blocked=face_blocked)
+            self._display_face_info(bbox, bbox_score, face_touched=face_touched)
 
         return {}
