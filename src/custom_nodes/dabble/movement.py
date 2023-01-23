@@ -3,6 +3,7 @@ from math import acos, pi, sqrt
 from peekingduck.pipeline.nodes.abstract_node import AbstractNode
 from typing import Any, List, Mapping, Optional, Tuple
 
+face_touch_count = 0
 sway_count = 0
 
 
@@ -165,6 +166,22 @@ class Node(AbstractNode):
         if arms_folded:
             self._display_text(x, y - 2 * round(30 * self._FONT_SCALE), 'Arms Folded', self._BLUE)
 
+    def _display_face_info(self,
+                           bbox: Tuple[int, int, int, int],
+                           score: float,
+                           *,
+                           face_touched: Optional[bool] = False) -> None:
+
+        # Obtain bottom-left coordinate of bounding box
+        x1, y1, x2, y2 = bbox
+        x, _ = self._map_coord_onto_img(x1, y1)
+        _, y = self._map_coord_onto_img(x2, y2)
+
+        # Display information
+        self._display_text(x, y - 10 * round(30 * self._FONT_SCALE), f'BBox {score:0.2f}', self._WHITE)
+        if face_touched:
+            self._display_text(x, y - 11 * round(30 * self._FONT_SCALE), 'Touching Face', self._BLUE)
+
     def _obtain_keypoint(self,
                          keypoint: Tuple[float, float],
                          score: float) -> Optional[Tuple[int, int]]:
@@ -285,6 +302,42 @@ class Node(AbstractNode):
         left_folded = left_angle < threshold and x2 <= x5 <= x1 and left_dist * 2 >= shoulder_dist
         right_folded = right_angle < threshold and x2 <= x6 <= x1 and right_dist * 2 >= shoulder_dist
         return left_folded and right_folded
+
+    def is_face_touched(self,
+                        left_elbow: Optional[Tuple[int, int]],
+                        right_elbow: Optional[Tuple[int, int]],
+                        left_wrist: Optional[Tuple[int, int]],
+                        right_wrist: Optional[Tuple[int, int]],
+                        nose: Optional[Tuple[int, int]]) -> bool:
+        
+        # Initialize count
+        global face_touch_count
+        
+        # Check if keypoints are defined
+        if left_elbow is None or right_elbow is None or \
+            left_wrist is None or right_wrist is None or \
+                nose is None:
+            return False
+
+        # Obtain coordinates
+        x1, y1 = left_elbow
+        x2, y2 = right_elbow
+        x3, y3 = left_wrist
+        x4, y4 = right_wrist
+        x5, y5 = nose
+
+        # Calculate distances
+        left_elbow_dist = sqrt((x1 - x5) * (x1 - x5) + (y1 - y5) * (y1 - y5))
+        right_elbow_dist = sqrt((x2 - x5) * (x2 - x5) + (y2 - y5) * (y2 - y5))
+        left_wrist_dist = sqrt((x3 - x5) * (x3 - x5) + (y3 - y5) * (y3 - y5))
+        right_wrist_dist = sqrt((x4 - x5) * (x4 - x5) + (y4 - y5) * (y4 - y5))
+        print(f'left elbow distance: {left_elbow_dist}, right elbow distance: {right_elbow_dist}, left wrist distance: {left_wrist_dist}, right wrist distance: {right_wrist_dist}')  # TODO remove
+
+        # Check if either face is touched
+        threshold = 150
+        if left_elbow_dist < threshold or right_elbow_dist < threshold or left_wrist_dist < threshold or right_wrist_dist < threshold:
+            face_touch_count += 1
+            return True
 
     def detect_sway(self,
                     left_shoulder: Optional[Tuple[int, int]],
@@ -414,6 +467,12 @@ class Node(AbstractNode):
                                                keypoint_list[self._KP_RIGHT_ELBOW],
                                                keypoint_list[self._KP_RIGHT_WRIST])
 
+            face_touched = self.is_face_touched(keypoint_list[self._KP_LEFT_ELBOW],
+                                                keypoint_list[self._KP_RIGHT_ELBOW],
+                                                keypoint_list[self._KP_LEFT_WRIST],
+                                                keypoint_list[self._KP_RIGHT_WRIST],
+                                                keypoint_list[self._KP_NOSE])
+
             # Count how many times the user swayed
             is_tilted = self.detect_sway(keypoint_list[self._KP_LEFT_SHOULDER],
                                          keypoint_list[self._KP_RIGHT_SHOULDER],
@@ -424,8 +483,10 @@ class Node(AbstractNode):
 
             # Display the results on the image
             self._display_bbox_info(bbox, bbox_score, arms_folded=arms_folded)
-            self._display_text(30, 30, f"Tilted: {is_tilted}", (255, 0, 0))
-            self._display_text(30, 40, f"Sway Count: {sway_count}", (255, 0, 0))
+            self._display_face_info(bbox, bbox_score, face_touched=face_touched)
+            self._display_text(30, 30, f"Face Touched Count: {face_touch_count}", (255, 0, 0))
+            self._display_text(30, 50, f"Tilted: {is_tilted}", (255, 0, 0))
+            self._display_text(30, 70, f"Sway Count: {sway_count}", (255, 0, 0))
         
         return {}
 
