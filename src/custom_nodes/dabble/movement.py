@@ -59,7 +59,7 @@ class Node(AbstractNode):
                 Keyword arguments for instantiating the AbstractNode parent class
         """
 
-        super().__init__(config, node_path=__name__, **kwargs)
+        super().__init__(config, node_path=__name__, **kwargs)  # type: ignore
         self.img = None
 
     @property
@@ -123,7 +123,7 @@ class Node(AbstractNode):
                 Relative thickness of the text to display
         """
 
-        cv2.putText(img=self.img,
+        cv2.putText(img=self.img,  # type: ignore
                     text=text,
                     org=(x, y),
                     fontFace=font_face,
@@ -338,6 +338,7 @@ class Node(AbstractNode):
         if left_elbow_dist < threshold or right_elbow_dist < threshold or left_wrist_dist < threshold or right_wrist_dist < threshold:
             face_touch_count += 1
             return True
+        return False
 
     def detect_sway(self,
                     left_shoulder: Optional[Tuple[int, int]],
