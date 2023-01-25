@@ -87,12 +87,18 @@ class Node(AbstractNode):
     @property
     def height(self) -> int:
         # Height of the displayed image, specified in pixels
-        return 0 if self._img is None else self._img.shape[0]
+        return self.ERROR_OUTPUT if self._img is None else self._img.shape[0]
 
     @property
     def width(self) -> int:
         # Width of the displayed image, specified in pixels
-        return 0 if self._img is None else self._img.shape[1]
+        return self.ERROR_OUTPUT if self._img is None else self._img.shape[1]
+    
+    @property
+    def ERROR_OUTPUT(self) -> int:
+        # Define error return value as -1
+        # Computational functions will return non-negative input
+        return -1
 
     def _map_coord_onto_img(
             self,
@@ -244,14 +250,14 @@ class Node(AbstractNode):
             num_lines += 1
             self._display_text(x, y - num_lines * line_height, 'Touching Face', self._BLUE)
 
-    @staticmethod
     def _angle_between_vectors_in_rad(
+            self,
             x1: int,
             y1: int,
             x2: int,
             y2: int
     ) -> float:
-        """Obtains the (smaller) angle between two vectors in radians
+        """Obtains the (smaller) angle between two non-zero vectors in radians
 
         The angle is computed via the cosine rule (see the Notes section).
 
@@ -272,6 +278,7 @@ class Node(AbstractNode):
                 The (smaller) angle :math:`\Theta` between
                     :math:`\overrightarrow{ V_{1} }` and
                     :math:`\overrightarrow{ V_{2} }`.
+                If either vectors are zero vectors, returns ``ERROR_OUTPUT``.
         
         Notes
         -----
@@ -315,6 +322,11 @@ class Node(AbstractNode):
         **0.0**
         """
 
+        # Check for zero vectors
+        if x1 == y1 == 0 or x2 == y2 == 0:
+            return self.ERROR_OUTPUT
+
+        # Compute the inverse cosine value
         dot_prod = x1 * x2 + y1 * y2
         v1_magnitude = sqrt(x1 * x1 + y1 * y1)
         v2_magnitude = sqrt(x2 * x2 + y2 * y2)
