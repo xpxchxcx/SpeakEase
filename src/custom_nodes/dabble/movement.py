@@ -121,7 +121,7 @@ class Node(AbstractNode):
        """
 
         return round(x * self.width), round(y * self.height)
-    
+
     def _obtain_keypoint(
             self,
             keypoint: Tuple[float, float],
@@ -464,7 +464,7 @@ class Node(AbstractNode):
         -----
         TODO define the conditions for a hand to touch the face
         """
-        
+
         # Check if keypoints are defined
         if left_elbow is None or \
                 right_elbow is None or \
@@ -499,7 +499,7 @@ class Node(AbstractNode):
         )
 
         # Check if either hand is touching the face
-        threshold = 150
+        threshold = 50
         return left_elbow_dist < threshold or \
             right_elbow_dist < threshold or \
             left_wrist_dist < threshold or \
@@ -510,9 +510,7 @@ class Node(AbstractNode):
             left_shoulder: Optional[Tuple[int, int]],
             right_shoulder: Optional[Tuple[int, int]],
             left_hip: Optional[Tuple[int, int]],
-            right_hip: Optional[Tuple[int, int]],
-            left_knee: Optional[Tuple[int, int]],
-            right_knee: Optional[Tuple[int, int]]
+            right_hip: Optional[Tuple[int, int]]
     ) -> bool:
         """Determines if the given pose is leaning towards one side
 
@@ -544,10 +542,8 @@ class Node(AbstractNode):
         # Check if keypoints are defined
         if left_shoulder is None or \
                 left_hip is None or \
-                left_knee is None or \
                 right_shoulder is None or \
-                right_hip is None or \
-                right_knee is None:
+                right_hip is None:
             return False
 
         # Initialize buffer
@@ -557,31 +553,29 @@ class Node(AbstractNode):
         # Get left and right hip keypoints
         left_hip_x, left_hip_y = left_hip
         right_hip_x, right_hip_y = right_hip
-        # Get left and right knee keypoints
-        left_knee_x, left_knee_y = left_knee
-        right_knee_x, right_knee_y = right_knee
+
 
         # Calculate the angle between left shoulder to left hip to left knee
         left_angle = self._angle_between_vectors_in_rad(
             left_shoulder_x - left_hip_x,
             left_shoulder_y - left_hip_y,
-            left_knee_x - left_hip_x,
-            left_knee_y - left_hip_y
+            right_hip_x - left_hip_x,
+            right_hip_y - left_hip_y
         )
         # Calculate the angle between right shoulder to right hip to right knee
         right_angle = self._angle_between_vectors_in_rad(
             right_shoulder_x - right_hip_x,
             right_shoulder_y - right_hip_y,
-            right_knee_x - right_hip_x,
-            right_knee_y - right_hip_y
+            left_hip_x - right_hip_x,
+            left_hip_y - right_hip_y
         )
 
         # Check if either side has crossed the threshold for leaning
-        sway_threshold = 20 * pi / 180  # 20 deg
-        return left_angle < pi - sway_threshold or \
-            right_angle < pi - sway_threshold or \
-            left_angle > pi + sway_threshold or \
-            right_angle > pi + sway_threshold
+        sway_threshold = 15 * pi / 180  # 10 deg
+        return left_angle < pi/2 - sway_threshold or \
+            right_angle < pi/2 - sway_threshold or \
+            left_angle > pi/2 + sway_threshold or \
+            right_angle > pi/2 + sway_threshold
 
     def run(
             self,
@@ -614,7 +608,7 @@ class Node(AbstractNode):
             if key not in inputs:
                 # One or more metadata inputs are missing
                 self._logger.warning(error_msg.format(f"'{key}'"))
-        
+
         # Get required inputs from pipeline
         self._img = inputs['img']
         bboxes = inputs.get('bboxes', [])
@@ -665,9 +659,7 @@ class Node(AbstractNode):
                 keypoint_list[self._KP_LEFT_SHOULDER],
                 keypoint_list[self._KP_RIGHT_SHOULDER],
                 keypoint_list[self._KP_LEFT_HIP],
-                keypoint_list[self._KP_RIGHT_HIP],
-                keypoint_list[self._KP_LEFT_KNEE],
-                keypoint_list[self._KP_RIGHT_KNEE]
+                keypoint_list[self._KP_RIGHT_HIP]
             )
 
             # Increment relevant counters
@@ -693,7 +685,7 @@ class Node(AbstractNode):
                     Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%\n \
                     [ Frame Count : {self._total_frame_count} ]'
                 )
-        
+
         return {}
 
 
