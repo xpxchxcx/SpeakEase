@@ -259,7 +259,7 @@ class Node(AbstractNode):
     ) -> float:
         """Obtains the (smaller) angle between two non-zero vectors in radians
 
-        The angle is computed via the cosine rule (see the Notes section).
+        The angle :math:`\Theta` is computed via the cosine rule (see the Notes section).
 
         Parameters
         ----------
@@ -278,7 +278,11 @@ class Node(AbstractNode):
                 The (smaller) angle :math:`\Theta` between
                     :math:`\overrightarrow{ V_{1} }` and
                     :math:`\overrightarrow{ V_{2} }`.
-                If either vectors are zero vectors, returns ``ERROR_OUTPUT``.
+                Returns ``ERROR_OUTPUT`` instead if:
+                    - Either one or both of
+                        :math:`\overrightarrow{ V_{1} } = \overrightarrow{0}` and
+                        :math:`\overrightarrow{ V_{2} } = \overrightarrow{0}`
+                    - :math:`\cos \Theta \notin [-1, 1]`
         
         Notes
         -----
@@ -324,13 +328,28 @@ class Node(AbstractNode):
 
         # Check for zero vectors
         if x1 == y1 == 0 or x2 == y2 == 0:
+            self.logger.error(
+                f'One or more zero vectors v1 = ({x1}, {y1}) and ' +
+                f'v2 = ({x2}, {y2}) were passed into _angle_between_vectors_in_rad().'
+            )
             return self.ERROR_OUTPUT
 
-        # Compute the inverse cosine value
+        # Compute the cosine value
         dot_prod = x1 * x2 + y1 * y2
         v1_magnitude = sqrt(x1 * x1 + y1 * y1)
         v2_magnitude = sqrt(x2 * x2 + y2 * y2)
-        return acos(dot_prod / (v1_magnitude * v2_magnitude))
+        cos_value = dot_prod / (v1_magnitude * v2_magnitude)
+
+        # Obtain the resultant angle
+        if abs(cos_value) > 1:
+            # This will result in a math domain error
+            # since the domain of acos() is [-1.0, 1.0]
+            self.logger.error(
+                f'Cosine value {cos_value} is not within acos domain. ' +
+                f'v1 · v2 = {dot_prod}, ||v1|| = {v1_magnitude}, ||v2|| = {v2_magnitude}'
+            )
+            return self.ERROR_OUTPUT
+        return acos(cos_value)
 
     def are_arms_folded(
             self,

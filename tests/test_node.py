@@ -332,8 +332,12 @@ class TestNode(unittest.TestCase):
     def test_are_arms_folded(self):
         pass  # TODO implement this unit test
 
+    """Test cases for _is_face_touched()"""
+
     def test_is_face_touched(self):
         pass  # TODO implement this unit test
+
+    """Test cases for _is_leaning()"""
 
     def test_is_leaning(self):
         pass  # TODO implement this unit test
