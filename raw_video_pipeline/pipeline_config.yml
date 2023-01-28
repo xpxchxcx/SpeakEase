@@ -1,0 +1,6 @@
+nodes:
+- input.visual:
+    source: 0        # use webcam for live video
+- output.screen
+- output.media_writer: # add new output node
+        output_dir: raw_videos
