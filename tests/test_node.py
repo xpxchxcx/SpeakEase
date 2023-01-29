@@ -7,8 +7,10 @@ Usage
     From the terminal, navigate to the directory where this file is located.
 
     Proceed to execute either of the following commands:
+        ```
         python -m unittest [-v] test_node.py
-        python -m unittest [-v] discover
+        python -m unittest discover
+        ```
     Note that -v is an optional flag to increase the verbosity of the unit test outputs.
     
     For more information, refer to the `official unit testing documentation <https://docs.python.org/3/library/unittest.html#test-discovery>`_.
@@ -21,9 +23,18 @@ from src.custom_nodes.dabble.movement import Node
 import unittest
 
 # Supporting libraries for unit testing
+from itertools import chain, combinations
 from math import pi
 from typing import Optional, Tuple
 from yaml import safe_load
+
+from tests.visualise import \
+    ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE, \
+    ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS
+
+
+Coord = Tuple[int, int]  # Type-hinting alias for coordinates
+
 
 class TestNode(unittest.TestCase):
 
@@ -39,30 +50,30 @@ class TestNode(unittest.TestCase):
 
     def error_msg_angle_between_vectors_in_rad(
             self,
-            v1: Tuple[int, int],
-            v2: Tuple[int, int],
+            v1: Coord,
+            v2: Coord,
             output: float,
+            expected: float,
+            test: str,
             *,
-            expected: Optional[float] = None,
-            precision: int = _DECIMAL_PRECISION,
-            test: Optional[str] = 'No Description'
+            precision: int = _DECIMAL_PRECISION
     ) -> str:
         """Template for unit test error messages for _angle_between_vectors_in_rad()
 
         Parameters
         ----------
-            v1 : tuple of ints
+            v1 : `Coord`
                 The first vector (`x`, `y`) parameter passed into the function
-            v2 : tuple of ints
+            v2 : `Coord`
                 The second vector (`x`, `y`) parameter passed into the function
             output : float
                 The obtained output from the function
-            expected : float, optional, default=None
+            expected : float
                 The expected output of the function
+            test : str
+                The type of unit test performed
             precision : int, default=`_DECIMAL_PRECISION`
                 The expected decimal precision of the outputs
-            test : str, optional, default='No Description'
-                The type of unit test performed
         
         Returns
         -------
@@ -70,7 +81,6 @@ class TestNode(unittest.TestCase):
                 The formatted error message
         """
 
-        expected_str = 'Not Specified' if expected is None else str(expected)
         return f'\n\
                 =============================================\n\
                   Function: _angle_between_vectors_in_rad()\n\
@@ -78,7 +88,7 @@ class TestNode(unittest.TestCase):
                 Parameters: v1 = {v1}, v2 = {v2}\n\
                  Precision: {precision}\n\
                     Output: {output}\n\
-                  Expected: {expected_str}\n\
+                  Expected: {expected}\n\
                 ============================================='
 
     def test_angle_between_vectors_in_rad_zero(self) -> None:
@@ -104,9 +114,9 @@ class TestNode(unittest.TestCase):
                 zero,
                 vec,
                 r1,
-                expected=self.node.ERROR_OUTPUT,
-                precision=0,
-                test='First Parameter is Zero Vector'
+                self.node.ERROR_OUTPUT,
+                'First Parameter is Zero Vector',
+                precision=0
             )
         )
         self.assertEqual(
@@ -116,9 +126,9 @@ class TestNode(unittest.TestCase):
                 vec,
                 zero,
                 r2,
-                expected=self.node.ERROR_OUTPUT,
-                precision=0,
-                test='Second Parameter is Zero Vector'
+                self.node.ERROR_OUTPUT,
+                'Second Parameter is Zero Vector',
+                precision=0
             )
         )
         self.assertEqual(
@@ -128,9 +138,9 @@ class TestNode(unittest.TestCase):
                 zero,
                 zero,
                 r3,
-                expected=self.node.ERROR_OUTPUT,
-                precision=0,
-                test='Both Parameters are Zero Vectors'
+                self.node.ERROR_OUTPUT,
+                'Both Parameters are Zero Vectors',
+                precision=0
             )
         )
     
@@ -157,8 +167,8 @@ class TestNode(unittest.TestCase):
                 v1,
                 v2,
                 r1,
-                expected=r2,
-                test='Function Associativity'
+                r2,
+                'Function Associativity'
             )
         )
 
@@ -185,8 +195,8 @@ class TestNode(unittest.TestCase):
                 v1,
                 v2,
                 res,
-                expected=pi / 2,
-                test='Orthogonal Non-Zero Vectors'
+                pi / 2,
+                'Orthogonal Non-Zero Vectors'
             )
         )
     
@@ -212,8 +222,8 @@ class TestNode(unittest.TestCase):
                 vec,
                 vec,
                 res,
-                expected=0,
-                test='Identical Non-Zero Vectors'
+                0,
+                'Identical Non-Zero Vectors'
             )
         )
     
@@ -240,8 +250,8 @@ class TestNode(unittest.TestCase):
                 v1,
                 v2,
                 res,
-                expected=pi,
-                test='Opposite Non-Zero Vectors'
+                pi,
+                'Opposite Non-Zero Vectors'
             )
         )
 
@@ -281,8 +291,8 @@ class TestNode(unittest.TestCase):
                 v1,
                 v2,
                 res,
-                expected=pi / 4,
-                test='Acute Angle'
+                pi / 4,
+                'Acute Angle'
             )
         )
     
@@ -322,22 +332,213 @@ class TestNode(unittest.TestCase):
                 v1,
                 v2,
                 res,
-                expected=3 * pi / 4,
-                test='Obtuse Angle'
+                3 * pi / 4,
+                'Obtuse Angle'
             )
         )
     
-    """Test cases for _are_arms_folded()"""
-    
-    def test_are_arms_folded(self):
-        pass  # TODO implement this unit test
+    """Test cases for are_arms_folded()"""
 
-    """Test cases for _is_face_touched()"""
+    def error_msg_are_arms_folded(
+            self,
+            left_shoulder: Optional[Coord],
+            left_elbow: Optional[Coord],
+            left_wrist: Optional[Coord],
+            right_shoulder: Optional[Coord],
+            right_elbow: Optional[Coord],
+            right_wrist: Optional[Coord],
+            output: bool,
+            expected: bool,
+            test: str
+    ) -> str:
+        """Template for unit test error messages for are_arms_folded()
+
+        Parameters
+        ----------
+            left_shoulder : `Coord`, optional
+                The left shoulder coordinate (`x`, `y`) passed into the function
+            left_elbow : `Coord`, optional
+                The left elbow coordinate (`x`, `y`) passed into the function
+            left_wrist : `Coord`, optional
+                The left wrist coordinate (`x`, `y`) passed into the function
+            right_shoulder : `Coord`, optional
+                The right shoulder coordinate (`x`, `y`) passed into the function
+            right_elbow : `Coord`, optional
+                The right elbow coordinate (`x`, `y`) passed into the function
+            right_wrist : `Coord`, optional
+                The right wrist coordinate (`x`, `y`) passed into the function
+            output : bool
+                The obtained output from the function
+            expected : bool
+                The expected output of the function
+            test : str
+                The type of unit test performed
+        
+        Returns
+        -------
+            str
+                The formatted error message
+        """
+
+        return f'\n\
+                =============================================\n\
+                  Function: are_arms_folded()\n\
+                 Test Type: {test}\n\
+                Parameters: left_shouler = {left_shoulder}\n\
+                            left_elbow = {left_elbow}\n\
+                            left_wrist = {left_wrist}\n\
+                            right_shoulder = {right_shoulder}\n\
+                            right_elbow = {right_elbow}\n\
+                            right_wrist = {right_wrist}\n\
+                    Output: {output}\n\
+                  Expected: {expected}\n\
+                ============================================='
+    
+    def test_are_arms_folded_missing(self) -> None:
+        """Checks that the function returns False if at least one input is missing
+
+        The function requires all coordinates to perform the check.
+        """
+        
+        # Initialise coordinates
+        pose = [(i, i) for i in range(17)]
+        required_coordinates = {
+            self.node._KP_LEFT_SHOULDER,
+            self.node._KP_LEFT_ELBOW,
+            self.node._KP_LEFT_WRIST,
+            self.node._KP_RIGHT_SHOULDER,
+            self.node._KP_RIGHT_ELBOW,
+            self.node._KP_RIGHT_WRIST
+        }
+        coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
+
+        # Set one or more coordinates to None
+        for i, selected_coordinates in enumerate(chain(
+                *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
+        )):
+            left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
+                coordinates[self.node._KP_LEFT_SHOULDER]
+            left_elbow = None if self.node._KP_LEFT_ELBOW in selected_coordinates else \
+                coordinates[self.node._KP_LEFT_ELBOW]
+            left_wrist = None if self.node._KP_LEFT_WRIST in selected_coordinates else \
+                coordinates[self.node._KP_LEFT_WRIST]
+            right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
+                coordinates[self.node._KP_RIGHT_SHOULDER]
+            right_elbow = None if self.node._KP_RIGHT_ELBOW in selected_coordinates else \
+                coordinates[self.node._KP_RIGHT_ELBOW]
+            right_wrist = None if self.node._KP_RIGHT_WRIST in selected_coordinates else \
+                coordinates[self.node._KP_RIGHT_WRIST]
+
+            # Obtain the result
+            res = self.node.are_arms_folded(
+                left_shoulder,
+                left_elbow,
+                left_wrist,
+                right_shoulder,
+                right_elbow,
+                right_wrist
+            )
+
+            # Perform assertion check
+            self.assertFalse(
+                res,
+                self.error_msg_are_arms_folded(
+                    left_shoulder,
+                    left_elbow,
+                    left_wrist,
+                    right_shoulder,
+                    right_elbow,
+                    right_wrist,
+                    res,
+                    False,
+                    f'One or more Missing Inputs (Case {i + 1})'
+                )
+            )
+    
+    def test_are_arms_folded_touching_face(self) -> None:
+        """Checks that the arms are not considered folded if the pose is touching the face"""
+
+        for i, coordinates in enumerate(ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE):
+
+            # Initialise coordinates
+            left_shoulder, \
+                left_elbow, \
+                left_wrist, \
+                right_shoulder, \
+                right_elbow, \
+                right_wrist = coordinates
+            
+            # Obtain the result
+            res = self.node.are_arms_folded(
+                left_shoulder,
+                left_elbow,
+                left_wrist,
+                right_shoulder,
+                right_elbow,
+                right_wrist
+            )
+
+            # Perform assertion check
+            self.assertFalse(
+                res,
+                self.error_msg_are_arms_folded(
+                    left_shoulder,
+                    left_elbow,
+                    left_wrist,
+                    right_shoulder,
+                    right_elbow,
+                    right_wrist,
+                    res,
+                    False,
+                    f'Touching Face instead of Folding Arms (Case {i + 1})'
+                )
+            )
+    
+    def test_are_arms_folded_half_cross(self) -> None:
+        """Checks that half-crossed arms are considered folded"""
+
+        for i, coordinates in enumerate(ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS):
+
+            # Initialise coordinates
+            left_shoulder, \
+                left_elbow, \
+                left_wrist, \
+                right_shoulder, \
+                right_elbow, \
+                right_wrist = coordinates
+            
+            # Obtain the result
+            res = self.node.are_arms_folded(
+                left_shoulder,
+                left_elbow,
+                left_wrist,
+                right_shoulder,
+                right_elbow,
+                right_wrist
+            )
+
+            # Perform assertion check
+            self.assertTrue(
+                res,
+                self.error_msg_are_arms_folded(
+                    left_shoulder,
+                    left_elbow,
+                    left_wrist,
+                    right_shoulder,
+                    right_elbow,
+                    right_wrist,
+                    res,
+                    True,
+                    f'Arms Half-Crossed (Case {i + 1})'
+                )
+            )
+
+    """Test cases for is_face_touched()"""
 
     def test_is_face_touched(self):
         pass  # TODO implement this unit test
 
-    """Test cases for _is_leaning()"""
+    """Test cases for is_leaning()"""
 
     def test_is_leaning(self):
         pass  # TODO implement this unit test
