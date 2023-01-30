@@ -6,7 +6,7 @@ echo "raw video capture complete"
 # read -p "Press Enter to continue" </dev/tty
 
 cd ".."
-~/miniconda/envs/aisg/bin/python raw_transfer.py
+python raw_transfer.py
 echo "source as raw video on analysis pipeline complete"
 # read -p "Press Enter to continue" </dev/tty
 
