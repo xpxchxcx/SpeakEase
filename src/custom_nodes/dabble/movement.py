@@ -158,15 +158,15 @@ class Node(AbstractNode):
         return None if score < self._THRESHOLD else self._map_coord_onto_img(*keypoint)
 
     def _display_text(
-            self,
-            x: int,
-            y: int,
-            text: str,
-            font_colour: Tuple[int, int, int],
-            *,
-            font_face: int = _FONT_FACE,
-            font_scale: float = _FONT_SCALE,
-            font_thickness: int = _FONT_THICKNESS
+        self,
+        x: int,
+        y: int,
+        text: str,
+        font_colour: Tuple[int, int, int],
+        *,
+        font_face: int = _FONT_FACE,
+        font_scale: float = _FONT_SCALE,
+        font_thickness: int = _FONT_THICKNESS
     ) -> None:
         """Displays text at a specified coordinate on top of the displayed image
 
@@ -677,6 +677,23 @@ class Node(AbstractNode):
 
         self._total_frame_count += 1
 
+        current_stats = f' -------------------\n \
+                            Current Statistics\n \
+                            ------------------\n \
+                              Arm Folding - {self._arm_fold_count / self._total_frame_count * 100:0.3f}%\n \
+                                  Leaning - {self._leaning_count / self._total_frame_count * 100:0.3f}%\n \
+                            Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%\n \
+                            [ Frame Count : {self._total_frame_count} ]'
+
+        # UI config
+        line = '---------------'
+        title = 'Current Statistics'
+        line_two = '---------------'
+        arms = f'Arm Folding - {self._arm_fold_count / self._total_frame_count * 100:0.3f}%'
+        lean = f'Leaning - {self._leaning_count / self._total_frame_count * 100:0.3f}%'
+        face = f'Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%'
+        frame = f'[ Frame Count : {self._total_frame_count} ]'
+
         # Handle the detection of each person
         for bbox, bbox_score, keypoints, keypoint_scores in \
                 zip(bboxes, bbox_scores, all_keypoints, all_keypoint_scores):
@@ -737,15 +754,15 @@ class Node(AbstractNode):
                 face_touched=face_touched
             )
             if self._total_frame_count > 0 and self._total_frame_count % frames_before_summary == 0:
-                self._logger.info(f'\n \
-                    ------------------------\n \
-                       Current Statistics\n \
-                    ------------------------\n \
-                      Arm Folding - {self._arm_fold_count / self._total_frame_count * 100:0.3f}%\n \
-                          Leaning - {self._leaning_count / self._total_frame_count * 100:0.3f}%\n \
-                    Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%\n \
-                    [ Frame Count : {self._total_frame_count} ]'
-                )
+                self._logger.info(current_stats)
+
+        self._display_text(50, 100, line, self._BLUE, font_scale=1)
+        self._display_text(50, 120, title, self._BLUE, font_scale=1)
+        self._display_text(50, 140, line_two, self._BLUE, font_scale=1)
+        self._display_text(50, 160, arms, self._BLUE, font_scale=1)
+        self._display_text(50, 190, lean, self._BLUE, font_scale=1)
+        self._display_text(50, 220, face, self._BLUE, font_scale=1)
+        self._display_text(50, 250, frame, self._BLUE, font_scale=1)
 
         return {}
 
