@@ -18,6 +18,9 @@ import cv2
 from peekingduck.pipeline.nodes.abstract_node import AbstractNode
 
 
+Coord = Tuple[int, int]  # Type-hinting alias for coordinates
+
+
 class Node(AbstractNode):
     """Custom node to display PoseNet's skeletal key points
 
@@ -32,8 +35,8 @@ class Node(AbstractNode):
 
     # Define font properties for display purposes
     _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
-    _FONT_SCALE = 1.5
-    _FONT_THICKNESS = 3
+    _FONT_SCALE = 1
+    _FONT_THICKNESS = 2
 
     # Define constants for PoseNet keypoint detection
     _THRESHOLD = 0.6
@@ -104,8 +107,10 @@ class Node(AbstractNode):
             self,
             x: float,
             y: float
-    ) -> Tuple[int, int]:
+    ) -> Coord:
         """Maps relative coordinates onto the displayed image
+
+        This function assumes that the displayed image has already been defined.
 
         Parameters
         ----------
@@ -116,9 +121,15 @@ class Node(AbstractNode):
 
         Returns
         -------
-            tuple of int
-                Absolute coordinate (`x1`, `y1`) on the image; 0 <= `x1` <= `width` and 0 <= `y1` <= `height`
+            `Coord`
+                Absolute coordinate (`x1`, `y1`) on the image; 0 <= `x1` <= `width` and 0 <= `y1` <= `height`.
+                Returns ``(ERROR_OUTPUT, ERROR_OUTPUT)`` if the image has not been defined.
        """
+
+        # Check if image is defined
+        if self.width == self.ERROR_OUTPUT or self.height == self.ERROR_OUTPUT:
+            self.logger.error(f'_map_coord_onto_img() trying to access image but it has not been defined yet.')
+            return self.ERROR_OUTPUT, self.ERROR_OUTPUT
 
         return round(x * self.width), round(y * self.height)
 
@@ -126,7 +137,7 @@ class Node(AbstractNode):
             self,
             keypoint: Tuple[float, float],
             score: float
-    ) -> Optional[Tuple[int, int]]:
+    ) -> Optional[Coord]:
         """Obtains a detected PoseNet keypoint if its confidence score meets or exceeds the threshold
 
         Parameters
@@ -139,7 +150,7 @@ class Node(AbstractNode):
 
         Returns
         -------
-            tuple of ints, optional
+            `Coord`, optional
                 Absolute coordinates of the detected PoseNet keypoint
                 if its confidence score meets or exceeds the threshold confidence
         """
@@ -181,6 +192,11 @@ class Node(AbstractNode):
             font_thickness : int
                 Relative thickness of the text to display
         """
+
+        # Check if image is defined
+        if self._img is None:
+            self.logger.error(f'_display_text() trying to access image but it has not been defined yet.')
+            return
 
         cv2.putText(
             img=self._img,  # type: ignore
@@ -340,41 +356,41 @@ class Node(AbstractNode):
         v2_magnitude = sqrt(x2 * x2 + y2 * y2)
         cos_value = dot_prod / (v1_magnitude * v2_magnitude)
 
-        # Obtain the resultant angle
+        # Check if the cosine value is within acos domain of [-1, 1]
         if abs(cos_value) > 1:
-            # This will result in a math domain error
-            # since the domain of acos() is [-1.0, 1.0]
             self.logger.error(
-                f'Cosine value {cos_value} is not within acos domain. ' +
+                f'_angle_between_vectors_in_rad() obtained cosine value {cos_value} ' +
+                f'that is not within acos domain [-1, 1]. ' +
                 f'v1 · v2 = {dot_prod}, ||v1|| = {v1_magnitude}, ||v2|| = {v2_magnitude}'
             )
             return self.ERROR_OUTPUT
+        
         return acos(cos_value)
 
     def are_arms_folded(
             self,
-            left_shoulder: Optional[Tuple[int, int]],
-            left_elbow: Optional[Tuple[int, int]],
-            left_wrist: Optional[Tuple[int, int]],
-            right_shoulder: Optional[Tuple[int, int]],
-            right_elbow: Optional[Tuple[int, int]],
-            right_wrist: Optional[Tuple[int, int]]
+            left_shoulder: Optional[Coord],
+            left_elbow: Optional[Coord],
+            left_wrist: Optional[Coord],
+            right_shoulder: Optional[Coord],
+            right_elbow: Optional[Coord],
+            right_wrist: Optional[Coord]
     ) -> bool:
         """Determines if the arms of the given pose are folded
 
         Parameters
         ----------
-            left_shoulder : tuple of ints, optional
+            left_shoulder : `Coord`, optional
                 (`x`, `y`) coordinate of the left shoulder
-            left_elbow : tuple of ints, optional
+            left_elbow : `Coord`, optional
                 (`x`, `y`) coordinate of the left elbow
-            left_wrist : tuple of ints, optional
+            left_wrist : `Coord`, optional
                 (`x`, `y`) coordinate of the left wrist
-            right_shoulder : tuple of ints, optional
+            right_shoulder : `Coord`, optional
                 (`x`, `y`) coordinate of the right shoulder
-            right_elbow : tuple of ints, optional
+            right_elbow : `Coord`, optional
                 (`x`, `y`) coordinate of the right elbow
-            right_wrist : tuple of ints, optional
+            right_wrist : `Coord`, optional
                 (`x`, `y`) coordinate of the right wrist
 
         Returns
@@ -408,20 +424,44 @@ class Node(AbstractNode):
         left_wrist_x, left_wrist_y = left_wrist
         right_wrist_x, right_wrist_y = right_wrist
 
-        # Calculate angle made between the left shoulder, left elbow, and left wrist
-        left_angle = self._angle_between_vectors_in_rad(
+        # Calculate relevant vectors
+        left_shoulder_elbow_vec = (
             left_shoulder_x - left_elbow_x,
-            left_shoulder_y - left_elbow_y,
+            left_shoulder_y - left_elbow_y
+        )
+        left_wrist_elbow_vec = (
             left_wrist_x - left_elbow_x,
             left_wrist_y - left_elbow_y
         )
-        # Calculate angle made between the right shoulder, right elbow, and right wrist
-        right_angle = self._angle_between_vectors_in_rad(
+        right_shoulder_elbow_vec = (
             right_shoulder_x - right_elbow_x,
-            right_shoulder_y - right_elbow_y,
+            right_shoulder_y - right_elbow_y
+        )
+        right_wrist_elbow_vec = (
             right_wrist_x - right_elbow_x,
             right_wrist_y - right_elbow_y
         )
+
+        # Calculate angle made between the left shoulder, left elbow, and left wrist
+        left_angle = self._angle_between_vectors_in_rad(
+            *left_shoulder_elbow_vec,
+            *left_wrist_elbow_vec
+        )
+        # Calculate angle made between the right shoulder, right elbow, and right wrist
+        right_angle = self._angle_between_vectors_in_rad(
+            *right_shoulder_elbow_vec,
+            *right_wrist_elbow_vec
+        )
+        if left_angle == self.ERROR_OUTPUT or right_angle == self.ERROR_OUTPUT:
+            # Needs debugging
+            self.logger.warning(
+                'Either one or both the calculated angles in are_arms_folded() has returned an error.' +
+                f'\nAngle calculated between left shoulder to left elbow {left_shoulder_elbow_vec} ' +
+                f'and left wrist to left elbow {left_wrist_elbow_vec} is {left_angle} radians.' +
+                f'\nAngle calculated between right shoulder to right elbow {right_shoulder_elbow_vec} ' +
+                f'and right wrist to right elbow {right_wrist_elbow_vec} is {right_angle} radians.'
+            )
+            return False
 
         # Calculate distance from the left elbow to the left wrist
         left_dist = sqrt(
@@ -453,25 +493,25 @@ class Node(AbstractNode):
 
     def is_face_touched(
             self,
-            left_elbow: Optional[Tuple[int, int]],
-            right_elbow: Optional[Tuple[int, int]],
-            left_wrist: Optional[Tuple[int, int]],
-            right_wrist: Optional[Tuple[int, int]],
-            nose: Optional[Tuple[int, int]]
+            left_elbow: Optional[Coord],
+            right_elbow: Optional[Coord],
+            left_wrist: Optional[Coord],
+            right_wrist: Optional[Coord],
+            nose: Optional[Coord]
     ) -> bool:
         """Determines if the hands of the given pose is touching the face
 
         Parameters
         ----------
-            left_elbow : tuple of ints, optional
+            left_elbow : `Coord`, optional
                 (`x`, `y`) coordinate of the left elbow
-            right_elbow : tuple of ints, optional
+            right_elbow : `Coord`, optional
                 (`x`, `y`) coordinate of the right elbow
-            left_wrist : tuple of ints, optional
+            left_wrist : `Coord`, optional
                 (`x`, `y`) coordinate of the left wrist
-            right_wrist : tuple of ints, optional
+            right_wrist : `Coord`, optional
                 (`x`, `y`) coordinate of the right wrist
-            nose : tuple of ints, optional
+            nose : `Coord`, optional
                 (`x`, `y`) coordinate of the nose
 
         Returns
@@ -526,26 +566,26 @@ class Node(AbstractNode):
 
     def is_leaning(
             self,
-            left_shoulder: Optional[Tuple[int, int]],
-            right_shoulder: Optional[Tuple[int, int]],
-            left_hip: Optional[Tuple[int, int]],
-            right_hip: Optional[Tuple[int, int]]
+            left_shoulder: Optional[Coord],
+            right_shoulder: Optional[Coord],
+            left_hip: Optional[Coord],
+            right_hip: Optional[Coord]
     ) -> bool:
         """Determines if the given pose is leaning towards one side
 
         Parameters
         ----------
-            left_shoulder : tuple of ints, optional
+            left_shoulder : `Coord`, optional
                 Tuple containing the `x` and `y` coordinates of the left shoulder
-            right_shoulder : tuple of ints, optional
+            right_shoulder : `Coord`, optional
                 Tuple containing the `x` and `y` coordinates of the right shoulder
-            left_hip : tuple of ints, optional
+            left_hip : `Coord`, optional
                 Tuple containing the `x` and `y` coordinates of the left hip
-            right_hip : tuple of ints, optional
+            right_hip : `Coord`, optional
                 Tuple containing the `x` and `y` coordinates of the right hip
-            left_knee : tuple of ints, optional
+            left_knee : `Coord`, optional
                 Tuple containing the `x` and `y` coordinates of the left knee
-            right_knee : tuple of ints, optional
+            right_knee : `Coord`, optional
                 Tuple containing the `x` and `y` coordinates of the right knee
         
         Returns
@@ -657,6 +697,8 @@ class Node(AbstractNode):
                     font_scale=0.5,
                     font_thickness=1
                 )
+            with open('test.txt', 'a') as output_file:
+                output_file.write(str(keypoint_list) + '\n')
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(

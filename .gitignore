@@ -161,3 +161,6 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+# Output .mp4 files that may have been used for testing
+.mp4
