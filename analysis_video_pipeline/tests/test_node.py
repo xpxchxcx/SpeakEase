@@ -19,7 +19,7 @@ Usage
 # pyright: reportInvalidStringEscapeSequence=false
 
 # Main libraries for unit testing
-from src.custom_nodes.dabble.movement import Node
+from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
 import unittest
 
 # Supporting libraries for unit testing
@@ -28,7 +28,7 @@ from math import pi
 from typing import Optional, Tuple
 from yaml import safe_load
 
-from tests.visualise import \
+from analysis_video_pipeline.tests.visualise import \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE, \
     ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS
 

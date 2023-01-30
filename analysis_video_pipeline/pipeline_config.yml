@@ -1,0 +1,13 @@
+nodes:
+- input.visual:
+    source: C:\Users\mynam\Downloads\AISG_Challenge-main\raw_video_pipeline\raw_videos\video_230128_224354.mp4
+- model.yolo
+- model.posenet
+- dabble.fps
+- custom_nodes.dabble.movement
+- draw.poses
+- draw.legend:
+    show: ["fps"]
+- output.screen
+- output.media_writer: # add new output node
+        output_dir: analysed_videos
