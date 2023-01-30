@@ -714,8 +714,6 @@ class Node(AbstractNode):
                     font_scale=0.5,
                     font_thickness=1
                 )
-            with open('test.txt', 'a') as output_file:
-                output_file.write(str(keypoint_list) + '\n')
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(
