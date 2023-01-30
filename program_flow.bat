@@ -1,13 +1,16 @@
 @echo off
-cd %~dp0raw_video_pipeline
+
+cd raw_video_pipeline
 peekingduck run
-echo raw video capture complete
-pause
+echo "raw video capture complete"
+rem pause
+
 cd ..
 python raw_transfer.py
-echo source as raw video on analysis pipeline complete
-pause
-cd %~dp0analysis_video_pipeline
+echo "source as raw video on analysis pipeline complete"
+rem pause
+
+cd analysis_video_pipeline
 peekingduck run
-echo analysis complete
+echo "analysis complete"
 pause
