@@ -1,6 +1,6 @@
 nodes:
 - input.visual:
-    source: C:\Users\mynam\Downloads\AISG_Challenge-main\raw_video_pipeline\raw_videos\video_230128_224354.mp4
+    source: C:\Users\mynam\PycharmProjects\AISG_Challenge./raw_video_pipeline/raw_videos\video_230130_230445.mp4
 - model.yolo
 - model.posenet
 - dabble.fps
