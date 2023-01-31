@@ -497,7 +497,11 @@ class Node(AbstractNode):
             right_elbow: Optional[Coord],
             left_wrist: Optional[Coord],
             right_wrist: Optional[Coord],
-            nose: Optional[Coord]
+            nose: Optional[Coord],
+            left_eye: Optional[Coord],
+            right_eye: Optional[Coord],
+            left_ear: Optional[Coord],
+            right_ear: Optional[Coord]
     ) -> bool:
         """Determines if the hands of the given pose is touching the face
 
@@ -513,6 +517,14 @@ class Node(AbstractNode):
                 (`x`, `y`) coordinate of the right wrist
             nose : `Coord`, optional
                 (`x`, `y`) coordinate of the nose
+            left_eye : `Coord`, optional
+                (`x`, `y`) coordinate of the left eye
+            right_eye : `Coord`, optional
+                (`x`, `y`) coordinate of the right eye
+            left_ear : `Coord`, optional
+                (`x`, `y`) coordinate of the left ear
+            right_ear : `Coord`, optional
+                (`x`, `y`) coordinate of the right ear
 
         Returns
         -------
@@ -529,7 +541,11 @@ class Node(AbstractNode):
                 right_elbow is None or \
                 left_wrist is None or \
                 right_wrist is None or \
-                nose is None:
+                nose is None or \
+                left_eye is None or \
+                right_eye is None or \
+                left_ear is None or \
+                right_ear is None:
             return False
 
         # Obtain coordinates
@@ -538,31 +554,38 @@ class Node(AbstractNode):
         left_wrist_x, left_wrist_y = left_wrist
         right_wrist_x, right_wrist_y = right_wrist
         nose_x, nose_y = nose
+        left_eye_x, left_eye_y = left_eye
+        right_eye_x, right_eye_y = right_eye
+        left_ear_x, left_ear_y = left_ear
+        right_ear_x, right_ear_y = right_ear
 
-        # Calculate distances from the respective joints to the nose
-        left_elbow_dist = sqrt(
-            (left_elbow_x - nose_x) * (left_elbow_x - nose_x) + \
-            (left_elbow_y - nose_y) * (left_elbow_y - nose_y)
-        )
-        right_elbow_dist = sqrt(
-            (right_elbow_x - nose_x) * (right_elbow_x - nose_x) + \
-            (right_elbow_y - nose_y) * (right_elbow_y - nose_y)
-        )
-        left_wrist_dist = sqrt(
-            (left_wrist_x - nose_x) * (left_wrist_x - nose_x) + \
-            (left_wrist_y - nose_y) * (left_wrist_y - nose_y)
-        )
-        right_wrist_dist = sqrt(
-            (right_wrist_x - nose_x) * (right_wrist_x - nose_x) + \
-            (right_wrist_y - nose_y) * (right_wrist_y - nose_y)
-        )
+        # Calculate distances from the respective joints to the nose / eye / ear
+        for (x,y) in [nose, left_eye, right_eye, left_ear, right_ear]:
+            left_elbow_dist = sqrt(
+                (left_elbow_x - x) * (left_elbow_x - x) + \
+                (left_elbow_y - y) * (left_elbow_y - y)
+            )
+            right_elbow_dist = sqrt(
+                (right_elbow_x - x) * (right_elbow_x - x) + \
+                (right_elbow_y - y) * (right_elbow_y - y)
+            )
+            left_wrist_dist = sqrt(
+                (left_wrist_x - x) * (left_wrist_x - x) + \
+                (left_wrist_y - y) * (left_wrist_y - y)
+            )
+            right_wrist_dist = sqrt(
+                (right_wrist_x - x) * (right_wrist_x - x) + \
+                (right_wrist_y - y) * (right_wrist_y - y)
+            )
 
         # Check if either hand is touching the face
-        threshold = 50
-        return left_elbow_dist < threshold or \
-            right_elbow_dist < threshold or \
-            left_wrist_dist < threshold or \
-            right_wrist_dist < threshold
+            threshold = 100
+            if left_elbow_dist < threshold or \
+                right_elbow_dist < threshold or \
+                left_wrist_dist < threshold or \
+                right_wrist_dist < threshold:
+                return True
+        return False
 
     def is_leaning(
             self,
@@ -729,7 +752,11 @@ class Node(AbstractNode):
                 keypoint_list[self._KP_RIGHT_ELBOW],
                 keypoint_list[self._KP_LEFT_WRIST],
                 keypoint_list[self._KP_RIGHT_WRIST],
-                keypoint_list[self._KP_NOSE]
+                keypoint_list[self._KP_NOSE],
+                keypoint_list[self._KP_LEFT_EYE],
+                keypoint_list[self._KP_RIGHT_EYE],
+                keypoint_list[self._KP_LEFT_EAR],
+                keypoint_list[self._KP_RIGHT_EAR]
             )
             is_leaning = self.is_leaning(
                 keypoint_list[self._KP_LEFT_SHOULDER],
