@@ -9,3 +9,5 @@ nodes:
 - draw.legend:
     show: ["fps"]
 - output.screen
+- output.media_writer:  # add new output node
+    output_dir: analysed_videos
