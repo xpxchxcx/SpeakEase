@@ -32,7 +32,9 @@ from analysis_video_pipeline.tests.visualise import \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS, \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE, \
     ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS, \
-    ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS
+    ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS, \
+    IS_LEANING_NEGATIVE_CASES, \
+    IS_LEANING_POSITIVE_CASES
 
 
 Coord = Tuple[int, int]  # Type-hinting alias for coordinates
@@ -620,8 +622,169 @@ class TestNode(unittest.TestCase):
 
     """Test cases for is_leaning()"""
 
-    def test_is_leaning(self):
-        pass  # TODO implement this unit test
+    def error_msg_is_leaning(
+            self,
+            left_shoulder: Optional[Coord],
+            right_shoulder: Optional[Coord],
+            left_hip: Optional[Coord],
+            right_hip: Optional[Coord],
+            output: bool,
+            expected: bool,
+            test: str
+    ) -> str:
+        """Template for unit test error messages for is_leaning()
+
+        Parameters
+        ----------
+            left_shoulder : `Coord`, optional
+                The left shoulder coordinate (`x`, `y`) passed into the function
+            right_shoulder : `Coord`, optional
+                The right shoulder coordinate (`x`, `y`) passed into the function
+            left_hip : `Coord`, optional
+                The left hip coordinate (`x`, `y`) passed into the function
+            right_hip : `Coord`, optional
+                The right hip coordinate (`x`, `y`) passed into the function
+            output : bool
+                The obtained output from the function
+            expected : bool
+                The expected output of the function
+            test : str
+                The type of unit test performed
+        
+        Returns
+        -------
+            str
+                The formatted error message
+        """
+
+        return f'\n\
+                =============================================\n\
+                  Function: is_leaning()\n\
+                 Test Type: {test}\n\
+                Parameters: left_shouler = {left_shoulder}\n\
+                            right_shoulder = {right_shoulder}\n\
+                            left_hip = {left_hip}\n\
+                            right_hip = {right_hip}\n\
+                    Output: {output}\n\
+                  Expected: {expected}\n\
+                ============================================='
+    
+    def test_is_leaning_folded_missing(self) -> None:
+        """Checks that the function returns False if at least one input is missing
+
+        The function requires all coordinates to perform the check.
+        """
+        
+        # Initialise coordinates
+        pose = [(i, i) for i in range(17)]
+        required_coordinates = {
+            self.node._KP_LEFT_SHOULDER,
+            self.node._KP_RIGHT_SHOULDER,
+            self.node._KP_LEFT_HIP,
+            self.node._KP_RIGHT_HIP
+        }
+        coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
+
+        # Set one or more coordinates to None
+        for i, selected_coordinates in enumerate(chain(
+                *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
+        )):
+            left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
+                coordinates[self.node._KP_LEFT_SHOULDER]
+            right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
+                coordinates[self.node._KP_RIGHT_SHOULDER]
+            left_hip = None if self.node._KP_LEFT_HIP in selected_coordinates else \
+                coordinates[self.node._KP_LEFT_HIP]
+            right_hip = None if self.node._KP_RIGHT_HIP in selected_coordinates else \
+                coordinates[self.node._KP_RIGHT_HIP]
+
+            # Obtain the result
+            res = self.node.is_leaning(
+                left_shoulder,
+                right_shoulder,
+                left_hip,
+                right_hip
+            )
+
+            # Perform assertion check
+            self.assertFalse(
+                res,
+                self.error_msg_is_leaning(
+                    left_shoulder,
+                    right_shoulder,
+                    left_hip,
+                    right_hip,
+                    res,
+                    False,
+                    f'One or more Missing Inputs (Case {i + 1})'
+                )
+            )
+    
+    def test_is_leaning_negative(self) -> None:
+        """Checks that non-leaning poses are considered not leaning"""
+
+        for i, coordinates in enumerate(IS_LEANING_NEGATIVE_CASES):
+
+            # Initialise coordinates
+            left_shoulder, \
+                right_shoulder, \
+                left_hip, \
+                right_hip = coordinates
+            
+            # Obtain the result
+            res = self.node.is_leaning(
+                left_shoulder,
+                right_shoulder,
+                left_hip,
+                right_hip
+            )
+
+            # Perform assertion check
+            self.assertFalse(
+                res,
+                self.error_msg_is_leaning(
+                    left_shoulder,
+                    right_shoulder,
+                    left_hip,
+                    right_hip,
+                    res,
+                    False,
+                    f'Non-Leaning Pose (Case {i + 1})'
+                )
+            )
+    
+    def test_is_leaning_positive(self) -> None:
+        """Checks that true leaning poses are considered leaning"""
+
+        for i, coordinates in enumerate(IS_LEANING_POSITIVE_CASES):
+
+            # Initialise coordinates
+            left_shoulder, \
+                right_shoulder, \
+                left_hip, \
+                right_hip = coordinates
+            
+            # Obtain the result
+            res = self.node.is_leaning(
+                left_shoulder,
+                right_shoulder,
+                left_hip,
+                right_hip
+            )
+
+            # Perform assertion check
+            self.assertTrue(
+                res,
+                self.error_msg_is_leaning(
+                    left_shoulder,
+                    right_shoulder,
+                    left_hip,
+                    right_hip,
+                    res,
+                    True,
+                    f'Leaning Pose (Case {i + 1})'
+                )
+            )
 
 
 if __name__ == '__main__':

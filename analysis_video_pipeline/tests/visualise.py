@@ -173,6 +173,91 @@ ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS: \
 ]
 
 
+"""Unit test cases for is_leaning()
+
+Each test case returns 4 coordinates (`x`, `y`) in the following order:
+    - Left shoulder
+    - Left elbow
+    - Left hip
+    - Right hip
+"""
+
+IS_LEANING_POSITIVE_CASES: \
+        List[Tuple[Coord, Coord, Coord, Coord]] = [
+    (
+        (1005, 567),
+        (825, 564),
+        (967, 876),
+        (881, 840)
+    ),
+    (
+        (1041, 576),
+        (824, 567),
+        (1004, 875),
+        (900, 853)
+    ),
+    (
+        (968, 574),
+        (795, 574),
+        (977, 875),
+        (848, 863)
+    ),
+    (
+        (995, 572),
+        (805, 565),
+        (994, 886),
+        (846, 867)
+    ),
+    (
+        (1041, 575),
+        (821, 567),
+        (1010, 884),
+        (886, 868)
+    ),
+    (
+        (1051, 577),
+        (844, 571),
+        (1013, 885),
+        (897, 859)
+    )
+]
+
+
+IS_LEANING_NEGATIVE_CASES: \
+        List[Tuple[Coord, Coord, Coord, Coord]] = [
+    (
+        (990, 573),
+        (805, 567),
+        (994, 860),
+        (865, 854)
+    ),
+    (
+        (979, 576),
+        (806, 576),
+        (986, 882),
+        (845, 867)
+    ),
+    (
+        (977, 578),
+        (786, 574),
+        (976, 865),
+        (840, 859)
+    ),
+    (
+        (964, 573),
+        (783, 573),
+        (975, 863),
+        (837, 856)
+    ),
+    (
+        (968, 574),
+        (784, 573),
+        (981, 861),
+        (835, 854)
+    )
+]
+
+
 """Visualisation functions"""
 
 def visualise(
@@ -255,9 +340,38 @@ def visualise_are_arms_folded(
 
     visualise(
         title,
-        (right_shoulder, left_shoulder, left_elbow, right_elbow),
+        (right_shoulder, left_shoulder, left_elbow, right_elbow, right_shoulder),
         (left_shoulder, left_elbow, left_wrist),
         (right_shoulder, right_elbow, right_wrist)
+    )
+
+
+def visualise_is_leaning(
+        title: str,
+        left_shoulder: Optional[Coord],
+        right_shoulder: Optional[Coord],
+        left_hip: Optional[Coord],
+        right_hip: Optional[Coord]
+) -> None:
+    """Visualise unit test inputs for is_leaning() in matplotlib
+    
+    Parameters
+    ----------
+        title : str
+            Title of the graph
+        left_shoulder : `Coord`, optional
+            (`x`, `y`) coordinate of the left shoulder
+        right_shoulder : `Coord`, optional
+            (`x`, `y`) coordinate of the right shoulder
+        left_hip : `Coord`, optional
+            (`x`, `y`) coordinate of the left hip
+        right_hip : `Coord`, optional
+            (`x`, `y`) coordinate of the right hip
+    """
+
+    visualise(
+        title,
+        (right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder)
     )
 
 
@@ -290,9 +404,25 @@ def main() -> None:
         )
     """
 
+    """
     for i, test_case in enumerate(ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS):
         visualise_are_arms_folded(
             f'Full Fold Test Case {i + 1} for are_arms_folded()',
+            *test_case
+        )
+    """
+
+    """
+    for i, test_case in enumerate(IS_LEANING_POSITIVE_CASES):
+        visualise_is_leaning(
+            f'Positive Test Case {i + 1} for is_leaning()',
+            *test_case
+        )
+    """
+
+    for i, test_case in enumerate(IS_LEANING_NEGATIVE_CASES):
+        visualise_is_leaning(
+            f'Negative Test Case {i + 1} for is_leaning()',
             *test_case
         )
 
