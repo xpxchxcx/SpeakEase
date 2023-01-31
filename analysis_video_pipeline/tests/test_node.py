@@ -29,8 +29,10 @@ from typing import Optional, Tuple
 from yaml import safe_load
 
 from analysis_video_pipeline.tests.visualise import \
+    ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS, \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE, \
-    ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS
+    ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS, \
+    ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS
 
 
 Coord = Tuple[int, int]  # Type-hinting alias for coordinates
@@ -42,7 +44,7 @@ class TestNode(unittest.TestCase):
     _DECIMAL_PRECISION = 6
 
     def setUp(self):
-        with open('src/custom_nodes/configs/dabble/movement.yml', 'r') as config_file:
+        with open('analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml', 'r') as config_file:
             config = safe_load(config_file)
             self.node = Node(config=config)
     
@@ -494,6 +496,45 @@ class TestNode(unittest.TestCase):
                 )
             )
     
+    def test_are_arms_folded_outstretched_arms(self) -> None:
+        """Check that outstretched arms are not considered folded"""
+
+        for i, coordinates in enumerate(ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS):
+
+            # Initialise coordinates
+            left_shoulder, \
+                left_elbow, \
+                left_wrist, \
+                right_shoulder, \
+                right_elbow, \
+                right_wrist = coordinates
+            
+            # Obtain the result
+            res = self.node.are_arms_folded(
+                left_shoulder,
+                left_elbow,
+                left_wrist,
+                right_shoulder,
+                right_elbow,
+                right_wrist
+            )
+
+            # Perform assertion check
+            self.assertFalse(
+                res,
+                self.error_msg_are_arms_folded(
+                    left_shoulder,
+                    left_elbow,
+                    left_wrist,
+                    right_shoulder,
+                    right_elbow,
+                    right_wrist,
+                    res,
+                    False,
+                    f'Arms Outstretched (Case {i + 1})'
+                )
+            )
+    
     def test_are_arms_folded_half_cross(self) -> None:
         """Checks that half-crossed arms are considered folded"""
 
@@ -530,6 +571,45 @@ class TestNode(unittest.TestCase):
                     res,
                     True,
                     f'Arms Half-Crossed (Case {i + 1})'
+                )
+            )
+    
+    def test_are_arms_folded_full_cross(self) -> None:
+        """Checks that fully-crossed arms are considered folded"""
+
+        for i, coordinates in enumerate(ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS):
+
+            # Initialise coordinates
+            left_shoulder, \
+                left_elbow, \
+                left_wrist, \
+                right_shoulder, \
+                right_elbow, \
+                right_wrist = coordinates
+            
+            # Obtain the result
+            res = self.node.are_arms_folded(
+                left_shoulder,
+                left_elbow,
+                left_wrist,
+                right_shoulder,
+                right_elbow,
+                right_wrist
+            )
+
+            # Perform assertion check
+            self.assertTrue(
+                res,
+                self.error_msg_are_arms_folded(
+                    left_shoulder,
+                    left_elbow,
+                    left_wrist,
+                    right_shoulder,
+                    right_elbow,
+                    right_wrist,
+                    res,
+                    True,
+                    f'Arms Full-Crossed (Case {i + 1})'
                 )
             )
 
