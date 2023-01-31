@@ -404,6 +404,7 @@ class Node(AbstractNode):
         An arm is considered folded if:
             - The angle that the two lines make with each other is less than 120 degrees
             - The x-coordinate of the wrist lies in between the x-coordinates of the shoulders
+            - The y-coordinate of the wrist lies below the y-coordinate of either shoulder
             - The distance between the wrist and the elbow is at least half that between the shoulders
         """
 
@@ -483,10 +484,12 @@ class Node(AbstractNode):
         # Check if left arm is folded
         left_folded = left_angle < threshold and \
             right_shoulder_x <= left_wrist_x <= left_shoulder_x and \
+            left_wrist_y > min(left_shoulder_y, right_shoulder_y) and \
             left_dist * 2 >= shoulder_dist
         # Check if right arm is folded
         right_folded = right_angle < threshold and \
             right_shoulder_x <= right_wrist_x <= left_shoulder_x and \
+            right_wrist_y > min(left_shoulder_y, right_shoulder_y) and \
             right_dist * 2 >= shoulder_dist
         # Check if both arms are folded
         return left_folded and right_folded
