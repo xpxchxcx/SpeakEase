@@ -1,6 +1,6 @@
 nodes:
 - input.visual:
-    source: /Users/zaynesiew/Documents/SUTD/Competitions/National AI Student Challenge 2023/AISG_Challenge/raw_video_pipeline/raw_videos/video_230130_233205.mp4
+    source: 0
 - model.yolo
 - model.posenet
 - dabble.fps
