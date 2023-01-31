@@ -78,6 +78,27 @@ ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS: \
 ]
 
 
+ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS: \
+        List[Tuple[Coord, Coord, Coord, Coord, Coord, Coord]] = [
+    (
+        (1153, 239),
+        (1184, 437),
+        (950, 390),
+        (919, 235),
+        (864, 425),
+        (1100, 390)
+    ),
+    (
+        (1158, 239),
+        (1186, 434),
+        (950, 390),
+        (917, 236),
+        (862, 424),
+        (1100, 390)
+    )
+]
+
+
 ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE: \
         List[Tuple[Coord, Coord, Coord, Coord, Coord, Coord]] = [
     (
@@ -111,6 +132,43 @@ ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE: \
         (925, 262),
         (890, 362),
         (945, 254)
+    )
+]
+
+
+ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS: \
+        List[Tuple[Coord, Coord, Coord, Coord, Coord, Coord]] = [
+    (
+        (964, 573),
+        (979, 715),
+        (1010, 862),
+        (783, 573),
+        (786, 728),
+        (742, 889)
+    ),
+    (
+        (1076, 530),
+        (1124, 704),
+        (1110, 925),
+        (872, 532),
+        (807, 700),
+        (822, 844)
+    ),
+    (
+        (1069, 525),
+        (1116, 687),
+        (1110, 850),
+        (846, 537),
+        (822, 697),
+        (820, 843)
+    ),
+    (
+        (1054, 461),
+        (1139, 686),
+        (1193, 893),
+        (804, 470),
+        (790, 702),
+        (685, 940)
     )
 ]
 
@@ -211,14 +269,30 @@ def main() -> None:
     """
     for i, test_case in enumerate(ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS):
         visualise_are_arms_folded(
-            f'Positive Test Case {i + 1} for are_arms_folded()',
+            f'Half Fold Test Case {i + 1} for are_arms_folded()',
             *test_case
         )
     """
 
+    """
     for i, test_case in enumerate(ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE):
         visualise_are_arms_folded(
             f'Touching Face Test Case {i + 1} for are_arms_folded()',
+            *test_case
+        )
+    """
+    
+    """
+    for i, test_case in enumerate(ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS):
+        visualise_are_arms_folded(
+            f'Outstretched Arms Test Case {i + 1} for are_arms_folded()',
+            *test_case
+        )
+    """
+
+    for i, test_case in enumerate(ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS):
+        visualise_are_arms_folded(
+            f'Full Fold Test Case {i + 1} for are_arms_folded()',
             *test_case
         )
 
