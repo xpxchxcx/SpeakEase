@@ -768,7 +768,49 @@ class TestNode(unittest.TestCase):
                     f'Touching Face Negative Some Defined (Case {i + 1})'
                 )
             )
+    
+    def test_is_face_touched_negative_all_defined(self) -> None:
+        """Checks that poses that do not meet the requirement are considered not touching face"""
 
+        # Initialise fake coordinates for limb features and facial features
+        limb_coordinate = (250, 250)
+        face_coordinate = (0, 0)
+
+        # Initialise coordinates
+        left_elbow = right_elbow = left_wrist = right_wrist = limb_coordinate
+        nose = left_eye = right_eye = left_ear = right_ear = face_coordinate
+
+        # Obtain the result
+        res = self.node.is_face_touched(
+            left_elbow,
+            right_elbow,
+            left_wrist,
+            right_wrist,
+            nose,
+            left_eye,
+            right_eye,
+            left_ear,
+            right_ear
+        )
+
+        # Perform assertion check
+        self.assertFalse(
+            res,
+            self.error_msg_is_face_touched(
+                left_elbow,
+                right_elbow,
+                left_wrist,
+                right_wrist,
+                nose,
+                left_eye,
+                right_eye,
+                left_ear,
+                right_ear,
+                res,
+                False,
+                'Touching Face Negative All Defined'
+            )
+        )
 
     def test_is_face_touched_positive_some_defined(self) -> None:
         """Checks that poses are considered as touching face even with some undefined keypoints
