@@ -537,13 +537,14 @@ class Node(AbstractNode):
         """
 
         # Check if keypoints are defined
-        for dd1 in [left_elbow, right_elbow, left_wrist, right_wrist]:
-            if dd1 is not None:
-                for dd2 in [nose, left_eye, right_eye, left_ear, right_ear]:
-                    if dd2 is None:
-                        return False
-            else:
-                return False
+        is_none_arm = False
+        if None in [left_elbow, right_elbow, left_wrist, right_wrist]:
+            is_none_arm = True
+        is_none_face = False
+        if None in [nose, left_eye, right_eye, left_ear, right_ear]:
+            is_none_face = True
+        if is_none_arm == True or is_none_face == True:
+            return False
 
         # Obtain coordinates
         left_elbow_x, left_elbow_y = left_elbow
