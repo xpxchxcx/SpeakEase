@@ -404,6 +404,7 @@ class Node(AbstractNode):
         An arm is considered folded if:
             - The angle that the two lines make with each other is less than 120 degrees
             - The x-coordinate of the wrist lies in between the x-coordinates of the shoulders
+            - The y-coordinate of the wrist lies below the y-coordinate of either shoulder
             - The distance between the wrist and the elbow is at least half that between the shoulders
         """
 
@@ -483,10 +484,12 @@ class Node(AbstractNode):
         # Check if left arm is folded
         left_folded = left_angle < threshold and \
             right_shoulder_x <= left_wrist_x <= left_shoulder_x and \
+            left_wrist_y > min(left_shoulder_y, right_shoulder_y) and \
             left_dist * 2 >= shoulder_dist
         # Check if right arm is folded
         right_folded = right_angle < threshold and \
             right_shoulder_x <= right_wrist_x <= left_shoulder_x and \
+            right_wrist_y > min(left_shoulder_y, right_shoulder_y) and \
             right_dist * 2 >= shoulder_dist
         # Check if both arms are folded
         return left_folded and right_folded
@@ -636,7 +639,6 @@ class Node(AbstractNode):
         left_hip_x, left_hip_y = left_hip
         right_hip_x, right_hip_y = right_hip
 
-
         # Calculate the angle between left shoulder to left hip to left knee
         left_angle = self._angle_between_vectors_in_rad(
             left_shoulder_x - left_hip_x,
@@ -653,7 +655,7 @@ class Node(AbstractNode):
         )
 
         # Check if either side has crossed the threshold for leaning
-        sway_threshold = 15 * pi / 180  # 10 deg
+        sway_threshold = 15 * pi / 180  # 15 deg
         return left_angle < pi/2 - sway_threshold or \
             right_angle < pi/2 - sway_threshold or \
             left_angle > pi/2 + sway_threshold or \
@@ -698,25 +700,6 @@ class Node(AbstractNode):
         all_keypoints = inputs.get('keypoints', [])
         all_keypoint_scores = inputs.get('keypoint_scores', [])
 
-        self._total_frame_count += 1
-
-        current_stats = f' -------------------\n \
-                            Current Statistics\n \
-                            ------------------\n \
-                              Arm Folding - {self._arm_fold_count / self._total_frame_count * 100:0.3f}%\n \
-                                  Leaning - {self._leaning_count / self._total_frame_count * 100:0.3f}%\n \
-                            Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%\n \
-                            [ Frame Count : {self._total_frame_count} ]'
-
-        # UI config
-        line = '---------------'
-        title = 'Current Statistics'
-        line_two = '---------------'
-        arms = f'Arm Folding - {self._arm_fold_count / self._total_frame_count * 100:0.3f}%'
-        lean = f'Leaning - {self._leaning_count / self._total_frame_count * 100:0.3f}%'
-        face = f'Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%'
-        frame = f'[ Frame Count : {self._total_frame_count} ]'
-
         # Handle the detection of each person
         for bbox, bbox_score, keypoints, keypoint_scores in \
                 zip(bboxes, bbox_scores, all_keypoints, all_keypoint_scores):
@@ -737,6 +720,12 @@ class Node(AbstractNode):
                     font_scale=0.5,
                     font_thickness=1
                 )
+            
+            """
+            # Store the keypoints in a temporary text file for further processing
+            with open('test.txt', 'a') as tmp_file:
+                tmp_file.write(f'{keypoint_list}\n')
+            """
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(
@@ -778,12 +767,23 @@ class Node(AbstractNode):
                 is_leaning=is_leaning,
                 face_touched=face_touched
             )
-            if self._total_frame_count > 0 and self._total_frame_count % frames_before_summary == 0:
-                self._logger.info(current_stats)
+        
+        self._total_frame_count += 1
+
+        # UI config
+        line =   '----------------------'
+        title =  '  Current Statistics'
+        arms =  f'  Arm Folding - {self._arm_fold_count / self._total_frame_count * 100:0.3f}%'
+        lean =  f'      Leaning - {self._leaning_count / self._total_frame_count * 100:0.3f}%'
+        face =  f'Touching Face - {self._face_touch_count / self._total_frame_count * 100:0.3f}%'
+        frame = f'[ Frame Count : {self._total_frame_count} ]'
+
+        if self._total_frame_count % frames_before_summary == 0:
+            self._logger.info('\n'.join(('\n', line, title, line, arms, lean, face, frame, '\n')))
 
         self._display_text(50, 100, line, self._BLUE, font_scale=1)
         self._display_text(50, 120, title, self._BLUE, font_scale=1)
-        self._display_text(50, 140, line_two, self._BLUE, font_scale=1)
+        self._display_text(50, 140, line, self._BLUE, font_scale=1)
         self._display_text(50, 160, arms, self._BLUE, font_scale=1)
         self._display_text(50, 190, lean, self._BLUE, font_scale=1)
         self._display_text(50, 220, face, self._BLUE, font_scale=1)
