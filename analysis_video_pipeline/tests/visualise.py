@@ -15,6 +15,7 @@ Dependencies
         ```pip install matplotlib```
 """
 
+from itertools import product
 import matplotlib.pyplot as plt
 from typing import List, Optional, Tuple
 
@@ -258,6 +259,81 @@ IS_LEANING_NEGATIVE_CASES: \
 ]
 
 
+"""Unit test cases for is_touching_face()
+
+Each test case returns 9 coordinates (`x`, `y`) in the following order:
+    - Left elbow
+    - Right elbow
+    - Left wrist
+    - Right wrist
+    - Nose
+    - Left eye
+    - Right eye
+    - Left ear
+    - Right ear
+Each coordinate may or may not be defined (defaults to None).
+"""
+
+IS_TOUCHING_FACE_POSITIVE_CASES_ALL_DEFINED: \
+        List[Tuple[Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord]] = [
+    (
+        (962, 290),
+        (721, 310),
+        (880, 145),
+        (743, 198),
+        (818, 57),
+        (854, 43),
+        (803, 40),
+        (881, 55),
+        (762, 57)
+    ),
+    (
+        (947, 276),
+        (732, 290),
+        (892, 161),
+        (772, 172),
+        (815, 67),
+        (847, 50),
+        (794, 46),
+        (891, 67),
+        (752, 65)
+    ),
+    (
+        (932, 272),
+        (729, 281),
+        (889, 140),
+        (759, 163),
+        (800, 51),
+        (845, 46),
+        (799, 45),
+        (859, 51),
+        (763, 68)
+    ),
+    (
+        (934, 272),
+        (743, 288),
+        (890, 150),
+        (780, 170),
+        (799, 50),
+        (836, 42),
+        (792, 43),
+        (882, 72),
+        (755, 68)
+    ),
+    (
+        (935, 268),
+        (738, 288),
+        (891, 144),
+        (778, 170),
+        (809, 53),
+        (847, 45),
+        (801, 44),
+        (869, 49),
+        (761, 64)
+    )
+]
+
+
 """Visualisation functions"""
 
 def visualise(
@@ -375,6 +451,77 @@ def visualise_is_leaning(
     )
 
 
+def visualise_is_face_touched(
+        title: str,
+        left_elbow: Optional[Coord],
+        right_elbow: Optional[Coord],
+        left_wrist: Optional[Coord],
+        right_wrist: Optional[Coord],
+        nose: Optional[Coord],
+        left_eye: Optional[Coord],
+        right_eye: Optional[Coord],
+        left_ear: Optional[Coord],
+        right_ear: Optional[Coord]
+) -> None:
+    """Visualise unit test inputs for is_face_touched() in matplotlib
+    
+    Parameters
+    ----------
+        title : str
+            Title of the graph
+        left_elbow : `Coord`, optional
+            (`x`, `y`) coordinate of the left elbow
+        right_elbow : `Coord`, optional
+            (`x`, `y`) coordinate of the right elbow
+        left_wrist : `Coord`, optional
+            (`x`, `y`) coordinate of the left wrist
+        right_wrist : `Coord`, optional
+            (`x`, `y`) coordinate of the right wrist
+        nose : `Coord`, optional
+            (`x`, `y`) coordinate of the nose
+        left_eye : `Coord`, optional
+            (`x`, `y`) coordinate of the left eye
+        right_eye : `Coord`, optional
+            (`x`, `y`) coordinate of the right eye
+        left_ear : `Coord`, optional
+            (`x`, `y`) coordinate of the left ear
+        right_ear : `Coord`, optional
+            (`x`, `y`) coordinate of the right ear
+    """
+    
+    coord_sets = []
+
+    # Plot elbow to wrist joints
+    if left_elbow is not None and left_wrist is not None:
+        coord_sets.append((left_elbow, left_wrist))
+    if right_elbow is not None and right_wrist is not None:
+        coord_sets.append((right_elbow, right_wrist))
+    
+    # Plot facial features
+    if left_eye is not None:
+        if nose is not None:
+            coord_sets.append((nose, left_eye))
+        if left_ear is not None:
+            coord_sets.append((left_eye, left_ear))
+    if right_eye is not None:
+        if nose is not None:
+            coord_sets.append((nose, right_eye))
+        if right_ear is not None:
+            coord_sets.append((right_eye, right_ear))
+    
+    # Plot limbs to facial features linkage(s)
+    for c1, c2 in product(
+            (left_elbow, left_wrist, right_elbow, right_wrist),
+            (nose, left_eye, left_ear, right_eye, right_ear)
+    ):
+        if c1 is None or c2 is None:
+            continue
+        coord_sets.append((c1, c2))
+    
+    # Call the plotting function
+    visualise(title, *coord_sets)
+
+
 """Main function"""
 
 def main() -> None:
@@ -420,11 +567,21 @@ def main() -> None:
         )
     """
 
+    """
     for i, test_case in enumerate(IS_LEANING_NEGATIVE_CASES):
         visualise_is_leaning(
             f'Negative Test Case {i + 1} for is_leaning()',
             *test_case
         )
+    """
+
+    """
+    for i, test_case in enumerate(IS_TOUCHING_FACE_POSITIVE_CASES_ALL_DEFINED):
+        visualise_is_face_touched(
+            f'All Defined Positive Test Case {i + 1} for is_face_touched()',
+            *test_case
+        )
+    """
 
     pass
 

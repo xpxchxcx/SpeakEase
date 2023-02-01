@@ -34,7 +34,8 @@ from analysis_video_pipeline.tests.visualise import \
     ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS, \
     ARE_ARMS_FOLDED_POSITIVE_CASES_FULL_CROSS, \
     IS_LEANING_NEGATIVE_CASES, \
-    IS_LEANING_POSITIVE_CASES
+    IS_LEANING_POSITIVE_CASES, \
+    IS_TOUCHING_FACE_POSITIVE_CASES_ALL_DEFINED
 
 
 Coord = Tuple[int, int]  # Type-hinting alias for coordinates
@@ -617,8 +618,120 @@ class TestNode(unittest.TestCase):
 
     """Test cases for is_face_touched()"""
 
-    def test_is_face_touched(self):
-        pass  # TODO implement this unit test
+    def error_msg_is_face_touched(
+            self,
+            left_elbow: Optional[Coord],
+            right_elbow: Optional[Coord],
+            left_wrist: Optional[Coord],
+            right_wrist: Optional[Coord],
+            nose: Optional[Coord],
+            left_eye: Optional[Coord],
+            right_eye: Optional[Coord],
+            left_ear: Optional[Coord],
+            right_ear: Optional[Coord],
+            output: bool,
+            expected: bool,
+            test: str
+    ) -> str:
+        """Template for unit test error messages for is_face_touched()
+
+        Parameters
+        ----------
+            left_elbow : `Coord`, optional
+                The left elbow coordinate (`x`, `y`) passed into the function
+            right_elbow : `Coord`, optional
+                The right elbow coordinate (`x`, `y`) passed into the function
+            left_wrist : `Coord`, optional
+                The left wrist coordinate (`x`, `y`) passed into the function
+            right_wrist : `Coord`, optional
+                The right wrist coordinate (`x`, `y`) passed into the function
+            nose : `Coord`, optional
+                The nose coordinate (`x`, `y`) passed into the function
+            left_eye : `Coord`, optional
+                The left eye coordinate (`x`, `y`) passed into the function
+            right_eye : `Coord`, optional
+                The right eye coordinate (`x`, `y`) passed into the function
+            left_ear : `Coord`, optional
+                The left ear coordinate (`x`, `y`) passed into the function
+            right_ear : `Coord`, optional
+                The right ear coordinate (`x`, `y`) passed into the function
+            output : bool
+                The obtained output from the function
+            expected : bool
+                The expected output of the function
+            test : str
+                The type of unit test performed
+        
+        Returns
+        -------
+            str
+                The formatted error message
+        """
+
+        return f'\n\
+                =============================================\n\
+                  Function: is_face_touched()\n\
+                 Test Type: {test}\n\
+                Parameters: left_elbow = {left_elbow}\n\
+                            right_elbow = {right_elbow}\n\
+                            left_wrist = {left_wrist}\n\
+                            right_wrist = {right_wrist}\n\
+                            nose = {nose}\n\
+                            left_eye = {left_eye}\n\
+                            right_eye = {right_eye}\n\
+                            left_ear = {left_ear}\n\
+                            right_ear = {right_ear}\n\
+                    Output: {output}\n\
+                  Expected: {expected}\n\
+                ============================================='
+    
+    def test_is_face_touched_all_defined(self) -> None:
+        """Checks that poses where the face is touched is considered as touching face"""
+
+        for i, coordinates in enumerate(IS_TOUCHING_FACE_POSITIVE_CASES_ALL_DEFINED):
+
+            # Initialise coordinates
+            left_elbow, \
+                right_elbow, \
+                left_wrist, \
+                right_wrist, \
+                nose, \
+                left_eye, \
+                right_eye, \
+                left_ear, \
+                right_ear, = coordinates
+            
+            # Obtain the result
+            res = self.node.is_face_touched(
+                left_elbow,
+                right_elbow,
+                left_wrist,
+                right_wrist,
+                nose,
+                left_eye,
+                right_eye,
+                left_ear,
+                right_ear
+            )
+
+            # Perform assertion check
+            self.assertTrue(
+                res,
+                self.error_msg_is_face_touched(
+                    left_elbow,
+                    right_elbow,
+                    left_wrist,
+                    right_wrist,
+                    nose,
+                    left_eye,
+                    right_eye,
+                    left_ear,
+                    right_ear,
+                    res,
+                    True,
+                    f'Touching Face All Defined (Case {i + 1})'
+                )
+            )
 
     """Test cases for is_leaning()"""
 
