@@ -539,55 +539,32 @@ class Node(AbstractNode):
         TODO define the conditions for a hand to touch the face
         """
 
-        # Check if keypoints are defined
-        is_arm = False
-        if not None in [left_elbow, right_elbow, left_wrist, right_wrist]:
-            is_arm = True
-        is_face = False
-        if not None in [nose, left_eye, right_eye, left_ear, right_ear]:
-            is_face = True
-        if is_arm == True and is_face == True:
-            return True
-        else:
-            return False
+        # Define threshold for distance
+        threshold = 100
+        
+        # Obtain coordinates of defined limb
+        for limb_coordinate in [left_elbow, right_elbow, left_wrist, right_wrist]:
+            if limb_coordinate is None:
+                continue
+        
+            # Obtain coordinates of defined facial feature
+            for face_coordinate in [nose, left_eye, right_eye, left_ear, right_ear]:
+                if face_coordinate is None:
+                    continue
 
-        # Obtain coordinates
-        left_elbow_x, left_elbow_y = left_elbow
-        right_elbow_x, right_elbow_y = right_elbow
-        left_wrist_x, left_wrist_y = left_wrist
-        right_wrist_x, right_wrist_y = right_wrist
-        nose_x, nose_y = nose
-        left_eye_x, left_eye_y = left_eye
-        right_eye_x, right_eye_y = right_eye
-        left_ear_x, left_ear_y = left_ear
-        right_ear_x, right_ear_y = right_ear
+                # Calculate distance between limb joint and facial feature joint
+                limb_x, limb_y = limb_coordinate
+                face_x, face_y = face_coordinate
+                dist = sqrt(
+                    (limb_x - face_x) * (limb_x - face_x) + \
+                    (limb_y - face_y) * (limb_y - face_y)
+                )
 
-        # Calculate distances from the respective joints to the nose / eye / ear
-        for (x,y) in [nose, left_eye, right_eye, left_ear, right_ear]:
-            left_elbow_dist = sqrt(
-                (left_elbow_x - x) * (left_elbow_x - x) + \
-                (left_elbow_y - y) * (left_elbow_y - y)
-            )
-            right_elbow_dist = sqrt(
-                (right_elbow_x - x) * (right_elbow_x - x) + \
-                (right_elbow_y - y) * (right_elbow_y - y)
-            )
-            left_wrist_dist = sqrt(
-                (left_wrist_x - x) * (left_wrist_x - x) + \
-                (left_wrist_y - y) * (left_wrist_y - y)
-            )
-            right_wrist_dist = sqrt(
-                (right_wrist_x - x) * (right_wrist_x - x) + \
-                (right_wrist_y - y) * (right_wrist_y - y)
-            )
-
-        # Check if either hand is touching the face
-            threshold = 100
-            if left_elbow_dist < threshold or \
-                right_elbow_dist < threshold or \
-                left_wrist_dist < threshold or \
-                right_wrist_dist < threshold:
-                return True
+                # Check if limb is touching the face
+                if dist < threshold:
+                    return True
+        
+        # No pair of coordinates exist that satisfy the distance threshold
         return False
 
     def is_leaning(
