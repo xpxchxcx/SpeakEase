@@ -718,6 +718,12 @@ class Node(AbstractNode):
                     font_scale=0.5,
                     font_thickness=1
                 )
+            
+            """
+            # Store the keypoints in a temporary text file for further processing
+            with open('test.txt', 'a') as tmp_file:
+                tmp_file.write(f'{keypoint_list}\n')
+            """
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(
