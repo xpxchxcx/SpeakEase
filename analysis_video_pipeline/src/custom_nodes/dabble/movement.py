@@ -4,8 +4,9 @@ This module implements a custom Node class extended from PeekingDuck's AbstractN
 
 Usage
 -----
-    This module should be part of a package that follows the file structure
-    as specified by the `PeekingDuck documentation <https://peekingduck.readthedocs.io/en/stable/tutorials/03_custom_nodes.html>`_.
+This module should be part of a package that follows the file structure
+as specified by the `PeekingDuck documentation 
+<https://peekingduck.readthedocs.io/en/stable/tutorials/03_custom_nodes.html>`_.
 """
 
 # pyright: reportInvalidStringEscapeSequence=false
@@ -22,7 +23,7 @@ Coord = Tuple[int, int]  # Type-hinting alias for coordinates
 
 
 class Node(AbstractNode):
-    """Custom node to display PoseNet's skeletal key points
+    """Custom node to display PoseNet's skeletal keypoints and pose category statistics onto the video feed
 
     TODO write documentation for custom node class
     """
@@ -71,13 +72,13 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            config : dict, optional
-                Node custom configuration
+        config : dict, optional
+            Node custom configuration
 
         Other Parameters
         ----------------
-            **kwargs
-                Keyword arguments for instantiating the AbstractNode parent class
+        **kwargs
+            Keyword arguments for instantiating the AbstractNode parent class
         """
 
         super().__init__(config, node_path=__name__, **kwargs)  # type: ignore
@@ -114,16 +115,16 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            x : float
-                Relative horizontal position of the coordinate; 0 <= `x` <= 1
-            y : float
-                Relative vertical position of the coordinate; 0 <= `y` <= 1
+        x : float
+            Relative horizontal position of the coordinate; 0 <= `x` <= 1
+        y : float
+            Relative vertical position of the coordinate; 0 <= `y` <= 1
 
         Returns
         -------
-            `Coord`
-                Absolute coordinate (`x1`, `y1`) on the image; 0 <= `x1` <= `width` and 0 <= `y1` <= `height`.
-                Returns ``(ERROR_OUTPUT, ERROR_OUTPUT)`` if the image has not been defined.
+        `Coord`
+            Absolute coordinate (`x1`, `y1`) on the image; 0 <= `x1` <= `width` and 0 <= `y1` <= `height`.
+            Returns ``(ERROR_OUTPUT, ERROR_OUTPUT)`` if the image has not been defined.
        """
 
         # Check if image is defined
@@ -142,17 +143,17 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            keypoint : tuple of floats
-                Relative coordinate (`x`, `y`) of the detected PoseNet keypoint;
-                0 <= `x` <= 1 and 0 <= `y` <= 1
-            score : float
-                Confidence score of the detected PoseNet keypoint
+        keypoint : tuple of floats
+            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint;
+            0 <= `x` <= 1 and 0 <= `y` <= 1
+        score : float
+            Confidence score of the detected PoseNet keypoint
 
         Returns
         -------
-            `Coord`, optional
-                Absolute coordinates of the detected PoseNet keypoint
-                if its confidence score meets or exceeds the threshold confidence
+        `Coord`, optional
+            Absolute coordinates of the detected PoseNet keypoint
+            if its confidence score meets or exceeds the threshold confidence
         """
 
         return None if score < self._THRESHOLD else self._map_coord_onto_img(*keypoint)
@@ -172,25 +173,25 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            x : int
-                x-coordinate to display the text at
-            y : int
-                y-coordinate to display the text at
-            text : str
-                Text to display
-            font_colour : tuple of ints
-                Colour of the text to display, specified in BGR format
+        x : int
+            x-coordinate to display the text at
+        y : int
+            y-coordinate to display the text at
+        text : str
+            Text to display
+        font_colour : tuple of ints
+            Colour of the text to display, specified in BGR format
         
         Other Parameters
         ----------------
-            font_face : int, default=`_FONT_FACE`
-                Font type of the text to display
-                Limited to a subset of Hershey Fonts as supported by OpenCV
-                https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv
-            font_scale : float
-                Relative size of the text to display
-            font_thickness : int
-                Relative thickness of the text to display
+        font_face : int, default=`_FONT_FACE`
+            Font type of the text to display
+            Limited to a subset of Hershey Fonts as supported by OpenCV
+            https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv
+        font_scale : float
+            Relative size of the text to display
+        font_thickness : int
+            Relative thickness of the text to display
         """
 
         # Check if image is defined
@@ -221,18 +222,18 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            bbox : tuple of ints
-                Bounding box, represented by its top-left (`x1`, `y1`) and bottom-right (`x2`, `y2`) coordinates
-                The parameter `bbox` is specified in the format (`x1`, `y1`, `x2`, `y2`);
-                0 <= `x1` <= `x2` <= `width` and 0 <= `y1` <= `y2` <= `height`
-            score : float
-                Confidence score of the bounding box
-            arms_folded : bool, default=False
-                ``True`` if the person is detected to have folded their arms, ``False`` otherwise
-            is_leaning : bool, default=False
-                ``True``if the person is detected to be leaning to one side, ``False`` otherwise
-            face_touched : bool, default=False
-                ``True`` if the person is detected to be touching their face, ``False`` otherwise
+        bbox : tuple of ints
+            Bounding box, represented by its top-left (`x1`, `y1`) and bottom-right (`x2`, `y2`) coordinates
+            The parameter `bbox` is specified in the format (`x1`, `y1`, `x2`, `y2`);
+            0 <= `x1` <= `x2` <= `width` and 0 <= `y1` <= `y2` <= `height`
+        score : float
+            Confidence score of the bounding box
+        arms_folded : bool, default=False
+            ``True`` if the person is detected to have folded their arms, ``False`` otherwise
+        is_leaning : bool, default=False
+            ``True``if the person is detected to be leaning to one side, ``False`` otherwise
+        face_touched : bool, default=False
+            ``True`` if the person is detected to be touching their face, ``False`` otherwise
         
         Notes
         -----
@@ -242,7 +243,6 @@ class Node(AbstractNode):
             - Whether the arms are folded
             - Whether the person is leaning too much to one side
             - Whether the person is touching his/her face
-            - TODO include more information to display
         """
 
         # Initialise constants
@@ -279,26 +279,26 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            x1 : int
-                The magnitude of vector :math:`\overrightarrow{ V_{1} }` in the x-axis
-            y1 : int
-                The magnitude of vector :math:`\overrightarrow{ V_{1} }` in the y-axis
-            x2 : int
-                The magnitude of vector :math:`\overrightarrow{ V_{2} }` in the x-axis
-            y2 : int
-                The magnitude of vector :math:`\overrightarrow{ V_{2} }` in the y-axis
+        x1 : int
+            The magnitude of vector :math:`\overrightarrow{ V_{1} }` in the x-axis
+        y1 : int
+            The magnitude of vector :math:`\overrightarrow{ V_{1} }` in the y-axis
+        x2 : int
+            The magnitude of vector :math:`\overrightarrow{ V_{2} }` in the x-axis
+        y2 : int
+            The magnitude of vector :math:`\overrightarrow{ V_{2} }` in the y-axis
 
         Returns
         -------
-            float
-                The (smaller) angle :math:`\Theta` between
-                    :math:`\overrightarrow{ V_{1} }` and
-                    :math:`\overrightarrow{ V_{2} }`.
-                Returns ``ERROR_OUTPUT`` instead if:
-                    - Either one or both of
-                        :math:`\overrightarrow{ V_{1} } = \overrightarrow{0}` and
-                        :math:`\overrightarrow{ V_{2} } = \overrightarrow{0}`
-                    - :math:`\cos \Theta \notin [-1, 1]`
+        float
+            The (smaller) angle :math:`\Theta` between
+                :math:`\overrightarrow{ V_{1} }` and
+                :math:`\overrightarrow{ V_{2} }`.
+            Returns ``ERROR_OUTPUT`` instead if:
+                - Either one or both of
+                    :math:`\overrightarrow{ V_{1} } = \overrightarrow{0}` and
+                    :math:`\overrightarrow{ V_{2} } = \overrightarrow{0}`
+                - :math:`\cos \Theta \notin [-1, 1]`
         
         Notes
         -----
@@ -380,23 +380,23 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            left_shoulder : `Coord`, optional
-                (`x`, `y`) coordinate of the left shoulder
-            left_elbow : `Coord`, optional
-                (`x`, `y`) coordinate of the left elbow
-            left_wrist : `Coord`, optional
-                (`x`, `y`) coordinate of the left wrist
-            right_shoulder : `Coord`, optional
-                (`x`, `y`) coordinate of the right shoulder
-            right_elbow : `Coord`, optional
-                (`x`, `y`) coordinate of the right elbow
-            right_wrist : `Coord`, optional
-                (`x`, `y`) coordinate of the right wrist
+        left_shoulder : `Coord`, optional
+            (`x`, `y`) coordinate of the left shoulder
+        left_elbow : `Coord`, optional
+            (`x`, `y`) coordinate of the left elbow
+        left_wrist : `Coord`, optional
+            (`x`, `y`) coordinate of the left wrist
+        right_shoulder : `Coord`, optional
+            (`x`, `y`) coordinate of the right shoulder
+        right_elbow : `Coord`, optional
+            (`x`, `y`) coordinate of the right elbow
+        right_wrist : `Coord`, optional
+            (`x`, `y`) coordinate of the right wrist
 
         Returns
         -------
-            bool
-                ``True`` if both arms are folded, ``False`` otherwise
+        bool
+            ``True`` if both arms are folded, ``False`` otherwise
         
         Notes
         -----
@@ -510,33 +510,36 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            left_elbow : `Coord`, optional
-                (`x`, `y`) coordinate of the left elbow
-            right_elbow : `Coord`, optional
-                (`x`, `y`) coordinate of the right elbow
-            left_wrist : `Coord`, optional
-                (`x`, `y`) coordinate of the left wrist
-            right_wrist : `Coord`, optional
-                (`x`, `y`) coordinate of the right wrist
-            nose : `Coord`, optional
-                (`x`, `y`) coordinate of the nose
-            left_eye : `Coord`, optional
-                (`x`, `y`) coordinate of the left eye
-            right_eye : `Coord`, optional
-                (`x`, `y`) coordinate of the right eye
-            left_ear : `Coord`, optional
-                (`x`, `y`) coordinate of the left ear
-            right_ear : `Coord`, optional
-                (`x`, `y`) coordinate of the right ear
+        left_elbow : `Coord`, optional
+            (`x`, `y`) coordinate of the left elbow
+        right_elbow : `Coord`, optional
+            (`x`, `y`) coordinate of the right elbow
+        left_wrist : `Coord`, optional
+            (`x`, `y`) coordinate of the left wrist
+        right_wrist : `Coord`, optional
+            (`x`, `y`) coordinate of the right wrist
+        nose : `Coord`, optional
+            (`x`, `y`) coordinate of the nose
+        left_eye : `Coord`, optional
+            (`x`, `y`) coordinate of the left eye
+        right_eye : `Coord`, optional
+            (`x`, `y`) coordinate of the right eye
+        left_ear : `Coord`, optional
+            (`x`, `y`) coordinate of the left ear
+        right_ear : `Coord`, optional
+            (`x`, `y`) coordinate of the right ear
 
         Returns
         -------
-            bool
-                ``True`` if either hand is touching the face, ``False`` otherwise
+        bool
+            ``True`` if either hand is touching the face, ``False`` otherwise
         
         Notes
         -----
-        TODO define the conditions for a hand to touch the face
+        A pose is considered to be touching the face if the following conditions are satisfied:
+            - Any of the coordinates for the elbows or wrists are defined
+            - Any of the coordinates for the nose, eyes, or ears are defined
+            - The distance from the facial feature(s) to the arm feature(s) is sufficiently small
         """
 
         # Define threshold for distance
@@ -578,27 +581,29 @@ class Node(AbstractNode):
 
         Parameters
         ----------
-            left_shoulder : `Coord`, optional
-                Tuple containing the `x` and `y` coordinates of the left shoulder
-            right_shoulder : `Coord`, optional
-                Tuple containing the `x` and `y` coordinates of the right shoulder
-            left_hip : `Coord`, optional
-                Tuple containing the `x` and `y` coordinates of the left hip
-            right_hip : `Coord`, optional
-                Tuple containing the `x` and `y` coordinates of the right hip
-            left_knee : `Coord`, optional
-                Tuple containing the `x` and `y` coordinates of the left knee
-            right_knee : `Coord`, optional
-                Tuple containing the `x` and `y` coordinates of the right knee
+        left_shoulder : `Coord`, optional
+            Tuple containing the `x` and `y` coordinates of the left shoulder
+        right_shoulder : `Coord`, optional
+            Tuple containing the `x` and `y` coordinates of the right shoulder
+        left_hip : `Coord`, optional
+            Tuple containing the `x` and `y` coordinates of the left hip
+        right_hip : `Coord`, optional
+            Tuple containing the `x` and `y` coordinates of the right hip
+        left_knee : `Coord`, optional
+            Tuple containing the `x` and `y` coordinates of the left knee
+        right_knee : `Coord`, optional
+            Tuple containing the `x` and `y` coordinates of the right knee
         
         Returns
         -------
-            bool
-                ``True`` if the pose is leaning towards one side, ``False`` otherwise
+        bool
+            ``True`` if the pose is leaning towards one side, ``False`` otherwise
         
         Notes
         -----
-        TODO define the conditions for leaning
+        The line from the shoulder to the hip intersects the hip line
+        A pose is considered leaning if:
+            - The angle that the two lines make with each other falls outside a 15-degree tolerance
         """
 
         # Check if keypoints are defined
@@ -642,17 +647,25 @@ class Node(AbstractNode):
             self,
             inputs: Mapping[str, Any]
     ) -> Mapping[str, Any]:
-        """Displays calculated PoseNet keypoints and TODO write documentation for custom node class
+        """Displays calculated PoseNet keypoints and relevant statistics onto the video feed
 
         Parameters
         ----------
-            inputs : dict
-                Input dictionary with keys "img", "bboxes", "bbox_scores", "keypoints", "keypoint_scores"
+        inputs : dict
+            Input dictionary with keys "img", "bboxes", "bbox_scores", "keypoints", "keypoint_scores"
 
         Returns
         -------
-            dict
-                Empty dictionary
+        dict
+            Empty dictionary
+        
+        Notes
+        -----
+        This function keeps track of the following statistics:
+            - Total number of processed frames
+            - Total number of frames where the pose had folded arms
+            - Total number of frames where the pose was leaning
+            - Total number of frames where the pose was touching face
         """
 
         # Initialise constants

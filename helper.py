@@ -5,8 +5,8 @@ It checks whether the poses satisfy any of the pose checkers defined in the cust
 
 Usage
 -----
-    Navigate to this file in the terminal and run
-        ```python -m helper.py```
+Navigate to this file in the terminal and run
+    ```python -m helper.py```
 """
 
 
