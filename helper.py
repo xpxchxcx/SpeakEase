@@ -1,4 +1,4 @@
-"""Docstring for helper.py module
+"""Docstring for the helper.py script
 
 This script processes poses saved to a temporary text file ``test.txt``.
 It checks whether the poses satisfy any of the pose checkers defined in the custom ``Node`` class.
