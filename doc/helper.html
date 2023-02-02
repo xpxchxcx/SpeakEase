@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>SpeakEase.helper API documentation</title>
+<meta name="description" content="Docstring for the helper.py script …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>SpeakEase.helper</code></h1>
+</header>
+<section id="section-intro">
+<p>Docstring for the helper.py script</p>
+<p>This script processes poses saved to a temporary text file <code>test.txt</code>.
+It checks whether the poses satisfy any of the pose checkers defined in the custom <code>Node</code> class.</p>
+<h2 id="usage">Usage</h2>
+<p>Navigate to this file in the terminal and run
+<code>python -m helper.py</code></p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Docstring for the helper.py script
+
+This script processes poses saved to a temporary text file ``test.txt``.
+It checks whether the poses satisfy any of the pose checkers defined in the custom ``Node`` class.
+
+Usage
+-----
+Navigate to this file in the terminal and run
+    ```python -m helper.py```
+&#34;&#34;&#34;
+
+
+from itertools import product
+import re
+from typing import List, Mapping, Optional, Tuple
+
+from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
+import matplotlib.pyplot as plt
+from yaml import safe_load
+
+
+# Initialise constants
+filepath = &#39;test.txt&#39;
+Coord = Tuple[int, int]
+
+
+def get_node() -&gt; Node:
+    with open(&#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;, &#39;r&#39;) as config_file:
+        config = safe_load(config_file)
+        return Node(config=config)
+
+
+def get_arms_folded_poses(
+        node: Node,
+        keypoints: List[Optional[Coord]],
+        to_draw: bool
+) -&gt; Optional[Tuple[Coord, ...]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise joints
+    left_shoulder = keypoints[node._KP_LEFT_SHOULDER]
+    left_elbow = keypoints[node._KP_LEFT_ELBOW]
+    left_wrist = keypoints[node._KP_LEFT_WRIST]
+    right_shoulder = keypoints[node._KP_RIGHT_SHOULDER]
+    right_elbow = keypoints[node._KP_RIGHT_ELBOW]
+    right_wrist = keypoints[node._KP_RIGHT_WRIST]
+
+    # Check if arms are folded
+    res = node.are_arms_folded(
+        left_shoulder,
+        left_elbow,
+        left_wrist,
+        right_shoulder,
+        right_elbow,
+        right_wrist
+    )
+    if not res:
+        return
+    elif to_draw:
+        plot_arm_folded_pose(
+            left_shoulder,  # type: ignore
+            left_elbow,  # type: ignore
+            left_wrist,  # type: ignore
+            right_shoulder,  # type: ignore
+            right_elbow,  # type: ignore
+            right_wrist,  # type: ignore
+            res
+        )
+    return left_shoulder, \
+        left_elbow, \
+        left_wrist, \
+        right_shoulder, \
+        right_elbow, \
+        right_wrist    # type: ignore
+
+
+def get_leaning_poses(
+        node: Node,
+        keypoints: List[Optional[Coord]],
+        to_draw: bool
+) -&gt; Optional[Tuple[Coord, ...]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise joints
+    left_shoulder = keypoints[node._KP_LEFT_SHOULDER]
+    right_shoulder = keypoints[node._KP_RIGHT_SHOULDER]
+    left_hip = keypoints[node._KP_LEFT_HIP]
+    right_hip = keypoints[node._KP_RIGHT_HIP]
+    
+    # Check if leaning
+    res = node.is_leaning(
+        left_shoulder,
+        right_shoulder,
+        left_hip,
+        right_hip
+    )
+    if not res:
+        return
+    elif to_draw:
+        plot_leaning_pose(
+            left_shoulder,  # type: ignore
+            right_shoulder,  # type: ignore
+            left_hip,  # type: ignore
+            right_hip,  # type: ignore
+            res
+        )
+    return left_shoulder, \
+        right_shoulder, \
+        left_hip, \
+        right_hip  # type: ignore
+
+
+def get_touching_face_poses(
+        node: Node,
+        keypoints: List[Optional[Coord]],
+        to_draw: bool
+) -&gt; Optional[Tuple[Optional[Coord], ...]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise joints
+    left_elbow = keypoints[node._KP_LEFT_ELBOW]
+    right_elbow = keypoints[node._KP_RIGHT_ELBOW]
+    left_wrist = keypoints[node._KP_LEFT_WRIST]
+    right_wrist = keypoints[node._KP_RIGHT_WRIST]
+    nose = keypoints[node._KP_NOSE]
+    left_eye = keypoints[node._KP_LEFT_EYE]
+    right_eye = keypoints[node._KP_RIGHT_EYE]
+    left_ear = keypoints[node._KP_LEFT_EAR]
+    right_ear = keypoints[node._KP_RIGHT_EAR]
+    
+    # Check if leaning
+    res = node.is_face_touched(
+        left_elbow,
+        right_elbow,
+        left_wrist,
+        right_wrist,
+        nose,
+        left_eye,
+        right_eye,
+        left_ear,
+        right_ear
+    )
+    if not res:
+        return
+    elif to_draw:
+        plot_touching_face_pose(
+            left_elbow,
+            right_elbow,
+            left_wrist,
+            right_wrist,
+            nose,
+            left_eye,
+            right_eye,
+            left_ear,
+            right_ear,
+            res
+        )
+    return left_elbow, \
+        right_elbow, \
+        left_wrist, \
+        right_wrist, \
+        nose, \
+        left_eye, \
+        right_eye, \
+        left_ear, \
+        right_ear
+
+
+def get_correct_poses() -&gt; Tuple[Mapping[int, int], Mapping[int, int], Mapping[int, int]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise constants
+    node = get_node()
+    draw_limit = 5
+
+    with open(filepath, &#39;r&#39;) as f:
+        arm_folded_poses = {}
+        leaning_poses = {}
+        touching_face_poses = {}
+
+        for i, lst in enumerate(f.readlines()):
+            lst = [
+                None if x == &#39;None&#39; else tuple(int(y) for y in x[1:-1].split(&#39;, &#39;)) \
+                for x in re.split(r&#39;(?&lt;=[^0-9]), (?&lt;=[^0-9])&#39;, lst[1:-2])
+            ]
+            r1 = get_arms_folded_poses(node, lst, len(arm_folded_poses) &lt; draw_limit)
+            r2 = get_leaning_poses(node, lst, len(leaning_poses) &lt; draw_limit)
+            r3 = get_touching_face_poses(node, lst, len(touching_face_poses) &lt; draw_limit)
+            if r1 is not None:
+                arm_folded_poses[i + 1] = r1
+            if r2 is not None:
+                leaning_poses[i + 1] = r2
+            if r3 is not None:
+                touching_face_poses[i + 1] = r3
+
+        return arm_folded_poses, leaning_poses, touching_face_poses
+
+
+def plot_arm_folded_pose(
+        left_shoulder: Coord,
+        left_elbow: Coord,
+        left_wrist: Coord,
+        right_shoulder: Coord,
+        right_elbow: Coord,
+        right_wrist: Coord,
+        arms_folded: bool
+) -&gt; None:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+    plt.plot(*zip(right_shoulder, left_shoulder, left_elbow, right_elbow, right_shoulder))
+    plt.plot(*zip(left_shoulder, left_elbow, left_wrist), marker=&#39;o&#39;)
+    plt.plot(*zip(right_shoulder, right_elbow, right_wrist), marker=&#39;o&#39;)
+    plt.title(&#39;Arms Are &#39; + (&#39;&#39; if arms_folded else &#39;Not &#39;) + &#39;Folded&#39;)
+    plt.show()
+
+
+def plot_leaning_pose(
+        left_shoulder: Coord,
+        right_shoulder: Coord,
+        left_hip: Coord,
+        right_hip: Coord,
+        leaning: bool
+) -&gt; None:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+    
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+    plt.plot(*zip(right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder), marker=&#39;o&#39;)
+    plt.title(&#39;Pose Is &#39; + (&#39;&#39; if leaning else &#39;Not &#39;) + &#39;Leaning&#39;)
+    plt.show()
+
+
+def plot_touching_face_pose(
+        left_elbow: Optional[Coord],
+        right_elbow: Optional[Coord],
+        left_wrist: Optional[Coord],
+        right_wrist: Optional[Coord],
+        nose: Optional[Coord],
+        left_eye: Optional[Coord],
+        right_eye: Optional[Coord],
+        left_ear: Optional[Coord],
+        right_ear: Optional[Coord],
+        touching_face: bool
+) -&gt; None:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+
+    if left_elbow is not None and left_wrist is not None:
+        plt.plot(*zip(left_elbow, left_wrist), marker=&#39;o&#39;)
+    if right_elbow is not None and right_wrist is not None:
+        plt.plot(*zip(right_elbow, right_wrist), marker=&#39;o&#39;)
+    if left_eye is not None:
+        if nose is not None:
+            plt.plot(*zip(nose, left_eye), marker=&#39;o&#39;)
+        if left_ear is not None:
+            plt.plot(*zip(left_eye, left_ear), marker=&#39;o&#39;)
+    if right_eye is not None:
+        if nose is not None:
+            plt.plot(*zip(nose, right_eye), marker=&#39;o&#39;)
+        if right_ear is not None:
+            plt.plot(*zip(right_eye, right_ear), marker=&#39;o&#39;)
+    
+    for c1, c2 in product(
+            (left_elbow, left_wrist, right_elbow, right_wrist),
+            (nose, left_eye, left_ear, right_eye, right_ear)
+    ):
+        if c1 is None or c2 is None:
+            continue
+        plt.plot(*zip(c1, c2), marker=&#39;o&#39;)
+
+    plt.title(&#39;Face &#39; + (&#39;&#39; if touching_face else &#39;Not &#39;) + &#39;Touched&#39;)
+    plt.show()
+
+
+if __name__ == &#39;__main__&#39;:
+    arms_folded, leaning, touching_face = get_correct_poses()
+    print(f&#39;Arms Folded Poses: {arms_folded}\n&#39;)
+    print(f&#39;Leaning Poses: {leaning}\n&#39;)
+    print(f&#39;Touching Face: {touching_face}&#39;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="SpeakEase.helper.get_arms_folded_poses"><code class="name flex">
+<span>def <span class="ident">get_arms_folded_poses</span></span>(<span>node: analysis_video_pipeline.src.custom_nodes.dabble.movement.Node, keypoints: List[Optional[Tuple[int, int]]], to_draw: bool) ‑> Optional[Tuple[Tuple[int, int], ...]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_arms_folded_poses(
+        node: Node,
+        keypoints: List[Optional[Coord]],
+        to_draw: bool
+) -&gt; Optional[Tuple[Coord, ...]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise joints
+    left_shoulder = keypoints[node._KP_LEFT_SHOULDER]
+    left_elbow = keypoints[node._KP_LEFT_ELBOW]
+    left_wrist = keypoints[node._KP_LEFT_WRIST]
+    right_shoulder = keypoints[node._KP_RIGHT_SHOULDER]
+    right_elbow = keypoints[node._KP_RIGHT_ELBOW]
+    right_wrist = keypoints[node._KP_RIGHT_WRIST]
+
+    # Check if arms are folded
+    res = node.are_arms_folded(
+        left_shoulder,
+        left_elbow,
+        left_wrist,
+        right_shoulder,
+        right_elbow,
+        right_wrist
+    )
+    if not res:
+        return
+    elif to_draw:
+        plot_arm_folded_pose(
+            left_shoulder,  # type: ignore
+            left_elbow,  # type: ignore
+            left_wrist,  # type: ignore
+            right_shoulder,  # type: ignore
+            right_elbow,  # type: ignore
+            right_wrist,  # type: ignore
+            res
+        )
+    return left_shoulder, \
+        left_elbow, \
+        left_wrist, \
+        right_shoulder, \
+        right_elbow, \
+        right_wrist    # type: ignore</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.get_correct_poses"><code class="name flex">
+<span>def <span class="ident">get_correct_poses</span></span>(<span>) ‑> Tuple[Mapping[int, int], Mapping[int, int], Mapping[int, int]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_correct_poses() -&gt; Tuple[Mapping[int, int], Mapping[int, int], Mapping[int, int]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise constants
+    node = get_node()
+    draw_limit = 5
+
+    with open(filepath, &#39;r&#39;) as f:
+        arm_folded_poses = {}
+        leaning_poses = {}
+        touching_face_poses = {}
+
+        for i, lst in enumerate(f.readlines()):
+            lst = [
+                None if x == &#39;None&#39; else tuple(int(y) for y in x[1:-1].split(&#39;, &#39;)) \
+                for x in re.split(r&#39;(?&lt;=[^0-9]), (?&lt;=[^0-9])&#39;, lst[1:-2])
+            ]
+            r1 = get_arms_folded_poses(node, lst, len(arm_folded_poses) &lt; draw_limit)
+            r2 = get_leaning_poses(node, lst, len(leaning_poses) &lt; draw_limit)
+            r3 = get_touching_face_poses(node, lst, len(touching_face_poses) &lt; draw_limit)
+            if r1 is not None:
+                arm_folded_poses[i + 1] = r1
+            if r2 is not None:
+                leaning_poses[i + 1] = r2
+            if r3 is not None:
+                touching_face_poses[i + 1] = r3
+
+        return arm_folded_poses, leaning_poses, touching_face_poses</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.get_leaning_poses"><code class="name flex">
+<span>def <span class="ident">get_leaning_poses</span></span>(<span>node: analysis_video_pipeline.src.custom_nodes.dabble.movement.Node, keypoints: List[Optional[Tuple[int, int]]], to_draw: bool) ‑> Optional[Tuple[Tuple[int, int], ...]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_leaning_poses(
+        node: Node,
+        keypoints: List[Optional[Coord]],
+        to_draw: bool
+) -&gt; Optional[Tuple[Coord, ...]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise joints
+    left_shoulder = keypoints[node._KP_LEFT_SHOULDER]
+    right_shoulder = keypoints[node._KP_RIGHT_SHOULDER]
+    left_hip = keypoints[node._KP_LEFT_HIP]
+    right_hip = keypoints[node._KP_RIGHT_HIP]
+    
+    # Check if leaning
+    res = node.is_leaning(
+        left_shoulder,
+        right_shoulder,
+        left_hip,
+        right_hip
+    )
+    if not res:
+        return
+    elif to_draw:
+        plot_leaning_pose(
+            left_shoulder,  # type: ignore
+            right_shoulder,  # type: ignore
+            left_hip,  # type: ignore
+            right_hip,  # type: ignore
+            res
+        )
+    return left_shoulder, \
+        right_shoulder, \
+        left_hip, \
+        right_hip  # type: ignore</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.get_node"><code class="name flex">
+<span>def <span class="ident">get_node</span></span>(<span>) ‑> analysis_video_pipeline.src.custom_nodes.dabble.movement.Node</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_node() -&gt; Node:
+    with open(&#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;, &#39;r&#39;) as config_file:
+        config = safe_load(config_file)
+        return Node(config=config)</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.get_touching_face_poses"><code class="name flex">
+<span>def <span class="ident">get_touching_face_poses</span></span>(<span>node: analysis_video_pipeline.src.custom_nodes.dabble.movement.Node, keypoints: List[Optional[Tuple[int, int]]], to_draw: bool) ‑> Optional[Tuple[Optional[Tuple[int, int]], ...]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_touching_face_poses(
+        node: Node,
+        keypoints: List[Optional[Coord]],
+        to_draw: bool
+) -&gt; Optional[Tuple[Optional[Coord], ...]]:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    # Initialise joints
+    left_elbow = keypoints[node._KP_LEFT_ELBOW]
+    right_elbow = keypoints[node._KP_RIGHT_ELBOW]
+    left_wrist = keypoints[node._KP_LEFT_WRIST]
+    right_wrist = keypoints[node._KP_RIGHT_WRIST]
+    nose = keypoints[node._KP_NOSE]
+    left_eye = keypoints[node._KP_LEFT_EYE]
+    right_eye = keypoints[node._KP_RIGHT_EYE]
+    left_ear = keypoints[node._KP_LEFT_EAR]
+    right_ear = keypoints[node._KP_RIGHT_EAR]
+    
+    # Check if leaning
+    res = node.is_face_touched(
+        left_elbow,
+        right_elbow,
+        left_wrist,
+        right_wrist,
+        nose,
+        left_eye,
+        right_eye,
+        left_ear,
+        right_ear
+    )
+    if not res:
+        return
+    elif to_draw:
+        plot_touching_face_pose(
+            left_elbow,
+            right_elbow,
+            left_wrist,
+            right_wrist,
+            nose,
+            left_eye,
+            right_eye,
+            left_ear,
+            right_ear,
+            res
+        )
+    return left_elbow, \
+        right_elbow, \
+        left_wrist, \
+        right_wrist, \
+        nose, \
+        left_eye, \
+        right_eye, \
+        left_ear, \
+        right_ear</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.plot_arm_folded_pose"><code class="name flex">
+<span>def <span class="ident">plot_arm_folded_pose</span></span>(<span>left_shoulder: Tuple[int, int], left_elbow: Tuple[int, int], left_wrist: Tuple[int, int], right_shoulder: Tuple[int, int], right_elbow: Tuple[int, int], right_wrist: Tuple[int, int], arms_folded: bool) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_arm_folded_pose(
+        left_shoulder: Coord,
+        left_elbow: Coord,
+        left_wrist: Coord,
+        right_shoulder: Coord,
+        right_elbow: Coord,
+        right_wrist: Coord,
+        arms_folded: bool
+) -&gt; None:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+    plt.plot(*zip(right_shoulder, left_shoulder, left_elbow, right_elbow, right_shoulder))
+    plt.plot(*zip(left_shoulder, left_elbow, left_wrist), marker=&#39;o&#39;)
+    plt.plot(*zip(right_shoulder, right_elbow, right_wrist), marker=&#39;o&#39;)
+    plt.title(&#39;Arms Are &#39; + (&#39;&#39; if arms_folded else &#39;Not &#39;) + &#39;Folded&#39;)
+    plt.show()</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.plot_leaning_pose"><code class="name flex">
+<span>def <span class="ident">plot_leaning_pose</span></span>(<span>left_shoulder: Tuple[int, int], right_shoulder: Tuple[int, int], left_hip: Tuple[int, int], right_hip: Tuple[int, int], leaning: bool) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_leaning_pose(
+        left_shoulder: Coord,
+        right_shoulder: Coord,
+        left_hip: Coord,
+        right_hip: Coord,
+        leaning: bool
+) -&gt; None:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+    
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+    plt.plot(*zip(right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder), marker=&#39;o&#39;)
+    plt.title(&#39;Pose Is &#39; + (&#39;&#39; if leaning else &#39;Not &#39;) + &#39;Leaning&#39;)
+    plt.show()</code></pre>
+</details>
+</dd>
+<dt id="SpeakEase.helper.plot_touching_face_pose"><code class="name flex">
+<span>def <span class="ident">plot_touching_face_pose</span></span>(<span>left_elbow: Optional[Tuple[int, int]], right_elbow: Optional[Tuple[int, int]], left_wrist: Optional[Tuple[int, int]], right_wrist: Optional[Tuple[int, int]], nose: Optional[Tuple[int, int]], left_eye: Optional[Tuple[int, int]], right_eye: Optional[Tuple[int, int]], left_ear: Optional[Tuple[int, int]], right_ear: Optional[Tuple[int, int]], touching_face: bool) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO documentation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_touching_face_pose(
+        left_elbow: Optional[Coord],
+        right_elbow: Optional[Coord],
+        left_wrist: Optional[Coord],
+        right_wrist: Optional[Coord],
+        nose: Optional[Coord],
+        left_eye: Optional[Coord],
+        right_eye: Optional[Coord],
+        left_ear: Optional[Coord],
+        right_ear: Optional[Coord],
+        touching_face: bool
+) -&gt; None:
+    &#34;&#34;&#34;TODO documentation&#34;&#34;&#34;
+
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+
+    if left_elbow is not None and left_wrist is not None:
+        plt.plot(*zip(left_elbow, left_wrist), marker=&#39;o&#39;)
+    if right_elbow is not None and right_wrist is not None:
+        plt.plot(*zip(right_elbow, right_wrist), marker=&#39;o&#39;)
+    if left_eye is not None:
+        if nose is not None:
+            plt.plot(*zip(nose, left_eye), marker=&#39;o&#39;)
+        if left_ear is not None:
+            plt.plot(*zip(left_eye, left_ear), marker=&#39;o&#39;)
+    if right_eye is not None:
+        if nose is not None:
+            plt.plot(*zip(nose, right_eye), marker=&#39;o&#39;)
+        if right_ear is not None:
+            plt.plot(*zip(right_eye, right_ear), marker=&#39;o&#39;)
+    
+    for c1, c2 in product(
+            (left_elbow, left_wrist, right_elbow, right_wrist),
+            (nose, left_eye, left_ear, right_eye, right_ear)
+    ):
+        if c1 is None or c2 is None:
+            continue
+        plt.plot(*zip(c1, c2), marker=&#39;o&#39;)
+
+    plt.title(&#39;Face &#39; + (&#39;&#39; if touching_face else &#39;Not &#39;) + &#39;Touched&#39;)
+    plt.show()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#usage">Usage</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="SpeakEase" href="index.html">SpeakEase</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="SpeakEase.helper.get_arms_folded_poses" href="#SpeakEase.helper.get_arms_folded_poses">get_arms_folded_poses</a></code></li>
+<li><code><a title="SpeakEase.helper.get_correct_poses" href="#SpeakEase.helper.get_correct_poses">get_correct_poses</a></code></li>
+<li><code><a title="SpeakEase.helper.get_leaning_poses" href="#SpeakEase.helper.get_leaning_poses">get_leaning_poses</a></code></li>
+<li><code><a title="SpeakEase.helper.get_node" href="#SpeakEase.helper.get_node">get_node</a></code></li>
+<li><code><a title="SpeakEase.helper.get_touching_face_poses" href="#SpeakEase.helper.get_touching_face_poses">get_touching_face_poses</a></code></li>
+<li><code><a title="SpeakEase.helper.plot_arm_folded_pose" href="#SpeakEase.helper.plot_arm_folded_pose">plot_arm_folded_pose</a></code></li>
+<li><code><a title="SpeakEase.helper.plot_leaning_pose" href="#SpeakEase.helper.plot_leaning_pose">plot_leaning_pose</a></code></li>
+<li><code><a title="SpeakEase.helper.plot_touching_face_pose" href="#SpeakEase.helper.plot_touching_face_pose">plot_touching_face_pose</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

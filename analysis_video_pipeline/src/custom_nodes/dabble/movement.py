@@ -4,12 +4,9 @@ This module implements a custom Node class extended from PeekingDuck's AbstractN
 
 Usage
 -----
-This module should be part of a package that follows the file structure
-as specified by the `PeekingDuck documentation 
-<https://peekingduck.readthedocs.io/en/stable/tutorials/03_custom_nodes.html>`_.
+This module should be part of a package that follows the file structure as specified by the
+[PeekingDuck documentation](https://peekingduck.readthedocs.io/en/stable/tutorials/03_custom_nodes.html).
 """
-
-# pyright: reportInvalidStringEscapeSequence=false
 
 import logging
 from math import acos, pi, sqrt
@@ -23,10 +20,9 @@ Coord = Tuple[int, int]  # Type-hinting alias for coordinates
 
 
 class Node(AbstractNode):
-    """Custom node to display PoseNet's skeletal keypoints and pose category statistics onto the video feed
+    """Custom node to display PoseNet's skeletal keypoints and pose category statistics onto the video feed"""
 
-    TODO write documentation for custom node class
-    """
+    # TODO write documentation for custom node class
 
     # Define colours for display purposes
     # Note: OpenCV loads file in BGR format
@@ -124,6 +120,7 @@ class Node(AbstractNode):
         -------
         `Coord`
             Absolute coordinate (`x1`, `y1`) on the image; 0 <= `x1` <= `width` and 0 <= `y1` <= `height`.
+
             Returns ``(ERROR_OUTPUT, ERROR_OUTPUT)`` if the image has not been defined.
        """
 
@@ -144,16 +141,16 @@ class Node(AbstractNode):
         Parameters
         ----------
         keypoint : tuple of floats
-            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint;
-            0 <= `x` <= 1 and 0 <= `y` <= 1
+            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint; 
+                0 <= `x` <= 1 and 0 <= `y` <= 1
         score : float
             Confidence score of the detected PoseNet keypoint
 
         Returns
         -------
         `Coord`, optional
-            Absolute coordinates of the detected PoseNet keypoint
-            if its confidence score meets or exceeds the threshold confidence
+            Absolute coordinates of the detected PoseNet keypoint 
+                if its confidence score meets or exceeds the threshold confidence
         """
 
         return None if score < self._THRESHOLD else self._map_coord_onto_img(*keypoint)
@@ -185,9 +182,10 @@ class Node(AbstractNode):
         Other Parameters
         ----------------
         font_face : int, default=`_FONT_FACE`
-            Font type of the text to display
-            Limited to a subset of Hershey Fonts as supported by OpenCV
-            https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv
+            Font type of the text to display.
+
+            Limited to a subset of Hershey Fonts as 
+                [supported by OpenCV](https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv).
         font_scale : float
             Relative size of the text to display
         font_thickness : int
@@ -223,9 +221,10 @@ class Node(AbstractNode):
         Parameters
         ----------
         bbox : tuple of ints
-            Bounding box, represented by its top-left (`x1`, `y1`) and bottom-right (`x2`, `y2`) coordinates
+            Bounding box, represented by its top-left (`x1`, `y1`) and bottom-right (`x2`, `y2`) coordinates.
+
             The parameter `bbox` is specified in the format (`x1`, `y1`, `x2`, `y2`);
-            0 <= `x1` <= `x2` <= `width` and 0 <= `y1` <= `y2` <= `height`
+                0 <= `x1` <= `x2` <= `width` and 0 <= `y1` <= `y2` <= `height`
         score : float
             Confidence score of the bounding box
         arms_folded : bool, default=False
@@ -238,11 +237,13 @@ class Node(AbstractNode):
         Notes
         -----
         All information will be displayed in the bottom-left corner (`x1`, `y2`) of the bounding box.
+
         This information includes the following:
-            - Confidence score of the bounding box
-            - Whether the arms are folded
-            - Whether the person is leaning too much to one side
-            - Whether the person is touching his/her face
+
+        - Confidence score of the bounding box
+        - Whether the arms are folded
+        - Whether the person is leaning too much to one side
+        - Whether the person is touching his/her face
         """
 
         # Initialise constants
@@ -275,49 +276,52 @@ class Node(AbstractNode):
     ) -> float:
         """Obtains the (smaller) angle between two non-zero vectors in radians
 
-        The angle :math:`\Theta` is computed via the cosine rule (see the Notes section).
+        The angle \\( \\Theta \\) is computed via the cosine rule (see the Notes section).
 
         Parameters
         ----------
         x1 : int
-            The magnitude of vector :math:`\overrightarrow{ V_{1} }` in the x-axis
+            The magnitude of vector \\( \\overrightarrow{ V_{1} } \\) in the x-axis
         y1 : int
-            The magnitude of vector :math:`\overrightarrow{ V_{1} }` in the y-axis
+            The magnitude of vector \\( \\overrightarrow{ V_{1} } \\) in the y-axis
         x2 : int
-            The magnitude of vector :math:`\overrightarrow{ V_{2} }` in the x-axis
+            The magnitude of vector \\( \\overrightarrow{ V_{2} } \\) in the x-axis
         y2 : int
-            The magnitude of vector :math:`\overrightarrow{ V_{2} }` in the y-axis
+            The magnitude of vector \\( \\overrightarrow{ V_{2} } \\) in the y-axis
 
         Returns
         -------
         float
-            The (smaller) angle :math:`\Theta` between
-                :math:`\overrightarrow{ V_{1} }` and
-                :math:`\overrightarrow{ V_{2} }`.
+            The (smaller) angle \\( \\Theta \\) between 
+                \\( \\overrightarrow{ V_{1} } \\) and 
+                \\( \\overrightarrow{ V_{2} } \\).
+            
             Returns ``ERROR_OUTPUT`` instead if:
-                - Either one or both of
-                    :math:`\overrightarrow{ V_{1} } = \overrightarrow{0}` and
-                    :math:`\overrightarrow{ V_{2} } = \overrightarrow{0}`
-                - :math:`\cos \Theta \notin [-1, 1]`
+
+            - Either one or both of 
+                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and 
+                \\( \\overrightarrow{ V_{2} } = \\overrightarrow{0} \\)
+            - \\( \\cos \\Theta \\notin [-1, 1] \\)
         
         Notes
         -----
-        The cosine of the (smaller) angle between two vectors
-            :math:`\overrightarrow{ V_{1} } = \begin{pmatrix} x_{1} \\ y_{1} \end{pmatrix}` and
-            :math:`\overrightarrow{ V_{2} } = \begin{pmatrix} x_{2} \\ y_{2} \end{pmatrix}`
+        The cosine of the (smaller) angle between two vectors 
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and 
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\) 
         is calculated by:
 
-        .. math::
-            \cos\Theta
-                = \frac { \overrightarrow{ V_{1} } \cdot \overrightarrow{ V_{2} } } 
-                        {\left\| \overrightarrow{V_{1}} \right\| \left\| \overrightarrow{V_{2}} \right\|}
-                = \frac {x_{1}x_{2} + y_{1}y_{2}}
-                        {\sqrt {{x_{1}}^2 + {y_{1}}^2} \sqrt {{x_{2}}^2 + {y_{2}}^2}}
-                ,\ 0 \le \Theta \le \pi
+        $$
+        \\cos \\Theta 
+            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } } 
+                    {\\left\\| \\overrightarrow{V_{1}} \\right\\| \\left\\| \\overrightarrow{V_{2}} \\right\\|}
+            = \\frac {x_{1}x_{2} + y_{1}y_{2}}
+                    {\\sqrt {{x_{1}}^2 + {y_{1}}^2} \\sqrt {{x_{2}}^2 + {y_{2}}^2}}
+            ,\\ 0 \\le \\Theta \\le \\pi
+        $$
         
-        Hence, the angle :math:`\Theta` between
-            :math:`\overrightarrow{ V_{1} }` and
-            :math:`\overrightarrow{ V_{2} }`
+        Hence, the angle \\( \\Theta \\) between 
+            \\( \\overrightarrow{ V_{1} } \\) and 
+            \\( \\overrightarrow{ V_{2} } \\) 
         can be calculated by taking the inverse cosine of the result.
 
         Examples
@@ -327,19 +331,19 @@ class Node(AbstractNode):
 
         >>> node = Node()
 
-        **The angle between two orthogonal vectors is :math:`\frac {\pi} {2}`.**
+        _The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\)._
 
         >>> v1 = (0, 1)
         >>> v2 = (1, 0)
         >>> node._angle_between_vectors_in_rad(*v1, *v2)
-        **1.5707963267948966**
+        _1.5707963267948966_
         >>> node._angle_between_vectors_in_rad(*v2, *v1)
-        **1.5707963267948966**
+        _1.5707963267948966_
 
-        **The angle between two parallel vectors is :math:`0`.**
+        _The angle between two parallel vectors is `0`._
 
         >>> node._angle_between_vectors_in_rad(*v1, *v1)
-        **0.0**
+        _0.0_
         """
 
         # Check for zero vectors
@@ -400,12 +404,14 @@ class Node(AbstractNode):
         
         Notes
         -----
-        The line from the shoulder to the elbow intersects the line from the wrist to the elbow at the elbow
+        The line from the shoulder to the elbow intersects the line from the wrist to the elbow at the elbow.
+
         An arm is considered folded if:
-            - The angle that the two lines make with each other is less than 120 degrees
-            - The x-coordinate of the wrist lies in between the x-coordinates of the shoulders
-            - The y-coordinate of the wrist lies below the y-coordinate of either shoulder
-            - The distance between the wrist and the elbow is at least half that between the shoulders
+
+        - The angle that the two lines make with each other is less than `120` degrees
+        - The x-coordinate of the wrist lies in between the x-coordinates of the shoulders
+        - The y-coordinate of the wrist lies below the y-coordinate of either shoulder
+        - The distance between the wrist and the elbow is at least half that between the shoulders
         """
 
         # Check if keypoints are defined
@@ -537,9 +543,10 @@ class Node(AbstractNode):
         Notes
         -----
         A pose is considered to be touching the face if the following conditions are satisfied:
-            - Any of the coordinates for the elbows or wrists are defined
-            - Any of the coordinates for the nose, eyes, or ears are defined
-            - The distance from the facial feature(s) to the arm feature(s) is sufficiently small
+
+        - Any of the coordinates for the elbows or wrists are defined
+        - Any of the coordinates for the nose, eyes, or ears are defined
+        - The distance from the facial feature(s) to the arm feature(s) is sufficiently small
         """
 
         # Define threshold for distance
@@ -601,9 +608,10 @@ class Node(AbstractNode):
         
         Notes
         -----
-        The line from the shoulder to the hip intersects the hip line
-        A pose is considered leaning if:
-            - The angle that the two lines make with each other falls outside a 15-degree tolerance
+        The line from the shoulder to the hip intersects the hip line.
+
+        A pose is considered leaning if the angle that the two lines make with each other
+            falls outside a `15`-degree tolerance.
         """
 
         # Check if keypoints are defined
@@ -662,10 +670,11 @@ class Node(AbstractNode):
         Notes
         -----
         This function keeps track of the following statistics:
-            - Total number of processed frames
-            - Total number of frames where the pose had folded arms
-            - Total number of frames where the pose was leaning
-            - Total number of frames where the pose was touching face
+        
+        - Total number of processed frames
+        - Total number of frames where the pose had folded arms
+        - Total number of frames where the pose was leaning
+        - Total number of frames where the pose was touching face
         """
 
         # Initialise constants

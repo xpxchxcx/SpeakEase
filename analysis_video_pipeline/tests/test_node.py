@@ -7,16 +7,17 @@ Usage
 From the terminal, navigate to the directory where this file is located.
 
 Proceed to execute either of the following commands:
-    ```
-    python -m unittest [-v] test_node.py
-    python -m unittest discover
-    ```
-Note that -v is an optional flag to increase the verbosity of the unit test outputs.
 
-For more information, refer to the `official unit testing documentation <https://docs.python.org/3/library/unittest.html#test-discovery>`_.
+```
+python -m unittest [-v] test_node.py
+python -m unittest discover
+```
+
+_Note that -v is an optional flag to increase the verbosity of the unit test outputs._
+
+For more information, refer to the 
+[official unit testing documentation](https://docs.python.org/3/library/unittest.html#test-discovery).
 """
-
-# pyright: reportInvalidStringEscapeSequence=false
 
 # Main libraries for unit testing
 from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
@@ -42,7 +43,7 @@ Coord = Tuple[int, int]  # Type-hinting alias for coordinates
 
 
 class TestNode(unittest.TestCase):
-    """TODO class documentation"""
+    # TODO class documentation
 
     # Define decimal point precision
     _DECIMAL_PRECISION = 6
@@ -66,7 +67,7 @@ class TestNode(unittest.TestCase):
             *,
             precision: int = _DECIMAL_PRECISION
     ) -> str:
-        """Template for unit test error messages for _angle_between_vectors_in_rad()
+        """Template for unit test error messages for `_angle_between_vectors_in_rad()`
 
         Parameters
         ----------
@@ -183,8 +184,8 @@ class TestNode(unittest.TestCase):
     def test_angle_between_vectors_in_rad_orthogonal(self) -> None:
         """Checks the resultant angle between two orthogonal non-zero vectors
 
-        Two non-zero orthogonal vectors should make an angle of
-        :math:`\frac {\pi} {2}` radians between them.
+        Two non-zero orthogonal vectors should make an angle of 
+            \\( \\frac {\\pi} {2} \\) radians between them.
         """
 
         # Initialise vectors v1 and v2 that are orthogonal to each other
@@ -211,8 +212,7 @@ class TestNode(unittest.TestCase):
     def test_angle_between_vectors_in_rad_identical(self) -> None:
         """Checks the resultant angle between two identical non-zero vectors
         
-        Two identical non-zero vectors should make an angle of
-        :math:`0` radians between them.
+        Two identical non-zero vectors should make an angle of `0` radians between them.
         """
 
         # Initialise vector vec
@@ -238,8 +238,8 @@ class TestNode(unittest.TestCase):
     def test_angle_between_vectors_in_rad_opposite(self) -> None:
         """Checks the resultant angle between two non-zero vectors of equal magnitude but opposite direction
         
-        Two non-zero vectors of equal magnitude but opposite direction
-        should make an angle of :math:`\pi` radians between them.
+        Two non-zero vectors of equal magnitude but opposite direction 
+            should make an angle of \\( \\pi \\) radians between them.
         """
 
         # Initialise opposite vectors v1 and v2
@@ -264,23 +264,25 @@ class TestNode(unittest.TestCase):
         )
 
     def test_angle_between_vectors_in_rad_acute(self) -> None:
-        """Checks the resultant angle between vectors (1, 0) and (1, 1)
+        """Checks the resultant angle between vectors `(1, 0)` and `(1, 1)`
 
         Notes
         -----
-              ^
-            2 |
-              |    (1, 1)
-            1 |   x
-              |
-            0 ----x--------->
-                   (1, 0)
-              0   1   2   3
-            
-            The angle between
-                :math:`\overrightarrow{ V_{1} } = \begin{pmatrix} 1 \\ 0 \end{pmatrix}` and
-                :math:`\overrightarrow{ V_{2} } = \begin{pmatrix} 1 \\ 1 \end{pmatrix}`
-            should be :math:`\frac {\pi} {4}` radians.
+        ```
+          ^
+        2 |
+          |    (1, 1)
+        1 |   x
+          |
+        0 ----x--------->
+               (1, 0)
+          0   1   2   3
+        ```
+        
+        The angle between 
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\) 
+        should be \\( \\frac {\\pi} {4} \\) radians.
         """
 
         # Initialise vectors v1 and v2
@@ -305,10 +307,11 @@ class TestNode(unittest.TestCase):
         )
     
     def test_angle_between_vectors_in_rad_obtuse(self) -> None:
-        """Checks the resultant angle between vectors (1, 0) and (-1, 1)
+        """Checks the resultant angle between vectors `(1, 0)` and `(-1, 1)`
 
         Notes
         -----
+        ```
                    ^
                    | 2
         (-1, 1)    |
@@ -317,11 +320,12 @@ class TestNode(unittest.TestCase):
            ------------x--------->
                         (1, 0)
            -2  -1  0   1   2   3
+        ```
             
-            The angle between
-                :math:`\overrightarrow{ V_{1} } = \begin{pmatrix} 1 \\ 0 \end{pmatrix}` and
-                :math:`\overrightarrow{ V_{2} } = \begin{pmatrix} -1 \\ 1 \end{pmatrix}`
-            should be :math:`\frac {3 \pi} {4}` radians.
+        The angle between
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\) 
+        should be \\( \\frac {3 \\pi} {4} \\) radians.
         """
 
         # Initialise vectors v1 and v2
@@ -359,7 +363,7 @@ class TestNode(unittest.TestCase):
             expected: bool,
             test: str
     ) -> str:
-        """Template for unit test error messages for are_arms_folded()
+        """Template for unit test error messages for `are_arms_folded()`
 
         Parameters
         ----------
@@ -636,7 +640,7 @@ class TestNode(unittest.TestCase):
             expected: bool,
             test: str
     ) -> str:
-        """Template for unit test error messages for is_face_touched()
+        """Template for unit test error messages for `is_face_touched()`
 
         Parameters
         ----------
@@ -815,7 +819,7 @@ class TestNode(unittest.TestCase):
         """Checks that poses are considered as touching face even with some undefined keypoints
         
         The function is expected to check every possible pair of points
-        for one that meets the requirement for touching face.
+            for one that meets the requirement for touching face.
         """
 
         # Initialise fake coordinates for limb features and facial features
@@ -934,7 +938,7 @@ class TestNode(unittest.TestCase):
             expected: bool,
             test: str
     ) -> str:
-        """Template for unit test error messages for is_leaning()
+        """Template for unit test error messages for `is_leaning()`
 
         Parameters
         ----------
@@ -972,7 +976,7 @@ class TestNode(unittest.TestCase):
                 ============================================='
     
     def test_is_leaning_folded_missing(self) -> None:
-        """Checks that the function returns False if at least one input is missing
+        """Checks that the function returns ``False`` if at least one input is missing
 
         The function requires all coordinates to perform the check.
         """

@@ -5,14 +5,22 @@ This module implements a visualisation method using matplotlib for the unit test
 Usage
 -----
 This script is to be used internally for testing and debugging purposes only.
+
 Uncomment the relevant line(s) in the main function `main()` and run this script in the terminal via
-    ```python visualise.py```
+
+```
+python visualise.py
+```
 
 Dependencies
 ------------
 This script requires matplotlib to run.
+
 To install matplotlib, run the following line in the terminal:
-    ```pip install matplotlib```
+
+```
+pip install matplotlib
+```
 """
 
 from itertools import product
@@ -350,20 +358,23 @@ def visualise(
         Title of the matplotlib graph
     *coord_sets : tuple of optional `Coord`s
         Sets of coordinates that need to be plotted.
+
         Refer to the Notes section for more information on how the coordinates are plotted.
     invert_xaxis : bool, default=True
         ``True`` if the x-axis of the graph should be inverted, ``False`` otherwise.
+
         The x-axis of the graph is inverted by default due to the OpenCV coordinate system.
     invert_yaxis : bool, default=True
         ``True`` if the y-axis of the graph should be inverted, ``False`` otherwise.
+
         The y-axis of the graph is inverted by default due to the OpenCV coordinate system.
     
     Notes
     -----
-    Each set `((x1, y1), (x2, y2), ..., (xN, yN), ...)` of coordinates in `coord_sets`
-    will be plotted in the order that they are passed; i.e.,
-        a segment line will be drawn first between `(x1, y1)` and `(x2, y2)`,
-        then another segment line will be drawn between `(x2, y2)` and `(x3, y3)`,
+    Each set `((x1, y1), (x2, y2), ..., (xN, yN), ...)` of coordinates in `coord_sets` 
+        will be plotted in the order that they are passed; i.e., 
+        a segment line will be drawn first between `(x1, y1)` and `(x2, y2)`, 
+        then another segment line will be drawn between `(x2, y2)` and `(x3, y3)`, 
         etc., until all the coordinates are plotted onto the graph.
     
     The sets of coordinates in `coord_sets` will also be plotted in the order that they are passed.
@@ -394,7 +405,7 @@ def visualise_are_arms_folded(
         right_elbow: Optional[Coord],
         right_wrist: Optional[Coord]
 ) -> None:
-    """Visualise unit test inputs for are_arms_folded() in matplotlib
+    """Visualise unit test inputs for `are_arms_folded()` in matplotlib
     
     Parameters
     ----------
@@ -429,7 +440,7 @@ def visualise_is_leaning(
         left_hip: Optional[Coord],
         right_hip: Optional[Coord]
 ) -> None:
-    """Visualise unit test inputs for is_leaning() in matplotlib
+    """Visualise unit test inputs for `is_leaning()` in matplotlib
     
     Parameters
     ----------
@@ -463,7 +474,7 @@ def visualise_is_face_touched(
         left_ear: Optional[Coord],
         right_ear: Optional[Coord]
 ) -> None:
-    """Visualise unit test inputs for is_face_touched() in matplotlib
+    """Visualise unit test inputs for `is_face_touched()` in matplotlib
     
     Parameters
     ----------

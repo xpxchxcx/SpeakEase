@@ -1,7 +1,9 @@
-"""Python script to edit the pipeline config YML file in the analysis pipeline
+"""Docstring for the raw_transfer.py script
 
-The script locates the recorded .mp4 file created from the raw video pipeline
-and edits the source location in the YML file to the filepath of the located file.
+This script edits the pipeline config YML file in the analysis pipeline.
+
+The script locates the recorded .mp4 file created from the raw video pipeline 
+    and edits the source location in the YML file to the filepath of the located file.
 """
 
 
@@ -10,6 +12,8 @@ import re
 
 
 def main():
+    # TODO documentation
+
     ROOT_DIR = os.path.abspath(os.curdir)
     MP3_DIR = f'{ROOT_DIR}/raw_video_pipeline/raw_videos'
     YML_DIR = f'{ROOT_DIR}/analysis_video_pipeline/pipeline_config.yml'
