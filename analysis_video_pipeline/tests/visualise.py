@@ -4,15 +4,15 @@ This module implements a visualisation method using matplotlib for the unit test
 
 Usage
 -----
-    This script is to be used internally for testing and debugging purposes only.
-    Uncomment the relevant line(s) in the main function `main()` and run this script in the terminal via
-        ```python visualise.py```
+This script is to be used internally for testing and debugging purposes only.
+Uncomment the relevant line(s) in the main function `main()` and run this script in the terminal via
+    ```python visualise.py```
 
 Dependencies
 ------------
-    This script requires matplotlib to run.
-    To install matplotlib, run the following line in the terminal:
-        ```pip install matplotlib```
+This script requires matplotlib to run.
+To install matplotlib, run the following line in the terminal:
+    ```pip install matplotlib```
 """
 
 from itertools import product
@@ -346,27 +346,27 @@ def visualise(
     
     Parameters
     ----------
-        title : str
-            Title of the matplotlib graph
-        *coord_sets : tuple of optional `Coord`s
-            Sets of coordinates that need to be plotted.
-            Refer to the Notes section for more information on how the coordinates are plotted.
-        invert_xaxis : bool, default=True
-            ``True`` if the x-axis of the graph should be inverted, ``False`` otherwise.
-            The x-axis of the graph is inverted by default due to the OpenCV coordinate system.
-        invert_yaxis : bool, default=True
-            ``True`` if the y-axis of the graph should be inverted, ``False`` otherwise.
-            The y-axis of the graph is inverted by default due to the OpenCV coordinate system.
+    title : str
+        Title of the matplotlib graph
+    *coord_sets : tuple of optional `Coord`s
+        Sets of coordinates that need to be plotted.
+        Refer to the Notes section for more information on how the coordinates are plotted.
+    invert_xaxis : bool, default=True
+        ``True`` if the x-axis of the graph should be inverted, ``False`` otherwise.
+        The x-axis of the graph is inverted by default due to the OpenCV coordinate system.
+    invert_yaxis : bool, default=True
+        ``True`` if the y-axis of the graph should be inverted, ``False`` otherwise.
+        The y-axis of the graph is inverted by default due to the OpenCV coordinate system.
     
     Notes
     -----
-        Each set `((x1, y1), (x2, y2), ..., (xN, yN), ...)` of coordinates in `coord_sets`
-        will be plotted in the order that they are passed; i.e.,
-            a segment line will be drawn first between `(x1, y1)` and `(x2, y2)`,
-            then another segment line will be drawn between `(x2, y2)` and `(x3, y3)`,
-            etc., until all the coordinates are plotted onto the graph.
-        
-        The sets of coordinates in `coord_sets` will also be plotted in the order that they are passed.
+    Each set `((x1, y1), (x2, y2), ..., (xN, yN), ...)` of coordinates in `coord_sets`
+    will be plotted in the order that they are passed; i.e.,
+        a segment line will be drawn first between `(x1, y1)` and `(x2, y2)`,
+        then another segment line will be drawn between `(x2, y2)` and `(x3, y3)`,
+        etc., until all the coordinates are plotted onto the graph.
+    
+    The sets of coordinates in `coord_sets` will also be plotted in the order that they are passed.
     """
 
     # Configure graph metadata
@@ -398,20 +398,20 @@ def visualise_are_arms_folded(
     
     Parameters
     ----------
-        title : str
-            Title of the graph
-        left_shoulder : `Coord`, optional
-            (`x`, `y`) coordinate of the left shoulder
-        left_elbow : `Coord`, optional
-            (`x`, `y`) coordinate of the left elbow
-        left_wrist : `Coord`, optional
-            (`x`, `y`) coordinate of the left wrist
-        right_shoulder : `Coord`, optional
-            (`x`, `y`) coordinate of the right shoulder
-        right_elbow : `Coord`, optional
-            (`x`, `y`) coordinate of the right elbow
-        right_wrist : `Coord`, optional
-            (`x`, `y`) coordinate of the right wrist
+    title : str
+        Title of the graph
+    left_shoulder : `Coord`, optional
+        (`x`, `y`) coordinate of the left shoulder
+    left_elbow : `Coord`, optional
+        (`x`, `y`) coordinate of the left elbow
+    left_wrist : `Coord`, optional
+        (`x`, `y`) coordinate of the left wrist
+    right_shoulder : `Coord`, optional
+        (`x`, `y`) coordinate of the right shoulder
+    right_elbow : `Coord`, optional
+        (`x`, `y`) coordinate of the right elbow
+    right_wrist : `Coord`, optional
+        (`x`, `y`) coordinate of the right wrist
     """
 
     visualise(
@@ -433,16 +433,16 @@ def visualise_is_leaning(
     
     Parameters
     ----------
-        title : str
-            Title of the graph
-        left_shoulder : `Coord`, optional
-            (`x`, `y`) coordinate of the left shoulder
-        right_shoulder : `Coord`, optional
-            (`x`, `y`) coordinate of the right shoulder
-        left_hip : `Coord`, optional
-            (`x`, `y`) coordinate of the left hip
-        right_hip : `Coord`, optional
-            (`x`, `y`) coordinate of the right hip
+    title : str
+        Title of the graph
+    left_shoulder : `Coord`, optional
+        (`x`, `y`) coordinate of the left shoulder
+    right_shoulder : `Coord`, optional
+        (`x`, `y`) coordinate of the right shoulder
+    left_hip : `Coord`, optional
+        (`x`, `y`) coordinate of the left hip
+    right_hip : `Coord`, optional
+        (`x`, `y`) coordinate of the right hip
     """
 
     visualise(
@@ -467,26 +467,26 @@ def visualise_is_face_touched(
     
     Parameters
     ----------
-        title : str
-            Title of the graph
-        left_elbow : `Coord`, optional
-            (`x`, `y`) coordinate of the left elbow
-        right_elbow : `Coord`, optional
-            (`x`, `y`) coordinate of the right elbow
-        left_wrist : `Coord`, optional
-            (`x`, `y`) coordinate of the left wrist
-        right_wrist : `Coord`, optional
-            (`x`, `y`) coordinate of the right wrist
-        nose : `Coord`, optional
-            (`x`, `y`) coordinate of the nose
-        left_eye : `Coord`, optional
-            (`x`, `y`) coordinate of the left eye
-        right_eye : `Coord`, optional
-            (`x`, `y`) coordinate of the right eye
-        left_ear : `Coord`, optional
-            (`x`, `y`) coordinate of the left ear
-        right_ear : `Coord`, optional
-            (`x`, `y`) coordinate of the right ear
+    title : str
+        Title of the graph
+    left_elbow : `Coord`, optional
+        (`x`, `y`) coordinate of the left elbow
+    right_elbow : `Coord`, optional
+        (`x`, `y`) coordinate of the right elbow
+    left_wrist : `Coord`, optional
+        (`x`, `y`) coordinate of the left wrist
+    right_wrist : `Coord`, optional
+        (`x`, `y`) coordinate of the right wrist
+    nose : `Coord`, optional
+        (`x`, `y`) coordinate of the nose
+    left_eye : `Coord`, optional
+        (`x`, `y`) coordinate of the left eye
+    right_eye : `Coord`, optional
+        (`x`, `y`) coordinate of the right eye
+    left_ear : `Coord`, optional
+        (`x`, `y`) coordinate of the left ear
+    right_ear : `Coord`, optional
+        (`x`, `y`) coordinate of the right ear
     """
     
     coord_sets = []

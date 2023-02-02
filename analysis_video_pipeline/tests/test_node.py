@@ -4,16 +4,16 @@ This module implements unit tests for the custom node class.
 
 Usage
 -----
-    From the terminal, navigate to the directory where this file is located.
+From the terminal, navigate to the directory where this file is located.
 
-    Proceed to execute either of the following commands:
-        ```
-        python -m unittest [-v] test_node.py
-        python -m unittest discover
-        ```
-    Note that -v is an optional flag to increase the verbosity of the unit test outputs.
-    
-    For more information, refer to the `official unit testing documentation <https://docs.python.org/3/library/unittest.html#test-discovery>`_.
+Proceed to execute either of the following commands:
+    ```
+    python -m unittest [-v] test_node.py
+    python -m unittest discover
+    ```
+Note that -v is an optional flag to increase the verbosity of the unit test outputs.
+
+For more information, refer to the `official unit testing documentation <https://docs.python.org/3/library/unittest.html#test-discovery>`_.
 """
 
 # pyright: reportInvalidStringEscapeSequence=false
@@ -42,7 +42,6 @@ Coord = Tuple[int, int]  # Type-hinting alias for coordinates
 
 
 class TestNode(unittest.TestCase):
-
     """TODO class documentation"""
 
     # Define decimal point precision
@@ -71,23 +70,23 @@ class TestNode(unittest.TestCase):
 
         Parameters
         ----------
-            v1 : `Coord`
-                The first vector (`x`, `y`) parameter passed into the function
-            v2 : `Coord`
-                The second vector (`x`, `y`) parameter passed into the function
-            output : float
-                The obtained output from the function
-            expected : float
-                The expected output of the function
-            test : str
-                The type of unit test performed
-            precision : int, default=`_DECIMAL_PRECISION`
-                The expected decimal precision of the outputs
+        v1 : `Coord`
+            The first vector (`x`, `y`) parameter passed into the function
+        v2 : `Coord`
+            The second vector (`x`, `y`) parameter passed into the function
+        output : float
+            The obtained output from the function
+        expected : float
+            The expected output of the function
+        test : str
+            The type of unit test performed
+        precision : int, default=`_DECIMAL_PRECISION`
+            The expected decimal precision of the outputs
         
         Returns
         -------
-            str
-                The formatted error message
+        str
+            The formatted error message
         """
 
         return f'\n\
@@ -364,29 +363,29 @@ class TestNode(unittest.TestCase):
 
         Parameters
         ----------
-            left_shoulder : `Coord`, optional
-                The left shoulder coordinate (`x`, `y`) passed into the function
-            left_elbow : `Coord`, optional
-                The left elbow coordinate (`x`, `y`) passed into the function
-            left_wrist : `Coord`, optional
-                The left wrist coordinate (`x`, `y`) passed into the function
-            right_shoulder : `Coord`, optional
-                The right shoulder coordinate (`x`, `y`) passed into the function
-            right_elbow : `Coord`, optional
-                The right elbow coordinate (`x`, `y`) passed into the function
-            right_wrist : `Coord`, optional
-                The right wrist coordinate (`x`, `y`) passed into the function
-            output : bool
-                The obtained output from the function
-            expected : bool
-                The expected output of the function
-            test : str
-                The type of unit test performed
+        left_shoulder : `Coord`, optional
+            The left shoulder coordinate (`x`, `y`) passed into the function
+        left_elbow : `Coord`, optional
+            The left elbow coordinate (`x`, `y`) passed into the function
+        left_wrist : `Coord`, optional
+            The left wrist coordinate (`x`, `y`) passed into the function
+        right_shoulder : `Coord`, optional
+            The right shoulder coordinate (`x`, `y`) passed into the function
+        right_elbow : `Coord`, optional
+            The right elbow coordinate (`x`, `y`) passed into the function
+        right_wrist : `Coord`, optional
+            The right wrist coordinate (`x`, `y`) passed into the function
+        output : bool
+            The obtained output from the function
+        expected : bool
+            The expected output of the function
+        test : str
+            The type of unit test performed
         
         Returns
         -------
-            str
-                The formatted error message
+        str
+            The formatted error message
         """
 
         return f'\n\
@@ -641,35 +640,35 @@ class TestNode(unittest.TestCase):
 
         Parameters
         ----------
-            left_elbow : `Coord`, optional
-                The left elbow coordinate (`x`, `y`) passed into the function
-            right_elbow : `Coord`, optional
-                The right elbow coordinate (`x`, `y`) passed into the function
-            left_wrist : `Coord`, optional
-                The left wrist coordinate (`x`, `y`) passed into the function
-            right_wrist : `Coord`, optional
-                The right wrist coordinate (`x`, `y`) passed into the function
-            nose : `Coord`, optional
-                The nose coordinate (`x`, `y`) passed into the function
-            left_eye : `Coord`, optional
-                The left eye coordinate (`x`, `y`) passed into the function
-            right_eye : `Coord`, optional
-                The right eye coordinate (`x`, `y`) passed into the function
-            left_ear : `Coord`, optional
-                The left ear coordinate (`x`, `y`) passed into the function
-            right_ear : `Coord`, optional
-                The right ear coordinate (`x`, `y`) passed into the function
-            output : bool
-                The obtained output from the function
-            expected : bool
-                The expected output of the function
-            test : str
-                The type of unit test performed
+        left_elbow : `Coord`, optional
+            The left elbow coordinate (`x`, `y`) passed into the function
+        right_elbow : `Coord`, optional
+            The right elbow coordinate (`x`, `y`) passed into the function
+        left_wrist : `Coord`, optional
+            The left wrist coordinate (`x`, `y`) passed into the function
+        right_wrist : `Coord`, optional
+            The right wrist coordinate (`x`, `y`) passed into the function
+        nose : `Coord`, optional
+            The nose coordinate (`x`, `y`) passed into the function
+        left_eye : `Coord`, optional
+            The left eye coordinate (`x`, `y`) passed into the function
+        right_eye : `Coord`, optional
+            The right eye coordinate (`x`, `y`) passed into the function
+        left_ear : `Coord`, optional
+            The left ear coordinate (`x`, `y`) passed into the function
+        right_ear : `Coord`, optional
+            The right ear coordinate (`x`, `y`) passed into the function
+        output : bool
+            The obtained output from the function
+        expected : bool
+            The expected output of the function
+        test : str
+            The type of unit test performed
         
         Returns
         -------
-            str
-                The formatted error message
+        str
+            The formatted error message
         """
 
         return f'\n\
@@ -939,25 +938,25 @@ class TestNode(unittest.TestCase):
 
         Parameters
         ----------
-            left_shoulder : `Coord`, optional
-                The left shoulder coordinate (`x`, `y`) passed into the function
-            right_shoulder : `Coord`, optional
-                The right shoulder coordinate (`x`, `y`) passed into the function
-            left_hip : `Coord`, optional
-                The left hip coordinate (`x`, `y`) passed into the function
-            right_hip : `Coord`, optional
-                The right hip coordinate (`x`, `y`) passed into the function
-            output : bool
-                The obtained output from the function
-            expected : bool
-                The expected output of the function
-            test : str
-                The type of unit test performed
+        left_shoulder : `Coord`, optional
+            The left shoulder coordinate (`x`, `y`) passed into the function
+        right_shoulder : `Coord`, optional
+            The right shoulder coordinate (`x`, `y`) passed into the function
+        left_hip : `Coord`, optional
+            The left hip coordinate (`x`, `y`) passed into the function
+        right_hip : `Coord`, optional
+            The right hip coordinate (`x`, `y`) passed into the function
+        output : bool
+            The obtained output from the function
+        expected : bool
+            The expected output of the function
+        test : str
+            The type of unit test performed
         
         Returns
         -------
-            str
-                The formatted error message
+        str
+            The formatted error message
         """
 
         return f'\n\
