@@ -55,19 +55,19 @@ python -m unittest discover
 
 _Note that -v is an optional flag to increase the verbosity of the unit test outputs._
 
-For more information, refer to the 
+For more information, refer to the
 [official unit testing documentation](https://docs.python.org/3/library/unittest.html#test-discovery).
 &#34;&#34;&#34;
 
-# Main libraries for unit testing
-from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
-import unittest
+# pylint: disable=import-error, invalid-name, too-many-lines
 
-# Supporting libraries for unit testing
 from itertools import chain, combinations, product
 from math import pi
 from typing import Optional, Tuple
+import unittest
 from yaml import safe_load
+
+from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
 
 from analysis_video_pipeline.tests.visualise import \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS, \
@@ -91,11 +91,15 @@ class TestNode(unittest.TestCase):
     def setUp(self) -&gt; None:
         &#34;&#34;&#34;Initialises the Node object used for unit testing&#34;&#34;&#34;
 
-        with open(&#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;, &#39;r&#39;) as config_file:
+        # Initialise YML filepath
+        filepath = &#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;
+
+        # Obtain Node instance
+        with open(filepath, &#39;r&#39;, encoding=&#39;utf-8&#39;) as config_file:
             config = safe_load(config_file)
             self.node = Node(config=config)
-    
-    &#34;&#34;&#34;Test cases for _angle_between_vectors_in_rad()&#34;&#34;&#34;
+
+    &#34;&#34;&#34;Test cases for angle_between_vectors_in_rad()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_angle_between_vectors_in_rad(
             self,
@@ -107,7 +111,7 @@ class TestNode(unittest.TestCase):
             *,
             precision: int = _DECIMAL_PRECISION
     ) -&gt; str:
-        &#34;&#34;&#34;Template for unit test error messages for `_angle_between_vectors_in_rad()`
+        &#34;&#34;&#34;Template for unit test error messages for `angle_between_vectors_in_rad()`
 
         Parameters
         ----------
@@ -123,7 +127,7 @@ class TestNode(unittest.TestCase):
             The type of unit test performed
         precision : int, default=`_DECIMAL_PRECISION`
             The expected decimal precision of the outputs
-        
+
         Returns
         -------
         str
@@ -132,7 +136,7 @@ class TestNode(unittest.TestCase):
 
         return f&#39;\n\
                 =============================================\n\
-                  Function: _angle_between_vectors_in_rad()\n\
+                  Function: angle_between_vectors_in_rad()\n\
                  Test Type: {test}\n\
                 Parameters: v1 = {v1}, v2 = {v2}\n\
                  Precision: {precision}\n\
@@ -142,7 +146,7 @@ class TestNode(unittest.TestCase):
 
     def test_angle_between_vectors_in_rad_zero(self) -&gt; None:
         &#34;&#34;&#34;Checks if passing a zero vector into the function results in an error
-        
+
         The function is expected to output ``Node.ERROR_OUTPUT``.
         &#34;&#34;&#34;
 
@@ -151,9 +155,9 @@ class TestNode(unittest.TestCase):
         vec = (0, 1)
 
         # Obtain results
-        r1 = self.node._angle_between_vectors_in_rad(*zero, *vec)
-        r2 = self.node._angle_between_vectors_in_rad(*vec, *zero)
-        r3 = self.node._angle_between_vectors_in_rad(*zero, *zero)
+        r1 = self.node.angle_between_vectors_in_rad(*zero, *vec)
+        r2 = self.node.angle_between_vectors_in_rad(*vec, *zero)
+        r3 = self.node.angle_between_vectors_in_rad(*zero, *zero)
 
         # Perform assertion checks
         self.assertEqual(
@@ -192,10 +196,10 @@ class TestNode(unittest.TestCase):
                 precision=0
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_associativity(self) -&gt; None:
         &#34;&#34;&#34;Checks that the function is associative
-        
+
         The order in which the vectors are passed into the function should not matter.
         &#34;&#34;&#34;
 
@@ -204,8 +208,8 @@ class TestNode(unittest.TestCase):
         v2 = (-2, 5)
 
         # Obtain results
-        r1 = self.node._angle_between_vectors_in_rad(*v1, *v2)
-        r2 = self.node._angle_between_vectors_in_rad(*v2, *v1)
+        r1 = self.node.angle_between_vectors_in_rad(*v1, *v2)
+        r2 = self.node.angle_between_vectors_in_rad(*v2, *v1)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -224,7 +228,7 @@ class TestNode(unittest.TestCase):
     def test_angle_between_vectors_in_rad_orthogonal(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between two orthogonal non-zero vectors
 
-        Two non-zero orthogonal vectors should make an angle of 
+        Two non-zero orthogonal vectors should make an angle of
             \\( \\frac {\\pi} {2} \\) radians between them.
         &#34;&#34;&#34;
 
@@ -233,7 +237,7 @@ class TestNode(unittest.TestCase):
         v2 = (1, 0)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -248,10 +252,10 @@ class TestNode(unittest.TestCase):
                 &#39;Orthogonal Non-Zero Vectors&#39;
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_identical(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between two identical non-zero vectors
-        
+
         Two identical non-zero vectors should make an angle of `0` radians between them.
         &#34;&#34;&#34;
 
@@ -259,7 +263,7 @@ class TestNode(unittest.TestCase):
         vec = (0, 1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*vec, *vec)
+        res = self.node.angle_between_vectors_in_rad(*vec, *vec)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -274,11 +278,11 @@ class TestNode(unittest.TestCase):
                 &#39;Identical Non-Zero Vectors&#39;
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_opposite(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between two non-zero vectors of equal magnitude but opposite direction
-        
-        Two non-zero vectors of equal magnitude but opposite direction 
+
+        Two non-zero vectors of equal magnitude but opposite direction
             should make an angle of \\( \\pi \\) radians between them.
         &#34;&#34;&#34;
 
@@ -287,7 +291,7 @@ class TestNode(unittest.TestCase):
         v2 = (0, -1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -318,10 +322,10 @@ class TestNode(unittest.TestCase):
                (1, 0)
           0   1   2   3
         ```
-        
-        The angle between 
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\) 
+
+        The angle between
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\)
         should be \\( \\frac {\\pi} {4} \\) radians.
         &#34;&#34;&#34;
 
@@ -330,7 +334,7 @@ class TestNode(unittest.TestCase):
         v2 = (1, 1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -345,7 +349,7 @@ class TestNode(unittest.TestCase):
                 &#39;Acute Angle&#39;
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_obtuse(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between vectors `(1, 0)` and `(-1, 1)`
 
@@ -361,10 +365,10 @@ class TestNode(unittest.TestCase):
                         (1, 0)
            -2  -1  0   1   2   3
         ```
-            
+
         The angle between
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\) 
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\)
         should be \\( \\frac {3 \\pi} {4} \\) radians.
         &#34;&#34;&#34;
 
@@ -373,7 +377,7 @@ class TestNode(unittest.TestCase):
         v2 = (-1, 1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -388,8 +392,8 @@ class TestNode(unittest.TestCase):
                 &#39;Obtuse Angle&#39;
             )
         )
-    
-    &#34;&#34;&#34;Test cases for are_arms_folded()&#34;&#34;&#34;
+
+    &#34;&#34;&#34;Test cases for are_arms_folded()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_are_arms_folded(
             self,
@@ -425,7 +429,7 @@ class TestNode(unittest.TestCase):
             The expected output of the function
         test : str
             The type of unit test performed
-        
+
         Returns
         -------
         str
@@ -445,22 +449,22 @@ class TestNode(unittest.TestCase):
                     Output: {output}\n\
                   Expected: {expected}\n\
                 =============================================&#39;
-    
+
     def test_are_arms_folded_missing(self) -&gt; None:
         &#34;&#34;&#34;Checks that the function returns ``False`` if at least one input is missing
 
         The function requires all coordinates to perform the check.
         &#34;&#34;&#34;
-        
+
         # Initialise coordinates
         pose = [(i, i) for i in range(17)]
         required_coordinates = {
-            self.node._KP_LEFT_SHOULDER,
-            self.node._KP_LEFT_ELBOW,
-            self.node._KP_LEFT_WRIST,
-            self.node._KP_RIGHT_SHOULDER,
-            self.node._KP_RIGHT_ELBOW,
-            self.node._KP_RIGHT_WRIST
+            self.node.KP_LEFT_SHOULDER,
+            self.node.KP_LEFT_ELBOW,
+            self.node.KP_LEFT_WRIST,
+            self.node.KP_RIGHT_SHOULDER,
+            self.node.KP_RIGHT_ELBOW,
+            self.node.KP_RIGHT_WRIST
         }
         coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
 
@@ -468,18 +472,18 @@ class TestNode(unittest.TestCase):
         for i, selected_coordinates in enumerate(chain(
                 *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
         )):
-            left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_SHOULDER]
-            left_elbow = None if self.node._KP_LEFT_ELBOW in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_ELBOW]
-            left_wrist = None if self.node._KP_LEFT_WRIST in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_WRIST]
-            right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_SHOULDER]
-            right_elbow = None if self.node._KP_RIGHT_ELBOW in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_ELBOW]
-            right_wrist = None if self.node._KP_RIGHT_WRIST in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_WRIST]
+            left_shoulder = None if self.node.KP_LEFT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_SHOULDER]
+            left_elbow = None if self.node.KP_LEFT_ELBOW in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_ELBOW]
+            left_wrist = None if self.node.KP_LEFT_WRIST in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_WRIST]
+            right_shoulder = None if self.node.KP_RIGHT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_SHOULDER]
+            right_elbow = None if self.node.KP_RIGHT_ELBOW in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_ELBOW]
+            right_wrist = None if self.node.KP_RIGHT_WRIST in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_WRIST]
 
             # Obtain the result
             res = self.node.are_arms_folded(
@@ -506,7 +510,7 @@ class TestNode(unittest.TestCase):
                     f&#39;One or more Missing Inputs (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_touching_face(self) -&gt; None:
         &#34;&#34;&#34;Checks that the arms are not considered folded if the pose is touching the face&#34;&#34;&#34;
 
@@ -519,7 +523,7 @@ class TestNode(unittest.TestCase):
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -545,7 +549,7 @@ class TestNode(unittest.TestCase):
                     f&#39;Touching Face instead of Folding Arms (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_outstretched_arms(self) -&gt; None:
         &#34;&#34;&#34;Check that outstretched arms are not considered folded&#34;&#34;&#34;
 
@@ -558,7 +562,7 @@ class TestNode(unittest.TestCase):
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -584,7 +588,7 @@ class TestNode(unittest.TestCase):
                     f&#39;Arms Outstretched (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_half_cross(self) -&gt; None:
         &#34;&#34;&#34;Checks that half-crossed arms are considered folded&#34;&#34;&#34;
 
@@ -597,7 +601,7 @@ class TestNode(unittest.TestCase):
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -623,7 +627,7 @@ class TestNode(unittest.TestCase):
                     f&#39;Arms Half-Crossed (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_full_cross(self) -&gt; None:
         &#34;&#34;&#34;Checks that fully-crossed arms are considered folded&#34;&#34;&#34;
 
@@ -636,7 +640,7 @@ class TestNode(unittest.TestCase):
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -663,7 +667,7 @@ class TestNode(unittest.TestCase):
                 )
             )
 
-    &#34;&#34;&#34;Test cases for is_face_touched()&#34;&#34;&#34;
+    &#34;&#34;&#34;Test cases for is_face_touched()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_is_face_touched(
             self,
@@ -708,7 +712,7 @@ class TestNode(unittest.TestCase):
             The expected output of the function
         test : str
             The type of unit test performed
-        
+
         Returns
         -------
         str
@@ -731,7 +735,7 @@ class TestNode(unittest.TestCase):
                     Output: {output}\n\
                   Expected: {expected}\n\
                 =============================================&#39;
-    
+
     def test_is_face_touched_all_missing(self) -&gt; None:
         &#34;&#34;&#34;Checks that undefined poses return ``False``&#34;&#34;&#34;
 
@@ -766,10 +770,10 @@ class TestNode(unittest.TestCase):
                 &#39;Touching Face All Missing&#39;
             )
         )
-    
+
     def test_is_face_touched_negative_some_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses are undefined if all of the keypoints in a required set are undefined
-        
+
         The function requires that at least one keypoint in each set of keypoints is defined.
         &#34;&#34;&#34;
 
@@ -811,7 +815,7 @@ class TestNode(unittest.TestCase):
                     f&#39;Touching Face Negative Some Defined (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_is_face_touched_negative_all_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses that do not meet the requirement are considered not touching face&#34;&#34;&#34;
 
@@ -857,7 +861,7 @@ class TestNode(unittest.TestCase):
 
     def test_is_face_touched_positive_some_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses are considered as touching face even with some undefined keypoints
-        
+
         The function is expected to check every possible pair of points
             for one that meets the requirement for touching face.
         &#34;&#34;&#34;
@@ -885,7 +889,7 @@ class TestNode(unittest.TestCase):
                 right_eye, \
                 left_ear, \
                 right_ear, = coordinates
-            
+
             # Obtain the result
             res = self.node.is_face_touched(
                 left_elbow,
@@ -917,7 +921,7 @@ class TestNode(unittest.TestCase):
                     f&#39;Touching Face Positive Some Defined (Case {case + 1})&#39;
                 )
             )
-    
+
     def test_is_face_touched_all_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses where the face is touched is considered as touching face&#34;&#34;&#34;
 
@@ -933,7 +937,7 @@ class TestNode(unittest.TestCase):
                 right_eye, \
                 left_ear, \
                 right_ear, = coordinates
-            
+
             # Obtain the result
             res = self.node.is_face_touched(
                 left_elbow,
@@ -966,7 +970,7 @@ class TestNode(unittest.TestCase):
                 )
             )
 
-    &#34;&#34;&#34;Test cases for is_leaning()&#34;&#34;&#34;
+    &#34;&#34;&#34;Test cases for is_leaning()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_is_leaning(
             self,
@@ -996,7 +1000,7 @@ class TestNode(unittest.TestCase):
             The expected output of the function
         test : str
             The type of unit test performed
-        
+
         Returns
         -------
         str
@@ -1014,20 +1018,20 @@ class TestNode(unittest.TestCase):
                     Output: {output}\n\
                   Expected: {expected}\n\
                 =============================================&#39;
-    
+
     def test_is_leaning_folded_missing(self) -&gt; None:
         &#34;&#34;&#34;Checks that the function returns ``False`` if at least one input is missing
 
         The function requires all coordinates to perform the check.
         &#34;&#34;&#34;
-        
+
         # Initialise coordinates
         pose = [(i, i) for i in range(17)]
         required_coordinates = {
-            self.node._KP_LEFT_SHOULDER,
-            self.node._KP_RIGHT_SHOULDER,
-            self.node._KP_LEFT_HIP,
-            self.node._KP_RIGHT_HIP
+            self.node.KP_LEFT_SHOULDER,
+            self.node.KP_RIGHT_SHOULDER,
+            self.node.KP_LEFT_HIP,
+            self.node.KP_RIGHT_HIP
         }
         coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
 
@@ -1035,14 +1039,14 @@ class TestNode(unittest.TestCase):
         for i, selected_coordinates in enumerate(chain(
                 *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
         )):
-            left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_SHOULDER]
-            right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_SHOULDER]
-            left_hip = None if self.node._KP_LEFT_HIP in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_HIP]
-            right_hip = None if self.node._KP_RIGHT_HIP in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_HIP]
+            left_shoulder = None if self.node.KP_LEFT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_SHOULDER]
+            right_shoulder = None if self.node.KP_RIGHT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_SHOULDER]
+            left_hip = None if self.node.KP_LEFT_HIP in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_HIP]
+            right_hip = None if self.node.KP_RIGHT_HIP in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_HIP]
 
             # Obtain the result
             res = self.node.is_leaning(
@@ -1065,7 +1069,7 @@ class TestNode(unittest.TestCase):
                     f&#39;One or more Missing Inputs (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_is_leaning_negative(self) -&gt; None:
         &#34;&#34;&#34;Checks that non-leaning poses are considered not leaning&#34;&#34;&#34;
 
@@ -1076,7 +1080,7 @@ class TestNode(unittest.TestCase):
                 right_shoulder, \
                 left_hip, \
                 right_hip = coordinates
-            
+
             # Obtain the result
             res = self.node.is_leaning(
                 left_shoulder,
@@ -1098,7 +1102,7 @@ class TestNode(unittest.TestCase):
                     f&#39;Non-Leaning Pose (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_is_leaning_positive(self) -&gt; None:
         &#34;&#34;&#34;Checks that true leaning poses are considered leaning&#34;&#34;&#34;
 
@@ -1109,7 +1113,7 @@ class TestNode(unittest.TestCase):
                 right_shoulder, \
                 left_hip, \
                 right_hip = coordinates
-            
+
             # Obtain the result
             res = self.node.is_leaning(
                 left_shoulder,
@@ -1192,11 +1196,15 @@ not have a method with the specified name.</p></div>
     def setUp(self) -&gt; None:
         &#34;&#34;&#34;Initialises the Node object used for unit testing&#34;&#34;&#34;
 
-        with open(&#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;, &#39;r&#39;) as config_file:
+        # Initialise YML filepath
+        filepath = &#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;
+
+        # Obtain Node instance
+        with open(filepath, &#39;r&#39;, encoding=&#39;utf-8&#39;) as config_file:
             config = safe_load(config_file)
             self.node = Node(config=config)
-    
-    &#34;&#34;&#34;Test cases for _angle_between_vectors_in_rad()&#34;&#34;&#34;
+
+    &#34;&#34;&#34;Test cases for angle_between_vectors_in_rad()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_angle_between_vectors_in_rad(
             self,
@@ -1208,7 +1216,7 @@ not have a method with the specified name.</p></div>
             *,
             precision: int = _DECIMAL_PRECISION
     ) -&gt; str:
-        &#34;&#34;&#34;Template for unit test error messages for `_angle_between_vectors_in_rad()`
+        &#34;&#34;&#34;Template for unit test error messages for `angle_between_vectors_in_rad()`
 
         Parameters
         ----------
@@ -1224,7 +1232,7 @@ not have a method with the specified name.</p></div>
             The type of unit test performed
         precision : int, default=`_DECIMAL_PRECISION`
             The expected decimal precision of the outputs
-        
+
         Returns
         -------
         str
@@ -1233,7 +1241,7 @@ not have a method with the specified name.</p></div>
 
         return f&#39;\n\
                 =============================================\n\
-                  Function: _angle_between_vectors_in_rad()\n\
+                  Function: angle_between_vectors_in_rad()\n\
                  Test Type: {test}\n\
                 Parameters: v1 = {v1}, v2 = {v2}\n\
                  Precision: {precision}\n\
@@ -1243,7 +1251,7 @@ not have a method with the specified name.</p></div>
 
     def test_angle_between_vectors_in_rad_zero(self) -&gt; None:
         &#34;&#34;&#34;Checks if passing a zero vector into the function results in an error
-        
+
         The function is expected to output ``Node.ERROR_OUTPUT``.
         &#34;&#34;&#34;
 
@@ -1252,9 +1260,9 @@ not have a method with the specified name.</p></div>
         vec = (0, 1)
 
         # Obtain results
-        r1 = self.node._angle_between_vectors_in_rad(*zero, *vec)
-        r2 = self.node._angle_between_vectors_in_rad(*vec, *zero)
-        r3 = self.node._angle_between_vectors_in_rad(*zero, *zero)
+        r1 = self.node.angle_between_vectors_in_rad(*zero, *vec)
+        r2 = self.node.angle_between_vectors_in_rad(*vec, *zero)
+        r3 = self.node.angle_between_vectors_in_rad(*zero, *zero)
 
         # Perform assertion checks
         self.assertEqual(
@@ -1293,10 +1301,10 @@ not have a method with the specified name.</p></div>
                 precision=0
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_associativity(self) -&gt; None:
         &#34;&#34;&#34;Checks that the function is associative
-        
+
         The order in which the vectors are passed into the function should not matter.
         &#34;&#34;&#34;
 
@@ -1305,8 +1313,8 @@ not have a method with the specified name.</p></div>
         v2 = (-2, 5)
 
         # Obtain results
-        r1 = self.node._angle_between_vectors_in_rad(*v1, *v2)
-        r2 = self.node._angle_between_vectors_in_rad(*v2, *v1)
+        r1 = self.node.angle_between_vectors_in_rad(*v1, *v2)
+        r2 = self.node.angle_between_vectors_in_rad(*v2, *v1)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -1325,7 +1333,7 @@ not have a method with the specified name.</p></div>
     def test_angle_between_vectors_in_rad_orthogonal(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between two orthogonal non-zero vectors
 
-        Two non-zero orthogonal vectors should make an angle of 
+        Two non-zero orthogonal vectors should make an angle of
             \\( \\frac {\\pi} {2} \\) radians between them.
         &#34;&#34;&#34;
 
@@ -1334,7 +1342,7 @@ not have a method with the specified name.</p></div>
         v2 = (1, 0)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -1349,10 +1357,10 @@ not have a method with the specified name.</p></div>
                 &#39;Orthogonal Non-Zero Vectors&#39;
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_identical(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between two identical non-zero vectors
-        
+
         Two identical non-zero vectors should make an angle of `0` radians between them.
         &#34;&#34;&#34;
 
@@ -1360,7 +1368,7 @@ not have a method with the specified name.</p></div>
         vec = (0, 1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*vec, *vec)
+        res = self.node.angle_between_vectors_in_rad(*vec, *vec)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -1375,11 +1383,11 @@ not have a method with the specified name.</p></div>
                 &#39;Identical Non-Zero Vectors&#39;
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_opposite(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between two non-zero vectors of equal magnitude but opposite direction
-        
-        Two non-zero vectors of equal magnitude but opposite direction 
+
+        Two non-zero vectors of equal magnitude but opposite direction
             should make an angle of \\( \\pi \\) radians between them.
         &#34;&#34;&#34;
 
@@ -1388,7 +1396,7 @@ not have a method with the specified name.</p></div>
         v2 = (0, -1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -1419,10 +1427,10 @@ not have a method with the specified name.</p></div>
                (1, 0)
           0   1   2   3
         ```
-        
-        The angle between 
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\) 
+
+        The angle between
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\)
         should be \\( \\frac {\\pi} {4} \\) radians.
         &#34;&#34;&#34;
 
@@ -1431,7 +1439,7 @@ not have a method with the specified name.</p></div>
         v2 = (1, 1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -1446,7 +1454,7 @@ not have a method with the specified name.</p></div>
                 &#39;Acute Angle&#39;
             )
         )
-    
+
     def test_angle_between_vectors_in_rad_obtuse(self) -&gt; None:
         &#34;&#34;&#34;Checks the resultant angle between vectors `(1, 0)` and `(-1, 1)`
 
@@ -1462,10 +1470,10 @@ not have a method with the specified name.</p></div>
                         (1, 0)
            -2  -1  0   1   2   3
         ```
-            
+
         The angle between
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\) 
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\)
         should be \\( \\frac {3 \\pi} {4} \\) radians.
         &#34;&#34;&#34;
 
@@ -1474,7 +1482,7 @@ not have a method with the specified name.</p></div>
         v2 = (-1, 1)
 
         # Obtain results
-        res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+        res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
         # Perform assertion checks
         self.assertAlmostEqual(
@@ -1489,8 +1497,8 @@ not have a method with the specified name.</p></div>
                 &#39;Obtuse Angle&#39;
             )
         )
-    
-    &#34;&#34;&#34;Test cases for are_arms_folded()&#34;&#34;&#34;
+
+    &#34;&#34;&#34;Test cases for are_arms_folded()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_are_arms_folded(
             self,
@@ -1526,7 +1534,7 @@ not have a method with the specified name.</p></div>
             The expected output of the function
         test : str
             The type of unit test performed
-        
+
         Returns
         -------
         str
@@ -1546,22 +1554,22 @@ not have a method with the specified name.</p></div>
                     Output: {output}\n\
                   Expected: {expected}\n\
                 =============================================&#39;
-    
+
     def test_are_arms_folded_missing(self) -&gt; None:
         &#34;&#34;&#34;Checks that the function returns ``False`` if at least one input is missing
 
         The function requires all coordinates to perform the check.
         &#34;&#34;&#34;
-        
+
         # Initialise coordinates
         pose = [(i, i) for i in range(17)]
         required_coordinates = {
-            self.node._KP_LEFT_SHOULDER,
-            self.node._KP_LEFT_ELBOW,
-            self.node._KP_LEFT_WRIST,
-            self.node._KP_RIGHT_SHOULDER,
-            self.node._KP_RIGHT_ELBOW,
-            self.node._KP_RIGHT_WRIST
+            self.node.KP_LEFT_SHOULDER,
+            self.node.KP_LEFT_ELBOW,
+            self.node.KP_LEFT_WRIST,
+            self.node.KP_RIGHT_SHOULDER,
+            self.node.KP_RIGHT_ELBOW,
+            self.node.KP_RIGHT_WRIST
         }
         coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
 
@@ -1569,18 +1577,18 @@ not have a method with the specified name.</p></div>
         for i, selected_coordinates in enumerate(chain(
                 *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
         )):
-            left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_SHOULDER]
-            left_elbow = None if self.node._KP_LEFT_ELBOW in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_ELBOW]
-            left_wrist = None if self.node._KP_LEFT_WRIST in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_WRIST]
-            right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_SHOULDER]
-            right_elbow = None if self.node._KP_RIGHT_ELBOW in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_ELBOW]
-            right_wrist = None if self.node._KP_RIGHT_WRIST in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_WRIST]
+            left_shoulder = None if self.node.KP_LEFT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_SHOULDER]
+            left_elbow = None if self.node.KP_LEFT_ELBOW in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_ELBOW]
+            left_wrist = None if self.node.KP_LEFT_WRIST in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_WRIST]
+            right_shoulder = None if self.node.KP_RIGHT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_SHOULDER]
+            right_elbow = None if self.node.KP_RIGHT_ELBOW in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_ELBOW]
+            right_wrist = None if self.node.KP_RIGHT_WRIST in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_WRIST]
 
             # Obtain the result
             res = self.node.are_arms_folded(
@@ -1607,7 +1615,7 @@ not have a method with the specified name.</p></div>
                     f&#39;One or more Missing Inputs (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_touching_face(self) -&gt; None:
         &#34;&#34;&#34;Checks that the arms are not considered folded if the pose is touching the face&#34;&#34;&#34;
 
@@ -1620,7 +1628,7 @@ not have a method with the specified name.</p></div>
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -1646,7 +1654,7 @@ not have a method with the specified name.</p></div>
                     f&#39;Touching Face instead of Folding Arms (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_outstretched_arms(self) -&gt; None:
         &#34;&#34;&#34;Check that outstretched arms are not considered folded&#34;&#34;&#34;
 
@@ -1659,7 +1667,7 @@ not have a method with the specified name.</p></div>
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -1685,7 +1693,7 @@ not have a method with the specified name.</p></div>
                     f&#39;Arms Outstretched (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_half_cross(self) -&gt; None:
         &#34;&#34;&#34;Checks that half-crossed arms are considered folded&#34;&#34;&#34;
 
@@ -1698,7 +1706,7 @@ not have a method with the specified name.</p></div>
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -1724,7 +1732,7 @@ not have a method with the specified name.</p></div>
                     f&#39;Arms Half-Crossed (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_are_arms_folded_full_cross(self) -&gt; None:
         &#34;&#34;&#34;Checks that fully-crossed arms are considered folded&#34;&#34;&#34;
 
@@ -1737,7 +1745,7 @@ not have a method with the specified name.</p></div>
                 right_shoulder, \
                 right_elbow, \
                 right_wrist = coordinates
-            
+
             # Obtain the result
             res = self.node.are_arms_folded(
                 left_shoulder,
@@ -1764,7 +1772,7 @@ not have a method with the specified name.</p></div>
                 )
             )
 
-    &#34;&#34;&#34;Test cases for is_face_touched()&#34;&#34;&#34;
+    &#34;&#34;&#34;Test cases for is_face_touched()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_is_face_touched(
             self,
@@ -1809,7 +1817,7 @@ not have a method with the specified name.</p></div>
             The expected output of the function
         test : str
             The type of unit test performed
-        
+
         Returns
         -------
         str
@@ -1832,7 +1840,7 @@ not have a method with the specified name.</p></div>
                     Output: {output}\n\
                   Expected: {expected}\n\
                 =============================================&#39;
-    
+
     def test_is_face_touched_all_missing(self) -&gt; None:
         &#34;&#34;&#34;Checks that undefined poses return ``False``&#34;&#34;&#34;
 
@@ -1867,10 +1875,10 @@ not have a method with the specified name.</p></div>
                 &#39;Touching Face All Missing&#39;
             )
         )
-    
+
     def test_is_face_touched_negative_some_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses are undefined if all of the keypoints in a required set are undefined
-        
+
         The function requires that at least one keypoint in each set of keypoints is defined.
         &#34;&#34;&#34;
 
@@ -1912,7 +1920,7 @@ not have a method with the specified name.</p></div>
                     f&#39;Touching Face Negative Some Defined (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_is_face_touched_negative_all_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses that do not meet the requirement are considered not touching face&#34;&#34;&#34;
 
@@ -1958,7 +1966,7 @@ not have a method with the specified name.</p></div>
 
     def test_is_face_touched_positive_some_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses are considered as touching face even with some undefined keypoints
-        
+
         The function is expected to check every possible pair of points
             for one that meets the requirement for touching face.
         &#34;&#34;&#34;
@@ -1986,7 +1994,7 @@ not have a method with the specified name.</p></div>
                 right_eye, \
                 left_ear, \
                 right_ear, = coordinates
-            
+
             # Obtain the result
             res = self.node.is_face_touched(
                 left_elbow,
@@ -2018,7 +2026,7 @@ not have a method with the specified name.</p></div>
                     f&#39;Touching Face Positive Some Defined (Case {case + 1})&#39;
                 )
             )
-    
+
     def test_is_face_touched_all_defined(self) -&gt; None:
         &#34;&#34;&#34;Checks that poses where the face is touched is considered as touching face&#34;&#34;&#34;
 
@@ -2034,7 +2042,7 @@ not have a method with the specified name.</p></div>
                 right_eye, \
                 left_ear, \
                 right_ear, = coordinates
-            
+
             # Obtain the result
             res = self.node.is_face_touched(
                 left_elbow,
@@ -2067,7 +2075,7 @@ not have a method with the specified name.</p></div>
                 )
             )
 
-    &#34;&#34;&#34;Test cases for is_leaning()&#34;&#34;&#34;
+    &#34;&#34;&#34;Test cases for is_leaning()&#34;&#34;&#34;  # pylint: disable=pointless-string-statement
 
     def error_msg_is_leaning(
             self,
@@ -2097,7 +2105,7 @@ not have a method with the specified name.</p></div>
             The expected output of the function
         test : str
             The type of unit test performed
-        
+
         Returns
         -------
         str
@@ -2115,20 +2123,20 @@ not have a method with the specified name.</p></div>
                     Output: {output}\n\
                   Expected: {expected}\n\
                 =============================================&#39;
-    
+
     def test_is_leaning_folded_missing(self) -&gt; None:
         &#34;&#34;&#34;Checks that the function returns ``False`` if at least one input is missing
 
         The function requires all coordinates to perform the check.
         &#34;&#34;&#34;
-        
+
         # Initialise coordinates
         pose = [(i, i) for i in range(17)]
         required_coordinates = {
-            self.node._KP_LEFT_SHOULDER,
-            self.node._KP_RIGHT_SHOULDER,
-            self.node._KP_LEFT_HIP,
-            self.node._KP_RIGHT_HIP
+            self.node.KP_LEFT_SHOULDER,
+            self.node.KP_RIGHT_SHOULDER,
+            self.node.KP_LEFT_HIP,
+            self.node.KP_RIGHT_HIP
         }
         coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
 
@@ -2136,14 +2144,14 @@ not have a method with the specified name.</p></div>
         for i, selected_coordinates in enumerate(chain(
                 *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
         )):
-            left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_SHOULDER]
-            right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_SHOULDER]
-            left_hip = None if self.node._KP_LEFT_HIP in selected_coordinates else \
-                coordinates[self.node._KP_LEFT_HIP]
-            right_hip = None if self.node._KP_RIGHT_HIP in selected_coordinates else \
-                coordinates[self.node._KP_RIGHT_HIP]
+            left_shoulder = None if self.node.KP_LEFT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_SHOULDER]
+            right_shoulder = None if self.node.KP_RIGHT_SHOULDER in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_SHOULDER]
+            left_hip = None if self.node.KP_LEFT_HIP in selected_coordinates else \
+                coordinates[self.node.KP_LEFT_HIP]
+            right_hip = None if self.node.KP_RIGHT_HIP in selected_coordinates else \
+                coordinates[self.node.KP_RIGHT_HIP]
 
             # Obtain the result
             res = self.node.is_leaning(
@@ -2166,7 +2174,7 @@ not have a method with the specified name.</p></div>
                     f&#39;One or more Missing Inputs (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_is_leaning_negative(self) -&gt; None:
         &#34;&#34;&#34;Checks that non-leaning poses are considered not leaning&#34;&#34;&#34;
 
@@ -2177,7 +2185,7 @@ not have a method with the specified name.</p></div>
                 right_shoulder, \
                 left_hip, \
                 right_hip = coordinates
-            
+
             # Obtain the result
             res = self.node.is_leaning(
                 left_shoulder,
@@ -2199,7 +2207,7 @@ not have a method with the specified name.</p></div>
                     f&#39;Non-Leaning Pose (Case {i + 1})&#39;
                 )
             )
-    
+
     def test_is_leaning_positive(self) -&gt; None:
         &#34;&#34;&#34;Checks that true leaning poses are considered leaning&#34;&#34;&#34;
 
@@ -2210,7 +2218,7 @@ not have a method with the specified name.</p></div>
                 right_shoulder, \
                 left_hip, \
                 right_hip = coordinates
-            
+
             # Obtain the result
             res = self.node.is_leaning(
                 left_shoulder,
@@ -2243,7 +2251,7 @@ not have a method with the specified name.</p></div>
 <span>def <span class="ident">error_msg_angle_between_vectors_in_rad</span></span>(<span>self, v1: Tuple[int, int], v2: Tuple[int, int], output: float, expected: float, test: str, *, precision: int = 6) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Template for unit test error messages for <code>_angle_between_vectors_in_rad()</code></p>
+<div class="desc"><p>Template for unit test error messages for <code>angle_between_vectors_in_rad()</code></p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>v1</code></strong> :&ensp;<code>Coord</code></dt>
@@ -2278,7 +2286,7 @@ not have a method with the specified name.</p></div>
         *,
         precision: int = _DECIMAL_PRECISION
 ) -&gt; str:
-    &#34;&#34;&#34;Template for unit test error messages for `_angle_between_vectors_in_rad()`
+    &#34;&#34;&#34;Template for unit test error messages for `angle_between_vectors_in_rad()`
 
     Parameters
     ----------
@@ -2294,7 +2302,7 @@ not have a method with the specified name.</p></div>
         The type of unit test performed
     precision : int, default=`_DECIMAL_PRECISION`
         The expected decimal precision of the outputs
-    
+
     Returns
     -------
     str
@@ -2303,7 +2311,7 @@ not have a method with the specified name.</p></div>
 
     return f&#39;\n\
             =============================================\n\
-              Function: _angle_between_vectors_in_rad()\n\
+              Function: angle_between_vectors_in_rad()\n\
              Test Type: {test}\n\
             Parameters: v1 = {v1}, v2 = {v2}\n\
              Precision: {precision}\n\
@@ -2381,7 +2389,7 @@ not have a method with the specified name.</p></div>
         The expected output of the function
     test : str
         The type of unit test performed
-    
+
     Returns
     -------
     str
@@ -2487,7 +2495,7 @@ not have a method with the specified name.</p></div>
         The expected output of the function
     test : str
         The type of unit test performed
-    
+
     Returns
     -------
     str
@@ -2571,7 +2579,7 @@ not have a method with the specified name.</p></div>
         The expected output of the function
     test : str
         The type of unit test performed
-    
+
     Returns
     -------
     str
@@ -2603,7 +2611,11 @@ not have a method with the specified name.</p></div>
 <pre><code class="python">def setUp(self) -&gt; None:
     &#34;&#34;&#34;Initialises the Node object used for unit testing&#34;&#34;&#34;
 
-    with open(&#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;, &#39;r&#39;) as config_file:
+    # Initialise YML filepath
+    filepath = &#39;analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml&#39;
+
+    # Obtain Node instance
+    with open(filepath, &#39;r&#39;, encoding=&#39;utf-8&#39;) as config_file:
         config = safe_load(config_file)
         self.node = Node(config=config)</code></pre>
 </details>
@@ -2646,10 +2658,10 @@ should be <span><span class="MathJax_Preview"> \frac {\pi} {4} </span><script ty
            (1, 0)
       0   1   2   3
     ```
-    
-    The angle between 
-        \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
-        \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\) 
+
+    The angle between
+        \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and
+        \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\)
     should be \\( \\frac {\\pi} {4} \\) radians.
     &#34;&#34;&#34;
 
@@ -2658,7 +2670,7 @@ should be <span><span class="MathJax_Preview"> \frac {\pi} {4} </span><script ty
     v2 = (1, 1)
 
     # Obtain results
-    res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+    res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
     # Perform assertion checks
     self.assertAlmostEqual(
@@ -2687,7 +2699,7 @@ should be <span><span class="MathJax_Preview"> \frac {\pi} {4} </span><script ty
 </summary>
 <pre><code class="python">def test_angle_between_vectors_in_rad_associativity(self) -&gt; None:
     &#34;&#34;&#34;Checks that the function is associative
-    
+
     The order in which the vectors are passed into the function should not matter.
     &#34;&#34;&#34;
 
@@ -2696,8 +2708,8 @@ should be <span><span class="MathJax_Preview"> \frac {\pi} {4} </span><script ty
     v2 = (-2, 5)
 
     # Obtain results
-    r1 = self.node._angle_between_vectors_in_rad(*v1, *v2)
-    r2 = self.node._angle_between_vectors_in_rad(*v2, *v1)
+    r1 = self.node.angle_between_vectors_in_rad(*v1, *v2)
+    r2 = self.node.angle_between_vectors_in_rad(*v2, *v1)
 
     # Perform assertion checks
     self.assertAlmostEqual(
@@ -2726,7 +2738,7 @@ should be <span><span class="MathJax_Preview"> \frac {\pi} {4} </span><script ty
 </summary>
 <pre><code class="python">def test_angle_between_vectors_in_rad_identical(self) -&gt; None:
     &#34;&#34;&#34;Checks the resultant angle between two identical non-zero vectors
-    
+
     Two identical non-zero vectors should make an angle of `0` radians between them.
     &#34;&#34;&#34;
 
@@ -2734,7 +2746,7 @@ should be <span><span class="MathJax_Preview"> \frac {\pi} {4} </span><script ty
     vec = (0, 1)
 
     # Obtain results
-    res = self.node._angle_between_vectors_in_rad(*vec, *vec)
+    res = self.node.angle_between_vectors_in_rad(*vec, *vec)
 
     # Perform assertion checks
     self.assertAlmostEqual(
@@ -2789,10 +2801,10 @@ should be <span><span class="MathJax_Preview"> \frac {3 \pi} {4} </span><script 
                     (1, 0)
        -2  -1  0   1   2   3
     ```
-        
+
     The angle between
-        \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and 
-        \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\) 
+        \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\) and
+        \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix} \\)
     should be \\( \\frac {3 \\pi} {4} \\) radians.
     &#34;&#34;&#34;
 
@@ -2801,7 +2813,7 @@ should be <span><span class="MathJax_Preview"> \frac {3 \pi} {4} </span><script 
     v2 = (-1, 1)
 
     # Obtain results
-    res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+    res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
     # Perform assertion checks
     self.assertAlmostEqual(
@@ -2831,8 +2843,8 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
 </summary>
 <pre><code class="python">def test_angle_between_vectors_in_rad_opposite(self) -&gt; None:
     &#34;&#34;&#34;Checks the resultant angle between two non-zero vectors of equal magnitude but opposite direction
-    
-    Two non-zero vectors of equal magnitude but opposite direction 
+
+    Two non-zero vectors of equal magnitude but opposite direction
         should make an angle of \\( \\pi \\) radians between them.
     &#34;&#34;&#34;
 
@@ -2841,7 +2853,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
     v2 = (0, -1)
 
     # Obtain results
-    res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+    res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
     # Perform assertion checks
     self.assertAlmostEqual(
@@ -2872,7 +2884,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
 <pre><code class="python">def test_angle_between_vectors_in_rad_orthogonal(self) -&gt; None:
     &#34;&#34;&#34;Checks the resultant angle between two orthogonal non-zero vectors
 
-    Two non-zero orthogonal vectors should make an angle of 
+    Two non-zero orthogonal vectors should make an angle of
         \\( \\frac {\\pi} {2} \\) radians between them.
     &#34;&#34;&#34;
 
@@ -2881,7 +2893,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
     v2 = (1, 0)
 
     # Obtain results
-    res = self.node._angle_between_vectors_in_rad(*v1, *v2)
+    res = self.node.angle_between_vectors_in_rad(*v1, *v2)
 
     # Perform assertion checks
     self.assertAlmostEqual(
@@ -2910,7 +2922,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
 </summary>
 <pre><code class="python">def test_angle_between_vectors_in_rad_zero(self) -&gt; None:
     &#34;&#34;&#34;Checks if passing a zero vector into the function results in an error
-    
+
     The function is expected to output ``Node.ERROR_OUTPUT``.
     &#34;&#34;&#34;
 
@@ -2919,9 +2931,9 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
     vec = (0, 1)
 
     # Obtain results
-    r1 = self.node._angle_between_vectors_in_rad(*zero, *vec)
-    r2 = self.node._angle_between_vectors_in_rad(*vec, *zero)
-    r3 = self.node._angle_between_vectors_in_rad(*zero, *zero)
+    r1 = self.node.angle_between_vectors_in_rad(*zero, *vec)
+    r2 = self.node.angle_between_vectors_in_rad(*vec, *zero)
+    r3 = self.node.angle_between_vectors_in_rad(*zero, *zero)
 
     # Perform assertion checks
     self.assertEqual(
@@ -2983,7 +2995,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
             right_shoulder, \
             right_elbow, \
             right_wrist = coordinates
-        
+
         # Obtain the result
         res = self.node.are_arms_folded(
             left_shoulder,
@@ -3032,7 +3044,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
             right_shoulder, \
             right_elbow, \
             right_wrist = coordinates
-        
+
         # Obtain the result
         res = self.node.are_arms_folded(
             left_shoulder,
@@ -3075,16 +3087,16 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
 
     The function requires all coordinates to perform the check.
     &#34;&#34;&#34;
-    
+
     # Initialise coordinates
     pose = [(i, i) for i in range(17)]
     required_coordinates = {
-        self.node._KP_LEFT_SHOULDER,
-        self.node._KP_LEFT_ELBOW,
-        self.node._KP_LEFT_WRIST,
-        self.node._KP_RIGHT_SHOULDER,
-        self.node._KP_RIGHT_ELBOW,
-        self.node._KP_RIGHT_WRIST
+        self.node.KP_LEFT_SHOULDER,
+        self.node.KP_LEFT_ELBOW,
+        self.node.KP_LEFT_WRIST,
+        self.node.KP_RIGHT_SHOULDER,
+        self.node.KP_RIGHT_ELBOW,
+        self.node.KP_RIGHT_WRIST
     }
     coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
 
@@ -3092,18 +3104,18 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
     for i, selected_coordinates in enumerate(chain(
             *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
     )):
-        left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
-            coordinates[self.node._KP_LEFT_SHOULDER]
-        left_elbow = None if self.node._KP_LEFT_ELBOW in selected_coordinates else \
-            coordinates[self.node._KP_LEFT_ELBOW]
-        left_wrist = None if self.node._KP_LEFT_WRIST in selected_coordinates else \
-            coordinates[self.node._KP_LEFT_WRIST]
-        right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
-            coordinates[self.node._KP_RIGHT_SHOULDER]
-        right_elbow = None if self.node._KP_RIGHT_ELBOW in selected_coordinates else \
-            coordinates[self.node._KP_RIGHT_ELBOW]
-        right_wrist = None if self.node._KP_RIGHT_WRIST in selected_coordinates else \
-            coordinates[self.node._KP_RIGHT_WRIST]
+        left_shoulder = None if self.node.KP_LEFT_SHOULDER in selected_coordinates else \
+            coordinates[self.node.KP_LEFT_SHOULDER]
+        left_elbow = None if self.node.KP_LEFT_ELBOW in selected_coordinates else \
+            coordinates[self.node.KP_LEFT_ELBOW]
+        left_wrist = None if self.node.KP_LEFT_WRIST in selected_coordinates else \
+            coordinates[self.node.KP_LEFT_WRIST]
+        right_shoulder = None if self.node.KP_RIGHT_SHOULDER in selected_coordinates else \
+            coordinates[self.node.KP_RIGHT_SHOULDER]
+        right_elbow = None if self.node.KP_RIGHT_ELBOW in selected_coordinates else \
+            coordinates[self.node.KP_RIGHT_ELBOW]
+        right_wrist = None if self.node.KP_RIGHT_WRIST in selected_coordinates else \
+            coordinates[self.node.KP_RIGHT_WRIST]
 
         # Obtain the result
         res = self.node.are_arms_folded(
@@ -3153,7 +3165,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
             right_shoulder, \
             right_elbow, \
             right_wrist = coordinates
-        
+
         # Obtain the result
         res = self.node.are_arms_folded(
             left_shoulder,
@@ -3202,7 +3214,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
             right_shoulder, \
             right_elbow, \
             right_wrist = coordinates
-        
+
         # Obtain the result
         res = self.node.are_arms_folded(
             left_shoulder,
@@ -3254,7 +3266,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
             right_eye, \
             left_ear, \
             right_ear, = coordinates
-        
+
         # Obtain the result
         res = self.node.is_face_touched(
             left_elbow,
@@ -3398,7 +3410,7 @@ should make an angle of <span><span class="MathJax_Preview"> \pi </span><script 
 </summary>
 <pre><code class="python">def test_is_face_touched_negative_some_defined(self) -&gt; None:
     &#34;&#34;&#34;Checks that poses are undefined if all of the keypoints in a required set are undefined
-    
+
     The function requires that at least one keypoint in each set of keypoints is defined.
     &#34;&#34;&#34;
 
@@ -3455,7 +3467,7 @@ for one that meets the requirement for touching face.</p></div>
 </summary>
 <pre><code class="python">def test_is_face_touched_positive_some_defined(self) -&gt; None:
     &#34;&#34;&#34;Checks that poses are considered as touching face even with some undefined keypoints
-    
+
     The function is expected to check every possible pair of points
         for one that meets the requirement for touching face.
     &#34;&#34;&#34;
@@ -3483,7 +3495,7 @@ for one that meets the requirement for touching face.</p></div>
             right_eye, \
             left_ear, \
             right_ear, = coordinates
-        
+
         # Obtain the result
         res = self.node.is_face_touched(
             left_elbow,
@@ -3532,14 +3544,14 @@ for one that meets the requirement for touching face.</p></div>
 
     The function requires all coordinates to perform the check.
     &#34;&#34;&#34;
-    
+
     # Initialise coordinates
     pose = [(i, i) for i in range(17)]
     required_coordinates = {
-        self.node._KP_LEFT_SHOULDER,
-        self.node._KP_RIGHT_SHOULDER,
-        self.node._KP_LEFT_HIP,
-        self.node._KP_RIGHT_HIP
+        self.node.KP_LEFT_SHOULDER,
+        self.node.KP_RIGHT_SHOULDER,
+        self.node.KP_LEFT_HIP,
+        self.node.KP_RIGHT_HIP
     }
     coordinates = {joint: coordinate for joint, coordinate in enumerate(pose) if joint in required_coordinates}
 
@@ -3547,14 +3559,14 @@ for one that meets the requirement for touching face.</p></div>
     for i, selected_coordinates in enumerate(chain(
             *(combinations(required_coordinates, num + 1) for num in range(len(required_coordinates)))
     )):
-        left_shoulder = None if self.node._KP_LEFT_SHOULDER in selected_coordinates else \
-            coordinates[self.node._KP_LEFT_SHOULDER]
-        right_shoulder = None if self.node._KP_RIGHT_SHOULDER in selected_coordinates else \
-            coordinates[self.node._KP_RIGHT_SHOULDER]
-        left_hip = None if self.node._KP_LEFT_HIP in selected_coordinates else \
-            coordinates[self.node._KP_LEFT_HIP]
-        right_hip = None if self.node._KP_RIGHT_HIP in selected_coordinates else \
-            coordinates[self.node._KP_RIGHT_HIP]
+        left_shoulder = None if self.node.KP_LEFT_SHOULDER in selected_coordinates else \
+            coordinates[self.node.KP_LEFT_SHOULDER]
+        right_shoulder = None if self.node.KP_RIGHT_SHOULDER in selected_coordinates else \
+            coordinates[self.node.KP_RIGHT_SHOULDER]
+        left_hip = None if self.node.KP_LEFT_HIP in selected_coordinates else \
+            coordinates[self.node.KP_LEFT_HIP]
+        right_hip = None if self.node.KP_RIGHT_HIP in selected_coordinates else \
+            coordinates[self.node.KP_RIGHT_HIP]
 
         # Obtain the result
         res = self.node.is_leaning(
@@ -3598,7 +3610,7 @@ for one that meets the requirement for touching face.</p></div>
             right_shoulder, \
             left_hip, \
             right_hip = coordinates
-        
+
         # Obtain the result
         res = self.node.is_leaning(
             left_shoulder,
@@ -3641,7 +3653,7 @@ for one that meets the requirement for touching face.</p></div>
             right_shoulder, \
             left_hip, \
             right_hip = coordinates
-        
+
         # Obtain the result
         res = self.node.is_leaning(
             left_shoulder,

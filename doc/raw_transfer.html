@@ -35,10 +35,11 @@ and edits the source location in the YML file to the filepath of the located fil
 
 This script edits the pipeline config YML file in the analysis pipeline.
 
-The script locates the recorded .mp4 file created from the raw video pipeline 
+The script locates the recorded .mp4 file created from the raw video pipeline
     and edits the source location in the YML file to the filepath of the located file.
 &#34;&#34;&#34;
 
+# pylint: disable=invalid-name
 
 import os
 import re
@@ -56,14 +57,14 @@ def main():
     newest_mp3_path = os.path.join(MP3_DIR, newest_mp3).replace(&#34;\\&#34;, &#34;\\\\&#34;)
 
     # Read the contents of the yml file
-    with open(YML_DIR, &#39;r&#39;) as file:
+    with open(YML_DIR, &#39;r&#39;, encoding=&#39;utf-8&#39;) as file:
         contents = file.read()
 
     # Use regular expression to replace only the text after &#34;source: &#34; on the specific line
     contents = re.sub(r&#34;source:.*&#34;, f&#39;source: {newest_mp3_path}&#39;, contents)
 
     # Write the modified contents back to the yml file
-    with open(YML_DIR, &#39;w&#39;) as file:
+    with open(YML_DIR, &#39;w&#39;, encoding=&#39;utf-8&#39;) as file:
         file.write(contents)
 
 
@@ -99,14 +100,14 @@ if __name__ == &#39;__main__&#39;:
     newest_mp3_path = os.path.join(MP3_DIR, newest_mp3).replace(&#34;\\&#34;, &#34;\\\\&#34;)
 
     # Read the contents of the yml file
-    with open(YML_DIR, &#39;r&#39;) as file:
+    with open(YML_DIR, &#39;r&#39;, encoding=&#39;utf-8&#39;) as file:
         contents = file.read()
 
     # Use regular expression to replace only the text after &#34;source: &#34; on the specific line
     contents = re.sub(r&#34;source:.*&#34;, f&#39;source: {newest_mp3_path}&#39;, contents)
 
     # Write the modified contents back to the yml file
-    with open(YML_DIR, &#39;w&#39;) as file:
+    with open(YML_DIR, &#39;w&#39;, encoding=&#39;utf-8&#39;) as file:
         file.write(contents)</code></pre>
 </details>
 </dd>

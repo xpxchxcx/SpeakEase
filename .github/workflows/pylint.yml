@@ -1,6 +1,12 @@
 name: Pylint
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -20,4 +26,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint --rcfile .pylintrc --fail-under 8.5 $(git ls-files '*.py')

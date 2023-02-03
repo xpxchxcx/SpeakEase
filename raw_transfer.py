@@ -2,10 +2,11 @@
 
 This script edits the pipeline config YML file in the analysis pipeline.
 
-The script locates the recorded .mp4 file created from the raw video pipeline 
+The script locates the recorded .mp4 file created from the raw video pipeline
     and edits the source location in the YML file to the filepath of the located file.
 """
 
+# pylint: disable=invalid-name
 
 import os
 import re
@@ -23,14 +24,14 @@ def main():
     newest_mp3_path = os.path.join(MP3_DIR, newest_mp3).replace("\\", "\\\\")
 
     # Read the contents of the yml file
-    with open(YML_DIR, 'r') as file:
+    with open(YML_DIR, 'r', encoding='utf-8') as file:
         contents = file.read()
 
     # Use regular expression to replace only the text after "source: " on the specific line
     contents = re.sub(r"source:.*", f'source: {newest_mp3_path}', contents)
 
     # Write the modified contents back to the yml file
-    with open(YML_DIR, 'w') as file:
+    with open(YML_DIR, 'w', encoding='utf-8') as file:
         file.write(contents)
 
 

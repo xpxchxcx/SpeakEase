@@ -6,17 +6,22 @@ It checks whether the poses satisfy any of the pose checkers defined in the cust
 Usage
 -----
 Navigate to this file in the terminal and run
-    ```python -m helper.py```
+
+```
+python -m helper.py
+```
 """
 
+# pylint: disable=invalid-name
 
 from itertools import product
 import re
 from typing import List, Mapping, Optional, Tuple
+from yaml import safe_load
+
+import matplotlib.pyplot as plt
 
 from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
-import matplotlib.pyplot as plt
-from yaml import safe_load
 
 
 # Initialise constants
@@ -25,7 +30,13 @@ Coord = Tuple[int, int]
 
 
 def get_node() -> Node:
-    with open('analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml', 'r') as config_file:
+    # TODO Documentation
+
+    # Initialise YML filepath
+    yml_filepath = 'analysis_video_pipeline/src/custom_nodes/configs/dabble/movement.yml'
+
+    # Obtain Node instance
+    with open(yml_filepath, 'r', encoding='utf-8') as config_file:
         config = safe_load(config_file)
         return Node(config=config)
 
@@ -35,15 +46,15 @@ def get_arms_folded_poses(
         keypoints: List[Optional[Coord]],
         to_draw: bool
 ) -> Optional[Tuple[Coord, ...]]:
-    """TODO documentation"""
+    # TODO documentation
 
     # Initialise joints
-    left_shoulder = keypoints[node._KP_LEFT_SHOULDER]
-    left_elbow = keypoints[node._KP_LEFT_ELBOW]
-    left_wrist = keypoints[node._KP_LEFT_WRIST]
-    right_shoulder = keypoints[node._KP_RIGHT_SHOULDER]
-    right_elbow = keypoints[node._KP_RIGHT_ELBOW]
-    right_wrist = keypoints[node._KP_RIGHT_WRIST]
+    left_shoulder = keypoints[node.KP_LEFT_SHOULDER]
+    left_elbow = keypoints[node.KP_LEFT_ELBOW]
+    left_wrist = keypoints[node.KP_LEFT_WRIST]
+    right_shoulder = keypoints[node.KP_RIGHT_SHOULDER]
+    right_elbow = keypoints[node.KP_RIGHT_ELBOW]
+    right_wrist = keypoints[node.KP_RIGHT_WRIST]
 
     # Check if arms are folded
     res = node.are_arms_folded(
@@ -79,14 +90,14 @@ def get_leaning_poses(
         keypoints: List[Optional[Coord]],
         to_draw: bool
 ) -> Optional[Tuple[Coord, ...]]:
-    """TODO documentation"""
+    # TODO documentation
 
     # Initialise joints
-    left_shoulder = keypoints[node._KP_LEFT_SHOULDER]
-    right_shoulder = keypoints[node._KP_RIGHT_SHOULDER]
-    left_hip = keypoints[node._KP_LEFT_HIP]
-    right_hip = keypoints[node._KP_RIGHT_HIP]
-    
+    left_shoulder = keypoints[node.KP_LEFT_SHOULDER]
+    right_shoulder = keypoints[node.KP_RIGHT_SHOULDER]
+    left_hip = keypoints[node.KP_LEFT_HIP]
+    right_hip = keypoints[node.KP_RIGHT_HIP]
+
     # Check if leaning
     res = node.is_leaning(
         left_shoulder,
@@ -115,19 +126,19 @@ def get_touching_face_poses(
         keypoints: List[Optional[Coord]],
         to_draw: bool
 ) -> Optional[Tuple[Optional[Coord], ...]]:
-    """TODO documentation"""
+    # TODO documentation
 
     # Initialise joints
-    left_elbow = keypoints[node._KP_LEFT_ELBOW]
-    right_elbow = keypoints[node._KP_RIGHT_ELBOW]
-    left_wrist = keypoints[node._KP_LEFT_WRIST]
-    right_wrist = keypoints[node._KP_RIGHT_WRIST]
-    nose = keypoints[node._KP_NOSE]
-    left_eye = keypoints[node._KP_LEFT_EYE]
-    right_eye = keypoints[node._KP_RIGHT_EYE]
-    left_ear = keypoints[node._KP_LEFT_EAR]
-    right_ear = keypoints[node._KP_RIGHT_EAR]
-    
+    left_elbow = keypoints[node.KP_LEFT_ELBOW]
+    right_elbow = keypoints[node.KP_RIGHT_ELBOW]
+    left_wrist = keypoints[node.KP_LEFT_WRIST]
+    right_wrist = keypoints[node.KP_RIGHT_WRIST]
+    nose = keypoints[node.KP_NOSE]
+    left_eye = keypoints[node.KP_LEFT_EYE]
+    right_eye = keypoints[node.KP_RIGHT_EYE]
+    left_ear = keypoints[node.KP_LEFT_EAR]
+    right_ear = keypoints[node.KP_RIGHT_EAR]
+
     # Check if leaning
     res = node.is_face_touched(
         left_elbow,
@@ -167,33 +178,34 @@ def get_touching_face_poses(
 
 
 def get_correct_poses() -> Tuple[Mapping[int, int], Mapping[int, int], Mapping[int, int]]:
-    """TODO documentation"""
+    # TODO documentation
 
     # Initialise constants
     node = get_node()
     draw_limit = 5
 
-    with open(filepath, 'r') as f:
-        arm_folded_poses = {}
+    with open(filepath, 'r', encoding='utf-8') as config_file:
+        # pylint: disable=redefined-outer-name
+        arms_folded_poses = {}
         leaning_poses = {}
         touching_face_poses = {}
 
-        for i, lst in enumerate(f.readlines()):
+        for i, lst in enumerate(config_file.readlines()):
             lst = [
                 None if x == 'None' else tuple(int(y) for y in x[1:-1].split(', ')) \
                 for x in re.split(r'(?<=[^0-9]), (?<=[^0-9])', lst[1:-2])
             ]
-            r1 = get_arms_folded_poses(node, lst, len(arm_folded_poses) < draw_limit)
+            r1 = get_arms_folded_poses(node, lst, len(arms_folded_poses) < draw_limit)
             r2 = get_leaning_poses(node, lst, len(leaning_poses) < draw_limit)
             r3 = get_touching_face_poses(node, lst, len(touching_face_poses) < draw_limit)
             if r1 is not None:
-                arm_folded_poses[i + 1] = r1
+                arms_folded_poses[i + 1] = r1
             if r2 is not None:
                 leaning_poses[i + 1] = r2
             if r3 is not None:
                 touching_face_poses[i + 1] = r3
 
-        return arm_folded_poses, leaning_poses, touching_face_poses
+        return arms_folded_poses, leaning_poses, touching_face_poses
 
 
 def plot_arm_folded_pose(
@@ -205,7 +217,7 @@ def plot_arm_folded_pose(
         right_wrist: Coord,
         arms_folded: bool
 ) -> None:
-    """TODO documentation"""
+    # TODO documentation
 
     plt.gca().invert_xaxis()
     plt.gca().invert_yaxis()
@@ -223,8 +235,8 @@ def plot_leaning_pose(
         right_hip: Coord,
         leaning: bool
 ) -> None:
-    """TODO documentation"""
-    
+    # TODO documentation
+
     plt.gca().invert_xaxis()
     plt.gca().invert_yaxis()
     plt.plot(*zip(right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder), marker='o')
@@ -244,7 +256,7 @@ def plot_touching_face_pose(
         right_ear: Optional[Coord],
         touching_face: bool
 ) -> None:
-    """TODO documentation"""
+    # TODO documentation
 
     plt.gca().invert_xaxis()
     plt.gca().invert_yaxis()
@@ -263,7 +275,7 @@ def plot_touching_face_pose(
             plt.plot(*zip(nose, right_eye), marker='o')
         if right_ear is not None:
             plt.plot(*zip(right_eye, right_ear), marker='o')
-    
+
     for c1, c2 in product(
             (left_elbow, left_wrist, right_elbow, right_wrist),
             (nose, left_eye, left_ear, right_eye, right_ear)
@@ -277,7 +289,7 @@ def plot_touching_face_pose(
 
 
 if __name__ == '__main__':
-    arms_folded, leaning, touching_face = get_correct_poses()
-    print(f'Arms Folded Poses: {arms_folded}\n')
-    print(f'Leaning Poses: {leaning}\n')
-    print(f'Touching Face: {touching_face}')
+    arms_folded_poses, leaning_poses, touching_face_poses = get_correct_poses()
+    print(f'Arms Folded Poses: {arms_folded_poses}\n')
+    print(f'Leaning Poses: {leaning_poses}\n')
+    print(f'Touching Face: {touching_face_poses}')
