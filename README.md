@@ -1,17 +1,21 @@
 # SpeakEase [![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg)](https://pypi.org/project/peekingduck/)
 
 <h4 align="center">
-  <a href="https://good-looking-ostrich.static.app/">API Documentation</a>
+  <a href="https://good-looking-ostrich.static.app/">API Docs</a>
   <span> · </span>
   <a href="https://github.com/xpxchxcx/SpeakEase/issues">Report a bug</a>
 </h4>
 
 ## Introduction
 
-SpeakEase is a low-cost **AI-assisted solution** aimed at **helping its users hone their public speaking abilities**. 
-When deployed, the application **records and analyses live presentations / presentation attempts**, 
-providing instant feedback to its users about their presentation postures.
+SpeakEase helps users overcome their fear of public speaking using computer vision to detect body language and provide feedback. 
+It's accessible, cost-effective, and eliminates need for physical mentors. 
+Improving public speaking skills, especially for those affected by glossophobia, SpeakEase empowers users to become confident speakers.
 
+### How it Works
+
+When deployed, the application records and analyses live presentations / presentation attempts, 
+providing instant feedback to its users about their presentation postures. 
 SpeakEase makes use of [PeekingDuck](https://github.com/aisingapore/PeekingDuck) to obtain pose estimations 
 and determines if the pose **violates common bad practices during public speaking**.
 Some of these bad practices currently supported are:
