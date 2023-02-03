@@ -8,6 +8,8 @@ This module should be part of a package that follows the file structure as speci
 [PeekingDuck documentation](https://peekingduck.readthedocs.io/en/stable/tutorials/03_custom_nodes.html).
 """
 
+# pylint: disable=invalid-name, logging-format-interpolation
+
 import logging
 from math import acos, pi, sqrt
 from typing import Any, Mapping, Optional, Tuple
@@ -31,7 +33,7 @@ class Node(AbstractNode):
     _BLUE = (255, 0, 0)
 
     # Define font properties for display purposes
-    _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
+    _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX  # pylint: disable=no-member
     _FONT_SCALE = 1
     _FONT_THICKNESS = 2
 
@@ -40,23 +42,23 @@ class Node(AbstractNode):
     # PoseNet's skeletal key points
     # https://discuss.tensorflow.org/uploads/default/original/2X/9/951fd6aaf5fec83500fe2e9891348416e13b66dd.png
     (
-        _KP_NOSE,
-        _KP_LEFT_EYE,
-        _KP_RIGHT_EYE,
-        _KP_LEFT_EAR,
-        _KP_RIGHT_EAR,
-        _KP_LEFT_SHOULDER,
-        _KP_RIGHT_SHOULDER,
-        _KP_LEFT_ELBOW,
-        _KP_RIGHT_ELBOW,
-        _KP_LEFT_WRIST,
-        _KP_RIGHT_WRIST,
-        _KP_LEFT_HIP,
-        _KP_RIGHT_HIP,
-        _KP_LEFT_KNEE,
-        _KP_RIGHT_KNEE,
-        _KP_LEFT_FOOT,
-        _KP_RIGHT_FOOT
+        KP_NOSE,
+        KP_LEFT_EYE,
+        KP_RIGHT_EYE,
+        KP_LEFT_EAR,
+        KP_RIGHT_EAR,
+        KP_LEFT_SHOULDER,
+        KP_RIGHT_SHOULDER,
+        KP_LEFT_ELBOW,
+        KP_RIGHT_ELBOW,
+        KP_LEFT_WRIST,
+        KP_RIGHT_WRIST,
+        KP_LEFT_HIP,
+        KP_RIGHT_HIP,
+        KP_LEFT_KNEE,
+        KP_RIGHT_KNEE,
+        KP_LEFT_FOOT,
+        KP_RIGHT_FOOT
     ) = range(17)
 
     def __init__(
@@ -86,18 +88,44 @@ class Node(AbstractNode):
 
     @property
     def height(self) -> int:
-        # Height of the displayed image, specified in pixels
+        """Height of the displayed image, specified in pixels
+
+        Returns
+        -------
+        int
+            Height of the displayed image, specified in pixels.
+
+            Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+        """
+
         return self.ERROR_OUTPUT if self._img is None else self._img.shape[0]
 
     @property
     def width(self) -> int:
-        # Width of the displayed image, specified in pixels
+        """Width of the displayed image, specified in pixels
+
+        Returns
+        -------
+        int
+            Width of the displayed image, specified in pixels.
+
+            Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+        """
+
         return self.ERROR_OUTPUT if self._img is None else self._img.shape[1]
-    
+
     @property
     def ERROR_OUTPUT(self) -> int:
-        # Define error return value as -1
-        # Computational functions will return non-negative input
+        """Defines the default output for encountered errors as `-1`
+
+        Computational functions will return non-negative input.
+
+        Returns
+        -------
+        int
+            `-1`, the default output.
+        """
+
         return -1
 
     def _map_coord_onto_img(
@@ -126,7 +154,7 @@ class Node(AbstractNode):
 
         # Check if image is defined
         if self.width == self.ERROR_OUTPUT or self.height == self.ERROR_OUTPUT:
-            self.logger.error(f'_map_coord_onto_img() trying to access image but it has not been defined yet.')
+            self.logger.error('_map_coord_onto_img() trying to access image but it has not been defined yet.')
             return self.ERROR_OUTPUT, self.ERROR_OUTPUT
 
         return round(x * self.width), round(y * self.height)
@@ -141,7 +169,7 @@ class Node(AbstractNode):
         Parameters
         ----------
         keypoint : tuple of floats
-            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint; 
+            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint;
                 0 <= `x` <= 1 and 0 <= `y` <= 1
         score : float
             Confidence score of the detected PoseNet keypoint
@@ -149,7 +177,7 @@ class Node(AbstractNode):
         Returns
         -------
         `Coord`, optional
-            Absolute coordinates of the detected PoseNet keypoint 
+            Absolute coordinates of the detected PoseNet keypoint
                 if its confidence score meets or exceeds the threshold confidence
         """
 
@@ -178,13 +206,13 @@ class Node(AbstractNode):
             Text to display
         font_colour : tuple of ints
             Colour of the text to display, specified in BGR format
-        
+
         Other Parameters
         ----------------
         font_face : int, default=`_FONT_FACE`
             Font type of the text to display.
 
-            Limited to a subset of Hershey Fonts as 
+            Limited to a subset of Hershey Fonts as
                 [supported by OpenCV](https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv).
         font_scale : float
             Relative size of the text to display
@@ -194,10 +222,10 @@ class Node(AbstractNode):
 
         # Check if image is defined
         if self._img is None:
-            self.logger.error(f'_display_text() trying to access image but it has not been defined yet.')
+            self.logger.error('_display_text() trying to access image but it has not been defined yet.')
             return
 
-        cv2.putText(
+        cv2.putText(  # pylint: disable=no-member
             img=self._img,  # type: ignore
             text=text,
             org=(x, y),
@@ -233,7 +261,7 @@ class Node(AbstractNode):
             ``True``if the person is detected to be leaning to one side, ``False`` otherwise
         face_touched : bool, default=False
             ``True`` if the person is detected to be touching their face, ``False`` otherwise
-        
+
         Notes
         -----
         All information will be displayed in the bottom-left corner (`x1`, `y2`) of the bounding box.
@@ -267,7 +295,7 @@ class Node(AbstractNode):
             num_lines += 1
             self._display_text(x, y - num_lines * line_height, 'Touching Face', self._BLUE)
 
-    def _angle_between_vectors_in_rad(
+    def angle_between_vectors_in_rad(
             self,
             x1: int,
             y1: int,
@@ -292,57 +320,54 @@ class Node(AbstractNode):
         Returns
         -------
         float
-            The (smaller) angle \\( \\Theta \\) between 
-                \\( \\overrightarrow{ V_{1} } \\) and 
+            The (smaller) angle \\( \\Theta \\) between
+                \\( \\overrightarrow{ V_{1} } \\) and
                 \\( \\overrightarrow{ V_{2} } \\).
-            
+
             Returns ``ERROR_OUTPUT`` instead if:
 
-            - Either one or both of 
-                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and 
+            - Either one or both of
+                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and
                 \\( \\overrightarrow{ V_{2} } = \\overrightarrow{0} \\)
             - \\( \\cos \\Theta \\notin [-1, 1] \\)
-        
+
         Notes
         -----
-        The cosine of the (smaller) angle between two vectors 
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\) 
+        The cosine of the (smaller) angle between two vectors
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\)
         is calculated by:
 
         $$
-        \\cos \\Theta 
-            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } } 
+        \\cos \\Theta
+            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } }
                     {\\left\\| \\overrightarrow{V_{1}} \\right\\| \\left\\| \\overrightarrow{V_{2}} \\right\\|}
             = \\frac {x_{1}x_{2} + y_{1}y_{2}}
                     {\\sqrt {{x_{1}}^2 + {y_{1}}^2} \\sqrt {{x_{2}}^2 + {y_{2}}^2}}
             ,\\ 0 \\le \\Theta \\le \\pi
         $$
-        
-        Hence, the angle \\( \\Theta \\) between 
-            \\( \\overrightarrow{ V_{1} } \\) and 
-            \\( \\overrightarrow{ V_{2} } \\) 
+
+        Hence, the angle \\( \\Theta \\) between
+            \\( \\overrightarrow{ V_{1} } \\) and
+            \\( \\overrightarrow{ V_{2} } \\)
         can be calculated by taking the inverse cosine of the result.
 
         Examples
         --------
-        `_angle_between_vectors_in_rad()` is a private function and should only be called internally.
-        Note that these examples serve the purpose of documentation and/or unit testing only.
-
         >>> node = Node()
 
         _The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\)._
 
         >>> v1 = (0, 1)
         >>> v2 = (1, 0)
-        >>> node._angle_between_vectors_in_rad(*v1, *v2)
+        >>> node.angle_between_vectors_in_rad(*v1, *v2)
         _1.5707963267948966_
-        >>> node._angle_between_vectors_in_rad(*v2, *v1)
+        >>> node.angle_between_vectors_in_rad(*v2, *v1)
         _1.5707963267948966_
 
         _The angle between two parallel vectors is `0`._
 
-        >>> node._angle_between_vectors_in_rad(*v1, *v1)
+        >>> node.angle_between_vectors_in_rad(*v1, *v1)
         _0.0_
         """
 
@@ -350,7 +375,7 @@ class Node(AbstractNode):
         if x1 == y1 == 0 or x2 == y2 == 0:
             self.logger.error(
                 f'One or more zero vectors v1 = ({x1}, {y1}) and ' +
-                f'v2 = ({x2}, {y2}) were passed into _angle_between_vectors_in_rad().'
+                f'v2 = ({x2}, {y2}) were passed into angle_between_vectors_in_rad().'
             )
             return self.ERROR_OUTPUT
 
@@ -363,12 +388,12 @@ class Node(AbstractNode):
         # Check if the cosine value is within acos domain of [-1, 1]
         if abs(cos_value) > 1:
             self.logger.error(
-                f'_angle_between_vectors_in_rad() obtained cosine value {cos_value} ' +
-                f'that is not within acos domain [-1, 1]. ' +
+                f'angle_between_vectors_in_rad() obtained cosine value {cos_value} ' +
+                'that is not within acos domain [-1, 1]. ' +
                 f'v1 · v2 = {dot_prod}, ||v1|| = {v1_magnitude}, ||v2|| = {v2_magnitude}'
             )
             return self.ERROR_OUTPUT
-        
+
         return acos(cos_value)
 
     def are_arms_folded(
@@ -401,7 +426,7 @@ class Node(AbstractNode):
         -------
         bool
             ``True`` if both arms are folded, ``False`` otherwise
-        
+
         Notes
         -----
         The line from the shoulder to the elbow intersects the line from the wrist to the elbow at the elbow.
@@ -450,12 +475,12 @@ class Node(AbstractNode):
         )
 
         # Calculate angle made between the left shoulder, left elbow, and left wrist
-        left_angle = self._angle_between_vectors_in_rad(
+        left_angle = self.angle_between_vectors_in_rad(
             *left_shoulder_elbow_vec,
             *left_wrist_elbow_vec
         )
         # Calculate angle made between the right shoulder, right elbow, and right wrist
-        right_angle = self._angle_between_vectors_in_rad(
+        right_angle = self.angle_between_vectors_in_rad(
             *right_shoulder_elbow_vec,
             *right_wrist_elbow_vec
         )
@@ -539,7 +564,7 @@ class Node(AbstractNode):
         -------
         bool
             ``True`` if either hand is touching the face, ``False`` otherwise
-        
+
         Notes
         -----
         A pose is considered to be touching the face if the following conditions are satisfied:
@@ -551,12 +576,12 @@ class Node(AbstractNode):
 
         # Define threshold for distance
         threshold = 100
-        
+
         # Obtain coordinates of defined limb
         for limb_coordinate in [left_elbow, right_elbow, left_wrist, right_wrist]:
             if limb_coordinate is None:
                 continue
-        
+
             # Obtain coordinates of defined facial feature
             for face_coordinate in [nose, left_eye, right_eye, left_ear, right_ear]:
                 if face_coordinate is None:
@@ -573,7 +598,7 @@ class Node(AbstractNode):
                 # Check if limb is touching the face
                 if dist < threshold:
                     return True
-        
+
         # No pair of coordinates exist that satisfy the distance threshold
         return False
 
@@ -600,12 +625,12 @@ class Node(AbstractNode):
             Tuple containing the `x` and `y` coordinates of the left knee
         right_knee : `Coord`, optional
             Tuple containing the `x` and `y` coordinates of the right knee
-        
+
         Returns
         -------
         bool
             ``True`` if the pose is leaning towards one side, ``False`` otherwise
-        
+
         Notes
         -----
         The line from the shoulder to the hip intersects the hip line.
@@ -630,14 +655,14 @@ class Node(AbstractNode):
         right_hip_x, right_hip_y = right_hip
 
         # Calculate the angle between left shoulder to left hip to left knee
-        left_angle = self._angle_between_vectors_in_rad(
+        left_angle = self.angle_between_vectors_in_rad(
             left_shoulder_x - left_hip_x,
             left_shoulder_y - left_hip_y,
             right_hip_x - left_hip_x,
             right_hip_y - left_hip_y
         )
         # Calculate the angle between right shoulder to right hip to right knee
-        right_angle = self._angle_between_vectors_in_rad(
+        right_angle = self.angle_between_vectors_in_rad(
             right_shoulder_x - right_hip_x,
             right_shoulder_y - right_hip_y,
             left_hip_x - right_hip_x,
@@ -666,11 +691,11 @@ class Node(AbstractNode):
         -------
         dict
             Empty dictionary
-        
+
         Notes
         -----
         This function keeps track of the following statistics:
-        
+
         - Total number of processed frames
         - Total number of frames where the pose had folded arms
         - Total number of frames where the pose was leaning
@@ -719,7 +744,8 @@ class Node(AbstractNode):
                     font_scale=0.5,
                     font_thickness=1
                 )
-            
+
+            # pylint: disable=pointless-string-statement
             """
             # Store the keypoints in a temporary text file for further processing
             with open('test.txt', 'a') as tmp_file:
@@ -728,29 +754,29 @@ class Node(AbstractNode):
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(
-                keypoint_list[self._KP_LEFT_SHOULDER],
-                keypoint_list[self._KP_LEFT_ELBOW],
-                keypoint_list[self._KP_LEFT_WRIST],
-                keypoint_list[self._KP_RIGHT_SHOULDER],
-                keypoint_list[self._KP_RIGHT_ELBOW],
-                keypoint_list[self._KP_RIGHT_WRIST]
+                keypoint_list[self.KP_LEFT_SHOULDER],
+                keypoint_list[self.KP_LEFT_ELBOW],
+                keypoint_list[self.KP_LEFT_WRIST],
+                keypoint_list[self.KP_RIGHT_SHOULDER],
+                keypoint_list[self.KP_RIGHT_ELBOW],
+                keypoint_list[self.KP_RIGHT_WRIST]
             )
             face_touched = self.is_face_touched(
-                keypoint_list[self._KP_LEFT_ELBOW],
-                keypoint_list[self._KP_RIGHT_ELBOW],
-                keypoint_list[self._KP_LEFT_WRIST],
-                keypoint_list[self._KP_RIGHT_WRIST],
-                keypoint_list[self._KP_NOSE],
-                keypoint_list[self._KP_LEFT_EYE],
-                keypoint_list[self._KP_RIGHT_EYE],
-                keypoint_list[self._KP_LEFT_EAR],
-                keypoint_list[self._KP_RIGHT_EAR]
+                keypoint_list[self.KP_LEFT_ELBOW],
+                keypoint_list[self.KP_RIGHT_ELBOW],
+                keypoint_list[self.KP_LEFT_WRIST],
+                keypoint_list[self.KP_RIGHT_WRIST],
+                keypoint_list[self.KP_NOSE],
+                keypoint_list[self.KP_LEFT_EYE],
+                keypoint_list[self.KP_RIGHT_EYE],
+                keypoint_list[self.KP_LEFT_EAR],
+                keypoint_list[self.KP_RIGHT_EAR]
             )
             is_leaning = self.is_leaning(
-                keypoint_list[self._KP_LEFT_SHOULDER],
-                keypoint_list[self._KP_RIGHT_SHOULDER],
-                keypoint_list[self._KP_LEFT_HIP],
-                keypoint_list[self._KP_RIGHT_HIP]
+                keypoint_list[self.KP_LEFT_SHOULDER],
+                keypoint_list[self.KP_RIGHT_SHOULDER],
+                keypoint_list[self.KP_LEFT_HIP],
+                keypoint_list[self.KP_RIGHT_HIP]
             )
 
             # Increment relevant counters
@@ -766,7 +792,7 @@ class Node(AbstractNode):
                 is_leaning=is_leaning,
                 face_touched=face_touched
             )
-        
+
         self._total_frame_count += 1
 
         # UI config

@@ -23,14 +23,18 @@ pip install matplotlib
 ```
 """
 
+# pylint: disable=invalid-name
+
 from itertools import product
-import matplotlib.pyplot as plt
 from typing import List, Optional, Tuple
+
+import matplotlib.pyplot as plt
 
 
 Coord = Tuple[int, int]  # Type-hinting alias for coordinates
 
 
+# pylint: disable=pointless-string-statement
 """Unit test cases for are_arms_folded()
 
 Each test case returns 6 coordinates (`x`, `y`) in the following order:
@@ -182,6 +186,7 @@ ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS: \
 ]
 
 
+# pylint: disable=pointless-string-statement
 """Unit test cases for is_leaning()
 
 Each test case returns 4 coordinates (`x`, `y`) in the following order:
@@ -267,6 +272,7 @@ IS_LEANING_NEGATIVE_CASES: \
 ]
 
 
+# pylint: disable=pointless-string-statement
 """Unit test cases for is_touching_face()
 
 Each test case returns 9 coordinates (`x`, `y`) in the following order:
@@ -342,7 +348,7 @@ IS_TOUCHING_FACE_POSITIVE_CASES_ALL_DEFINED: \
 ]
 
 
-"""Visualisation functions"""
+"""Visualisation functions"""  # pylint: disable=pointless-string-statement
 
 def visualise(
         title: str,
@@ -351,7 +357,7 @@ def visualise(
         invert_yaxis: bool = True
 ) -> None:
     """Visualise sets of coordinates in matplotlib
-    
+
     Parameters
     ----------
     title : str
@@ -368,15 +374,15 @@ def visualise(
         ``True`` if the y-axis of the graph should be inverted, ``False`` otherwise.
 
         The y-axis of the graph is inverted by default due to the OpenCV coordinate system.
-    
+
     Notes
     -----
-    Each set `((x1, y1), (x2, y2), ..., (xN, yN), ...)` of coordinates in `coord_sets` 
-        will be plotted in the order that they are passed; i.e., 
-        a segment line will be drawn first between `(x1, y1)` and `(x2, y2)`, 
-        then another segment line will be drawn between `(x2, y2)` and `(x3, y3)`, 
+    Each set `((x1, y1), (x2, y2), ..., (xN, yN), ...)` of coordinates in `coord_sets`
+        will be plotted in the order that they are passed; i.e.,
+        a segment line will be drawn first between `(x1, y1)` and `(x2, y2)`,
+        then another segment line will be drawn between `(x2, y2)` and `(x3, y3)`,
         etc., until all the coordinates are plotted onto the graph.
-    
+
     The sets of coordinates in `coord_sets` will also be plotted in the order that they are passed.
     """
 
@@ -386,13 +392,13 @@ def visualise(
         plt.gca().invert_xaxis()
     if invert_yaxis:
         plt.gca().invert_yaxis()
-    
+
     # Plot each set of coordinates
     for coord_set in coord_sets:
         if coord_set is None:
             continue
         plt.plot(*zip(*coord_set), marker='o')  # type: ignore
-    
+
     plt.show()
 
 
@@ -406,7 +412,7 @@ def visualise_are_arms_folded(
         right_wrist: Optional[Coord]
 ) -> None:
     """Visualise unit test inputs for `are_arms_folded()` in matplotlib
-    
+
     Parameters
     ----------
     title : str
@@ -441,7 +447,7 @@ def visualise_is_leaning(
         right_hip: Optional[Coord]
 ) -> None:
     """Visualise unit test inputs for `is_leaning()` in matplotlib
-    
+
     Parameters
     ----------
     title : str
@@ -475,7 +481,7 @@ def visualise_is_face_touched(
         right_ear: Optional[Coord]
 ) -> None:
     """Visualise unit test inputs for `is_face_touched()` in matplotlib
-    
+
     Parameters
     ----------
     title : str
@@ -499,7 +505,7 @@ def visualise_is_face_touched(
     right_ear : `Coord`, optional
         (`x`, `y`) coordinate of the right ear
     """
-    
+
     coord_sets = []
 
     # Plot elbow to wrist joints
@@ -507,7 +513,7 @@ def visualise_is_face_touched(
         coord_sets.append((left_elbow, left_wrist))
     if right_elbow is not None and right_wrist is not None:
         coord_sets.append((right_elbow, right_wrist))
-    
+
     # Plot facial features
     if left_eye is not None:
         if nose is not None:
@@ -519,7 +525,7 @@ def visualise_is_face_touched(
             coord_sets.append((nose, right_eye))
         if right_ear is not None:
             coord_sets.append((right_eye, right_ear))
-    
+
     # Plot limbs to facial features linkage(s)
     for c1, c2 in product(
             (left_elbow, left_wrist, right_elbow, right_wrist),
@@ -528,16 +534,16 @@ def visualise_is_face_touched(
         if c1 is None or c2 is None:
             continue
         coord_sets.append((c1, c2))
-    
+
     # Call the plotting function
     visualise(title, *coord_sets)
 
 
-"""Main function"""
+"""Main function"""  # pylint: disable=pointless-string-statement
 
-def main() -> None:
+def main() -> None:  # pylint: disable=pointless-string-statement
     """Uncomment the relevant lines to visualise the input(s)"""
-    
+
     """
     for i, test_case in enumerate(ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS):
         visualise_are_arms_folded(
@@ -553,7 +559,7 @@ def main() -> None:
             *test_case
         )
     """
-    
+
     """
     for i, test_case in enumerate(ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS):
         visualise_are_arms_folded(
@@ -594,7 +600,7 @@ def main() -> None:
         )
     """
 
-    pass
+    pass  # pylint: disable=unnecessary-pass
 
 if __name__ == '__main__':
     main()
