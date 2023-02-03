@@ -42,6 +42,8 @@ This module should be part of a package that follows the file structure as speci
 [PeekingDuck documentation](https://peekingduck.readthedocs.io/en/stable/tutorials/03_custom_nodes.html).
 &#34;&#34;&#34;
 
+# pylint: disable=invalid-name, logging-format-interpolation
+
 import logging
 from math import acos, pi, sqrt
 from typing import Any, Mapping, Optional, Tuple
@@ -65,7 +67,7 @@ class Node(AbstractNode):
     _BLUE = (255, 0, 0)
 
     # Define font properties for display purposes
-    _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
+    _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX  # pylint: disable=no-member
     _FONT_SCALE = 1
     _FONT_THICKNESS = 2
 
@@ -74,23 +76,23 @@ class Node(AbstractNode):
     # PoseNet&#39;s skeletal key points
     # https://discuss.tensorflow.org/uploads/default/original/2X/9/951fd6aaf5fec83500fe2e9891348416e13b66dd.png
     (
-        _KP_NOSE,
-        _KP_LEFT_EYE,
-        _KP_RIGHT_EYE,
-        _KP_LEFT_EAR,
-        _KP_RIGHT_EAR,
-        _KP_LEFT_SHOULDER,
-        _KP_RIGHT_SHOULDER,
-        _KP_LEFT_ELBOW,
-        _KP_RIGHT_ELBOW,
-        _KP_LEFT_WRIST,
-        _KP_RIGHT_WRIST,
-        _KP_LEFT_HIP,
-        _KP_RIGHT_HIP,
-        _KP_LEFT_KNEE,
-        _KP_RIGHT_KNEE,
-        _KP_LEFT_FOOT,
-        _KP_RIGHT_FOOT
+        KP_NOSE,
+        KP_LEFT_EYE,
+        KP_RIGHT_EYE,
+        KP_LEFT_EAR,
+        KP_RIGHT_EAR,
+        KP_LEFT_SHOULDER,
+        KP_RIGHT_SHOULDER,
+        KP_LEFT_ELBOW,
+        KP_RIGHT_ELBOW,
+        KP_LEFT_WRIST,
+        KP_RIGHT_WRIST,
+        KP_LEFT_HIP,
+        KP_RIGHT_HIP,
+        KP_LEFT_KNEE,
+        KP_RIGHT_KNEE,
+        KP_LEFT_FOOT,
+        KP_RIGHT_FOOT
     ) = range(17)
 
     def __init__(
@@ -120,18 +122,44 @@ class Node(AbstractNode):
 
     @property
     def height(self) -&gt; int:
-        # Height of the displayed image, specified in pixels
+        &#34;&#34;&#34;Height of the displayed image, specified in pixels
+
+        Returns
+        -------
+        int
+            Height of the displayed image, specified in pixels.
+
+            Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+        &#34;&#34;&#34;
+
         return self.ERROR_OUTPUT if self._img is None else self._img.shape[0]
 
     @property
     def width(self) -&gt; int:
-        # Width of the displayed image, specified in pixels
+        &#34;&#34;&#34;Width of the displayed image, specified in pixels
+
+        Returns
+        -------
+        int
+            Width of the displayed image, specified in pixels.
+
+            Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+        &#34;&#34;&#34;
+
         return self.ERROR_OUTPUT if self._img is None else self._img.shape[1]
-    
+
     @property
     def ERROR_OUTPUT(self) -&gt; int:
-        # Define error return value as -1
-        # Computational functions will return non-negative input
+        &#34;&#34;&#34;Defines the default output for encountered errors as `-1`
+
+        Computational functions will return non-negative input.
+
+        Returns
+        -------
+        int
+            `-1`, the default output.
+        &#34;&#34;&#34;
+
         return -1
 
     def _map_coord_onto_img(
@@ -160,7 +188,7 @@ class Node(AbstractNode):
 
         # Check if image is defined
         if self.width == self.ERROR_OUTPUT or self.height == self.ERROR_OUTPUT:
-            self.logger.error(f&#39;_map_coord_onto_img() trying to access image but it has not been defined yet.&#39;)
+            self.logger.error(&#39;_map_coord_onto_img() trying to access image but it has not been defined yet.&#39;)
             return self.ERROR_OUTPUT, self.ERROR_OUTPUT
 
         return round(x * self.width), round(y * self.height)
@@ -175,7 +203,7 @@ class Node(AbstractNode):
         Parameters
         ----------
         keypoint : tuple of floats
-            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint; 
+            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint;
                 0 &lt;= `x` &lt;= 1 and 0 &lt;= `y` &lt;= 1
         score : float
             Confidence score of the detected PoseNet keypoint
@@ -183,7 +211,7 @@ class Node(AbstractNode):
         Returns
         -------
         `Coord`, optional
-            Absolute coordinates of the detected PoseNet keypoint 
+            Absolute coordinates of the detected PoseNet keypoint
                 if its confidence score meets or exceeds the threshold confidence
         &#34;&#34;&#34;
 
@@ -212,13 +240,13 @@ class Node(AbstractNode):
             Text to display
         font_colour : tuple of ints
             Colour of the text to display, specified in BGR format
-        
+
         Other Parameters
         ----------------
         font_face : int, default=`_FONT_FACE`
             Font type of the text to display.
 
-            Limited to a subset of Hershey Fonts as 
+            Limited to a subset of Hershey Fonts as
                 [supported by OpenCV](https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv).
         font_scale : float
             Relative size of the text to display
@@ -228,10 +256,10 @@ class Node(AbstractNode):
 
         # Check if image is defined
         if self._img is None:
-            self.logger.error(f&#39;_display_text() trying to access image but it has not been defined yet.&#39;)
+            self.logger.error(&#39;_display_text() trying to access image but it has not been defined yet.&#39;)
             return
 
-        cv2.putText(
+        cv2.putText(  # pylint: disable=no-member
             img=self._img,  # type: ignore
             text=text,
             org=(x, y),
@@ -267,7 +295,7 @@ class Node(AbstractNode):
             ``True``if the person is detected to be leaning to one side, ``False`` otherwise
         face_touched : bool, default=False
             ``True`` if the person is detected to be touching their face, ``False`` otherwise
-        
+
         Notes
         -----
         All information will be displayed in the bottom-left corner (`x1`, `y2`) of the bounding box.
@@ -301,7 +329,7 @@ class Node(AbstractNode):
             num_lines += 1
             self._display_text(x, y - num_lines * line_height, &#39;Touching Face&#39;, self._BLUE)
 
-    def _angle_between_vectors_in_rad(
+    def angle_between_vectors_in_rad(
             self,
             x1: int,
             y1: int,
@@ -326,65 +354,62 @@ class Node(AbstractNode):
         Returns
         -------
         float
-            The (smaller) angle \\( \\Theta \\) between 
-                \\( \\overrightarrow{ V_{1} } \\) and 
+            The (smaller) angle \\( \\Theta \\) between
+                \\( \\overrightarrow{ V_{1} } \\) and
                 \\( \\overrightarrow{ V_{2} } \\).
-            
+
             Returns ``ERROR_OUTPUT`` instead if:
 
-            - Either one or both of 
-                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and 
+            - Either one or both of
+                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and
                 \\( \\overrightarrow{ V_{2} } = \\overrightarrow{0} \\)
             - \\( \\cos \\Theta \\notin [-1, 1] \\)
-        
+
         Notes
         -----
-        The cosine of the (smaller) angle between two vectors 
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\) 
+        The cosine of the (smaller) angle between two vectors
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\)
         is calculated by:
 
         $$
-        \\cos \\Theta 
-            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } } 
+        \\cos \\Theta
+            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } }
                     {\\left\\| \\overrightarrow{V_{1}} \\right\\| \\left\\| \\overrightarrow{V_{2}} \\right\\|}
             = \\frac {x_{1}x_{2} + y_{1}y_{2}}
                     {\\sqrt {{x_{1}}^2 + {y_{1}}^2} \\sqrt {{x_{2}}^2 + {y_{2}}^2}}
             ,\\ 0 \\le \\Theta \\le \\pi
         $$
-        
-        Hence, the angle \\( \\Theta \\) between 
-            \\( \\overrightarrow{ V_{1} } \\) and 
-            \\( \\overrightarrow{ V_{2} } \\) 
+
+        Hence, the angle \\( \\Theta \\) between
+            \\( \\overrightarrow{ V_{1} } \\) and
+            \\( \\overrightarrow{ V_{2} } \\)
         can be calculated by taking the inverse cosine of the result.
 
         Examples
         --------
-        `_angle_between_vectors_in_rad()` is a private function and should only be called internally.
-        Note that these examples serve the purpose of documentation and/or unit testing only.
-
         &gt;&gt;&gt; node = Node()
 
-        _The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\)._
+        The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\).
 
         &gt;&gt;&gt; v1 = (0, 1)
         &gt;&gt;&gt; v2 = (1, 0)
-        &gt;&gt;&gt; node._angle_between_vectors_in_rad(*v1, *v2)
-        _1.5707963267948966_
-        &gt;&gt;&gt; node._angle_between_vectors_in_rad(*v2, *v1)
-        _1.5707963267948966_
+        &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v2)
+        1.5707963267948966
+        &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v2, *v1)
+        1.5707963267948966
 
-        _The angle between two parallel vectors is `0`._
+        The angle between two parallel vectors is `0`.
 
-        &gt;&gt;&gt; node._angle_between_vectors_in_rad(*v1, *v1)
-        _0.0_
+        &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v1)
+        0.0
         &#34;&#34;&#34;
 
         # Check for zero vectors
         if x1 == y1 == 0 or x2 == y2 == 0:
             self.logger.error(
                 f&#39;One or more zero vectors v1 = ({x1}, {y1}) and &#39; +
-                f&#39;v2 = ({x2}, {y2}) were passed into _angle_between_vectors_in_rad().&#39;
+                f&#39;v2 = ({x2}, {y2}) were passed into angle_between_vectors_in_rad().&#39;
             )
             return self.ERROR_OUTPUT
 
@@ -397,12 +422,12 @@ class Node(AbstractNode):
         # Check if the cosine value is within acos domain of [-1, 1]
         if abs(cos_value) &gt; 1:
             self.logger.error(
-                f&#39;_angle_between_vectors_in_rad() obtained cosine value {cos_value} &#39; +
-                f&#39;that is not within acos domain [-1, 1]. &#39; +
+                f&#39;angle_between_vectors_in_rad() obtained cosine value {cos_value} &#39; +
+                &#39;that is not within acos domain [-1, 1]. &#39; +
                 f&#39;v1 · v2 = {dot_prod}, ||v1|| = {v1_magnitude}, ||v2|| = {v2_magnitude}&#39;
             )
             return self.ERROR_OUTPUT
-        
+
         return acos(cos_value)
 
     def are_arms_folded(
@@ -435,7 +460,7 @@ class Node(AbstractNode):
         -------
         bool
             ``True`` if both arms are folded, ``False`` otherwise
-        
+
         Notes
         -----
         The line from the shoulder to the elbow intersects the line from the wrist to the elbow at the elbow.
@@ -484,12 +509,12 @@ class Node(AbstractNode):
         )
 
         # Calculate angle made between the left shoulder, left elbow, and left wrist
-        left_angle = self._angle_between_vectors_in_rad(
+        left_angle = self.angle_between_vectors_in_rad(
             *left_shoulder_elbow_vec,
             *left_wrist_elbow_vec
         )
         # Calculate angle made between the right shoulder, right elbow, and right wrist
-        right_angle = self._angle_between_vectors_in_rad(
+        right_angle = self.angle_between_vectors_in_rad(
             *right_shoulder_elbow_vec,
             *right_wrist_elbow_vec
         )
@@ -573,7 +598,7 @@ class Node(AbstractNode):
         -------
         bool
             ``True`` if either hand is touching the face, ``False`` otherwise
-        
+
         Notes
         -----
         A pose is considered to be touching the face if the following conditions are satisfied:
@@ -585,12 +610,12 @@ class Node(AbstractNode):
 
         # Define threshold for distance
         threshold = 100
-        
+
         # Obtain coordinates of defined limb
         for limb_coordinate in [left_elbow, right_elbow, left_wrist, right_wrist]:
             if limb_coordinate is None:
                 continue
-        
+
             # Obtain coordinates of defined facial feature
             for face_coordinate in [nose, left_eye, right_eye, left_ear, right_ear]:
                 if face_coordinate is None:
@@ -607,7 +632,7 @@ class Node(AbstractNode):
                 # Check if limb is touching the face
                 if dist &lt; threshold:
                     return True
-        
+
         # No pair of coordinates exist that satisfy the distance threshold
         return False
 
@@ -634,12 +659,12 @@ class Node(AbstractNode):
             Tuple containing the `x` and `y` coordinates of the left knee
         right_knee : `Coord`, optional
             Tuple containing the `x` and `y` coordinates of the right knee
-        
+
         Returns
         -------
         bool
             ``True`` if the pose is leaning towards one side, ``False`` otherwise
-        
+
         Notes
         -----
         The line from the shoulder to the hip intersects the hip line.
@@ -664,14 +689,14 @@ class Node(AbstractNode):
         right_hip_x, right_hip_y = right_hip
 
         # Calculate the angle between left shoulder to left hip to left knee
-        left_angle = self._angle_between_vectors_in_rad(
+        left_angle = self.angle_between_vectors_in_rad(
             left_shoulder_x - left_hip_x,
             left_shoulder_y - left_hip_y,
             right_hip_x - left_hip_x,
             right_hip_y - left_hip_y
         )
         # Calculate the angle between right shoulder to right hip to right knee
-        right_angle = self._angle_between_vectors_in_rad(
+        right_angle = self.angle_between_vectors_in_rad(
             right_shoulder_x - right_hip_x,
             right_shoulder_y - right_hip_y,
             left_hip_x - right_hip_x,
@@ -700,11 +725,11 @@ class Node(AbstractNode):
         -------
         dict
             Empty dictionary
-        
+
         Notes
         -----
         This function keeps track of the following statistics:
-        
+
         - Total number of processed frames
         - Total number of frames where the pose had folded arms
         - Total number of frames where the pose was leaning
@@ -753,7 +778,8 @@ class Node(AbstractNode):
                     font_scale=0.5,
                     font_thickness=1
                 )
-            
+
+            # pylint: disable=pointless-string-statement
             &#34;&#34;&#34;
             # Store the keypoints in a temporary text file for further processing
             with open(&#39;test.txt&#39;, &#39;a&#39;) as tmp_file:
@@ -762,29 +788,29 @@ class Node(AbstractNode):
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(
-                keypoint_list[self._KP_LEFT_SHOULDER],
-                keypoint_list[self._KP_LEFT_ELBOW],
-                keypoint_list[self._KP_LEFT_WRIST],
-                keypoint_list[self._KP_RIGHT_SHOULDER],
-                keypoint_list[self._KP_RIGHT_ELBOW],
-                keypoint_list[self._KP_RIGHT_WRIST]
+                keypoint_list[self.KP_LEFT_SHOULDER],
+                keypoint_list[self.KP_LEFT_ELBOW],
+                keypoint_list[self.KP_LEFT_WRIST],
+                keypoint_list[self.KP_RIGHT_SHOULDER],
+                keypoint_list[self.KP_RIGHT_ELBOW],
+                keypoint_list[self.KP_RIGHT_WRIST]
             )
             face_touched = self.is_face_touched(
-                keypoint_list[self._KP_LEFT_ELBOW],
-                keypoint_list[self._KP_RIGHT_ELBOW],
-                keypoint_list[self._KP_LEFT_WRIST],
-                keypoint_list[self._KP_RIGHT_WRIST],
-                keypoint_list[self._KP_NOSE],
-                keypoint_list[self._KP_LEFT_EYE],
-                keypoint_list[self._KP_RIGHT_EYE],
-                keypoint_list[self._KP_LEFT_EAR],
-                keypoint_list[self._KP_RIGHT_EAR]
+                keypoint_list[self.KP_LEFT_ELBOW],
+                keypoint_list[self.KP_RIGHT_ELBOW],
+                keypoint_list[self.KP_LEFT_WRIST],
+                keypoint_list[self.KP_RIGHT_WRIST],
+                keypoint_list[self.KP_NOSE],
+                keypoint_list[self.KP_LEFT_EYE],
+                keypoint_list[self.KP_RIGHT_EYE],
+                keypoint_list[self.KP_LEFT_EAR],
+                keypoint_list[self.KP_RIGHT_EAR]
             )
             is_leaning = self.is_leaning(
-                keypoint_list[self._KP_LEFT_SHOULDER],
-                keypoint_list[self._KP_RIGHT_SHOULDER],
-                keypoint_list[self._KP_LEFT_HIP],
-                keypoint_list[self._KP_RIGHT_HIP]
+                keypoint_list[self.KP_LEFT_SHOULDER],
+                keypoint_list[self.KP_RIGHT_SHOULDER],
+                keypoint_list[self.KP_LEFT_HIP],
+                keypoint_list[self.KP_RIGHT_HIP]
             )
 
             # Increment relevant counters
@@ -800,7 +826,7 @@ class Node(AbstractNode):
                 is_leaning=is_leaning,
                 face_touched=face_touched
             )
-        
+
         self._total_frame_count += 1
 
         # UI config
@@ -871,7 +897,7 @@ if __name__ == &#39;__main__&#39;:
     _BLUE = (255, 0, 0)
 
     # Define font properties for display purposes
-    _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
+    _FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX  # pylint: disable=no-member
     _FONT_SCALE = 1
     _FONT_THICKNESS = 2
 
@@ -880,23 +906,23 @@ if __name__ == &#39;__main__&#39;:
     # PoseNet&#39;s skeletal key points
     # https://discuss.tensorflow.org/uploads/default/original/2X/9/951fd6aaf5fec83500fe2e9891348416e13b66dd.png
     (
-        _KP_NOSE,
-        _KP_LEFT_EYE,
-        _KP_RIGHT_EYE,
-        _KP_LEFT_EAR,
-        _KP_RIGHT_EAR,
-        _KP_LEFT_SHOULDER,
-        _KP_RIGHT_SHOULDER,
-        _KP_LEFT_ELBOW,
-        _KP_RIGHT_ELBOW,
-        _KP_LEFT_WRIST,
-        _KP_RIGHT_WRIST,
-        _KP_LEFT_HIP,
-        _KP_RIGHT_HIP,
-        _KP_LEFT_KNEE,
-        _KP_RIGHT_KNEE,
-        _KP_LEFT_FOOT,
-        _KP_RIGHT_FOOT
+        KP_NOSE,
+        KP_LEFT_EYE,
+        KP_RIGHT_EYE,
+        KP_LEFT_EAR,
+        KP_RIGHT_EAR,
+        KP_LEFT_SHOULDER,
+        KP_RIGHT_SHOULDER,
+        KP_LEFT_ELBOW,
+        KP_RIGHT_ELBOW,
+        KP_LEFT_WRIST,
+        KP_RIGHT_WRIST,
+        KP_LEFT_HIP,
+        KP_RIGHT_HIP,
+        KP_LEFT_KNEE,
+        KP_RIGHT_KNEE,
+        KP_LEFT_FOOT,
+        KP_RIGHT_FOOT
     ) = range(17)
 
     def __init__(
@@ -926,18 +952,44 @@ if __name__ == &#39;__main__&#39;:
 
     @property
     def height(self) -&gt; int:
-        # Height of the displayed image, specified in pixels
+        &#34;&#34;&#34;Height of the displayed image, specified in pixels
+
+        Returns
+        -------
+        int
+            Height of the displayed image, specified in pixels.
+
+            Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+        &#34;&#34;&#34;
+
         return self.ERROR_OUTPUT if self._img is None else self._img.shape[0]
 
     @property
     def width(self) -&gt; int:
-        # Width of the displayed image, specified in pixels
+        &#34;&#34;&#34;Width of the displayed image, specified in pixels
+
+        Returns
+        -------
+        int
+            Width of the displayed image, specified in pixels.
+
+            Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+        &#34;&#34;&#34;
+
         return self.ERROR_OUTPUT if self._img is None else self._img.shape[1]
-    
+
     @property
     def ERROR_OUTPUT(self) -&gt; int:
-        # Define error return value as -1
-        # Computational functions will return non-negative input
+        &#34;&#34;&#34;Defines the default output for encountered errors as `-1`
+
+        Computational functions will return non-negative input.
+
+        Returns
+        -------
+        int
+            `-1`, the default output.
+        &#34;&#34;&#34;
+
         return -1
 
     def _map_coord_onto_img(
@@ -966,7 +1018,7 @@ if __name__ == &#39;__main__&#39;:
 
         # Check if image is defined
         if self.width == self.ERROR_OUTPUT or self.height == self.ERROR_OUTPUT:
-            self.logger.error(f&#39;_map_coord_onto_img() trying to access image but it has not been defined yet.&#39;)
+            self.logger.error(&#39;_map_coord_onto_img() trying to access image but it has not been defined yet.&#39;)
             return self.ERROR_OUTPUT, self.ERROR_OUTPUT
 
         return round(x * self.width), round(y * self.height)
@@ -981,7 +1033,7 @@ if __name__ == &#39;__main__&#39;:
         Parameters
         ----------
         keypoint : tuple of floats
-            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint; 
+            Relative coordinate (`x`, `y`) of the detected PoseNet keypoint;
                 0 &lt;= `x` &lt;= 1 and 0 &lt;= `y` &lt;= 1
         score : float
             Confidence score of the detected PoseNet keypoint
@@ -989,7 +1041,7 @@ if __name__ == &#39;__main__&#39;:
         Returns
         -------
         `Coord`, optional
-            Absolute coordinates of the detected PoseNet keypoint 
+            Absolute coordinates of the detected PoseNet keypoint
                 if its confidence score meets or exceeds the threshold confidence
         &#34;&#34;&#34;
 
@@ -1018,13 +1070,13 @@ if __name__ == &#39;__main__&#39;:
             Text to display
         font_colour : tuple of ints
             Colour of the text to display, specified in BGR format
-        
+
         Other Parameters
         ----------------
         font_face : int, default=`_FONT_FACE`
             Font type of the text to display.
 
-            Limited to a subset of Hershey Fonts as 
+            Limited to a subset of Hershey Fonts as
                 [supported by OpenCV](https://stackoverflow.com/questions/371910008/load-truetype-font-to-opencv).
         font_scale : float
             Relative size of the text to display
@@ -1034,10 +1086,10 @@ if __name__ == &#39;__main__&#39;:
 
         # Check if image is defined
         if self._img is None:
-            self.logger.error(f&#39;_display_text() trying to access image but it has not been defined yet.&#39;)
+            self.logger.error(&#39;_display_text() trying to access image but it has not been defined yet.&#39;)
             return
 
-        cv2.putText(
+        cv2.putText(  # pylint: disable=no-member
             img=self._img,  # type: ignore
             text=text,
             org=(x, y),
@@ -1073,7 +1125,7 @@ if __name__ == &#39;__main__&#39;:
             ``True``if the person is detected to be leaning to one side, ``False`` otherwise
         face_touched : bool, default=False
             ``True`` if the person is detected to be touching their face, ``False`` otherwise
-        
+
         Notes
         -----
         All information will be displayed in the bottom-left corner (`x1`, `y2`) of the bounding box.
@@ -1107,7 +1159,7 @@ if __name__ == &#39;__main__&#39;:
             num_lines += 1
             self._display_text(x, y - num_lines * line_height, &#39;Touching Face&#39;, self._BLUE)
 
-    def _angle_between_vectors_in_rad(
+    def angle_between_vectors_in_rad(
             self,
             x1: int,
             y1: int,
@@ -1132,65 +1184,62 @@ if __name__ == &#39;__main__&#39;:
         Returns
         -------
         float
-            The (smaller) angle \\( \\Theta \\) between 
-                \\( \\overrightarrow{ V_{1} } \\) and 
+            The (smaller) angle \\( \\Theta \\) between
+                \\( \\overrightarrow{ V_{1} } \\) and
                 \\( \\overrightarrow{ V_{2} } \\).
-            
+
             Returns ``ERROR_OUTPUT`` instead if:
 
-            - Either one or both of 
-                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and 
+            - Either one or both of
+                \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and
                 \\( \\overrightarrow{ V_{2} } = \\overrightarrow{0} \\)
             - \\( \\cos \\Theta \\notin [-1, 1] \\)
-        
+
         Notes
         -----
-        The cosine of the (smaller) angle between two vectors 
-            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and 
-            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\) 
+        The cosine of the (smaller) angle between two vectors
+            \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\)
         is calculated by:
 
         $$
-        \\cos \\Theta 
-            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } } 
+        \\cos \\Theta
+            = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } }
                     {\\left\\| \\overrightarrow{V_{1}} \\right\\| \\left\\| \\overrightarrow{V_{2}} \\right\\|}
             = \\frac {x_{1}x_{2} + y_{1}y_{2}}
                     {\\sqrt {{x_{1}}^2 + {y_{1}}^2} \\sqrt {{x_{2}}^2 + {y_{2}}^2}}
             ,\\ 0 \\le \\Theta \\le \\pi
         $$
-        
-        Hence, the angle \\( \\Theta \\) between 
-            \\( \\overrightarrow{ V_{1} } \\) and 
-            \\( \\overrightarrow{ V_{2} } \\) 
+
+        Hence, the angle \\( \\Theta \\) between
+            \\( \\overrightarrow{ V_{1} } \\) and
+            \\( \\overrightarrow{ V_{2} } \\)
         can be calculated by taking the inverse cosine of the result.
 
         Examples
         --------
-        `_angle_between_vectors_in_rad()` is a private function and should only be called internally.
-        Note that these examples serve the purpose of documentation and/or unit testing only.
-
         &gt;&gt;&gt; node = Node()
 
-        _The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\)._
+        The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\).
 
         &gt;&gt;&gt; v1 = (0, 1)
         &gt;&gt;&gt; v2 = (1, 0)
-        &gt;&gt;&gt; node._angle_between_vectors_in_rad(*v1, *v2)
-        _1.5707963267948966_
-        &gt;&gt;&gt; node._angle_between_vectors_in_rad(*v2, *v1)
-        _1.5707963267948966_
+        &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v2)
+        1.5707963267948966
+        &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v2, *v1)
+        1.5707963267948966
 
-        _The angle between two parallel vectors is `0`._
+        The angle between two parallel vectors is `0`.
 
-        &gt;&gt;&gt; node._angle_between_vectors_in_rad(*v1, *v1)
-        _0.0_
+        &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v1)
+        0.0
         &#34;&#34;&#34;
 
         # Check for zero vectors
         if x1 == y1 == 0 or x2 == y2 == 0:
             self.logger.error(
                 f&#39;One or more zero vectors v1 = ({x1}, {y1}) and &#39; +
-                f&#39;v2 = ({x2}, {y2}) were passed into _angle_between_vectors_in_rad().&#39;
+                f&#39;v2 = ({x2}, {y2}) were passed into angle_between_vectors_in_rad().&#39;
             )
             return self.ERROR_OUTPUT
 
@@ -1203,12 +1252,12 @@ if __name__ == &#39;__main__&#39;:
         # Check if the cosine value is within acos domain of [-1, 1]
         if abs(cos_value) &gt; 1:
             self.logger.error(
-                f&#39;_angle_between_vectors_in_rad() obtained cosine value {cos_value} &#39; +
-                f&#39;that is not within acos domain [-1, 1]. &#39; +
+                f&#39;angle_between_vectors_in_rad() obtained cosine value {cos_value} &#39; +
+                &#39;that is not within acos domain [-1, 1]. &#39; +
                 f&#39;v1 · v2 = {dot_prod}, ||v1|| = {v1_magnitude}, ||v2|| = {v2_magnitude}&#39;
             )
             return self.ERROR_OUTPUT
-        
+
         return acos(cos_value)
 
     def are_arms_folded(
@@ -1241,7 +1290,7 @@ if __name__ == &#39;__main__&#39;:
         -------
         bool
             ``True`` if both arms are folded, ``False`` otherwise
-        
+
         Notes
         -----
         The line from the shoulder to the elbow intersects the line from the wrist to the elbow at the elbow.
@@ -1290,12 +1339,12 @@ if __name__ == &#39;__main__&#39;:
         )
 
         # Calculate angle made between the left shoulder, left elbow, and left wrist
-        left_angle = self._angle_between_vectors_in_rad(
+        left_angle = self.angle_between_vectors_in_rad(
             *left_shoulder_elbow_vec,
             *left_wrist_elbow_vec
         )
         # Calculate angle made between the right shoulder, right elbow, and right wrist
-        right_angle = self._angle_between_vectors_in_rad(
+        right_angle = self.angle_between_vectors_in_rad(
             *right_shoulder_elbow_vec,
             *right_wrist_elbow_vec
         )
@@ -1379,7 +1428,7 @@ if __name__ == &#39;__main__&#39;:
         -------
         bool
             ``True`` if either hand is touching the face, ``False`` otherwise
-        
+
         Notes
         -----
         A pose is considered to be touching the face if the following conditions are satisfied:
@@ -1391,12 +1440,12 @@ if __name__ == &#39;__main__&#39;:
 
         # Define threshold for distance
         threshold = 100
-        
+
         # Obtain coordinates of defined limb
         for limb_coordinate in [left_elbow, right_elbow, left_wrist, right_wrist]:
             if limb_coordinate is None:
                 continue
-        
+
             # Obtain coordinates of defined facial feature
             for face_coordinate in [nose, left_eye, right_eye, left_ear, right_ear]:
                 if face_coordinate is None:
@@ -1413,7 +1462,7 @@ if __name__ == &#39;__main__&#39;:
                 # Check if limb is touching the face
                 if dist &lt; threshold:
                     return True
-        
+
         # No pair of coordinates exist that satisfy the distance threshold
         return False
 
@@ -1440,12 +1489,12 @@ if __name__ == &#39;__main__&#39;:
             Tuple containing the `x` and `y` coordinates of the left knee
         right_knee : `Coord`, optional
             Tuple containing the `x` and `y` coordinates of the right knee
-        
+
         Returns
         -------
         bool
             ``True`` if the pose is leaning towards one side, ``False`` otherwise
-        
+
         Notes
         -----
         The line from the shoulder to the hip intersects the hip line.
@@ -1470,14 +1519,14 @@ if __name__ == &#39;__main__&#39;:
         right_hip_x, right_hip_y = right_hip
 
         # Calculate the angle between left shoulder to left hip to left knee
-        left_angle = self._angle_between_vectors_in_rad(
+        left_angle = self.angle_between_vectors_in_rad(
             left_shoulder_x - left_hip_x,
             left_shoulder_y - left_hip_y,
             right_hip_x - left_hip_x,
             right_hip_y - left_hip_y
         )
         # Calculate the angle between right shoulder to right hip to right knee
-        right_angle = self._angle_between_vectors_in_rad(
+        right_angle = self.angle_between_vectors_in_rad(
             right_shoulder_x - right_hip_x,
             right_shoulder_y - right_hip_y,
             left_hip_x - right_hip_x,
@@ -1506,11 +1555,11 @@ if __name__ == &#39;__main__&#39;:
         -------
         dict
             Empty dictionary
-        
+
         Notes
         -----
         This function keeps track of the following statistics:
-        
+
         - Total number of processed frames
         - Total number of frames where the pose had folded arms
         - Total number of frames where the pose was leaning
@@ -1559,7 +1608,8 @@ if __name__ == &#39;__main__&#39;:
                     font_scale=0.5,
                     font_thickness=1
                 )
-            
+
+            # pylint: disable=pointless-string-statement
             &#34;&#34;&#34;
             # Store the keypoints in a temporary text file for further processing
             with open(&#39;test.txt&#39;, &#39;a&#39;) as tmp_file:
@@ -1568,29 +1618,29 @@ if __name__ == &#39;__main__&#39;:
 
             # Determine if the pose violates any bad presentation poses
             arms_folded = self.are_arms_folded(
-                keypoint_list[self._KP_LEFT_SHOULDER],
-                keypoint_list[self._KP_LEFT_ELBOW],
-                keypoint_list[self._KP_LEFT_WRIST],
-                keypoint_list[self._KP_RIGHT_SHOULDER],
-                keypoint_list[self._KP_RIGHT_ELBOW],
-                keypoint_list[self._KP_RIGHT_WRIST]
+                keypoint_list[self.KP_LEFT_SHOULDER],
+                keypoint_list[self.KP_LEFT_ELBOW],
+                keypoint_list[self.KP_LEFT_WRIST],
+                keypoint_list[self.KP_RIGHT_SHOULDER],
+                keypoint_list[self.KP_RIGHT_ELBOW],
+                keypoint_list[self.KP_RIGHT_WRIST]
             )
             face_touched = self.is_face_touched(
-                keypoint_list[self._KP_LEFT_ELBOW],
-                keypoint_list[self._KP_RIGHT_ELBOW],
-                keypoint_list[self._KP_LEFT_WRIST],
-                keypoint_list[self._KP_RIGHT_WRIST],
-                keypoint_list[self._KP_NOSE],
-                keypoint_list[self._KP_LEFT_EYE],
-                keypoint_list[self._KP_RIGHT_EYE],
-                keypoint_list[self._KP_LEFT_EAR],
-                keypoint_list[self._KP_RIGHT_EAR]
+                keypoint_list[self.KP_LEFT_ELBOW],
+                keypoint_list[self.KP_RIGHT_ELBOW],
+                keypoint_list[self.KP_LEFT_WRIST],
+                keypoint_list[self.KP_RIGHT_WRIST],
+                keypoint_list[self.KP_NOSE],
+                keypoint_list[self.KP_LEFT_EYE],
+                keypoint_list[self.KP_RIGHT_EYE],
+                keypoint_list[self.KP_LEFT_EAR],
+                keypoint_list[self.KP_RIGHT_EAR]
             )
             is_leaning = self.is_leaning(
-                keypoint_list[self._KP_LEFT_SHOULDER],
-                keypoint_list[self._KP_RIGHT_SHOULDER],
-                keypoint_list[self._KP_LEFT_HIP],
-                keypoint_list[self._KP_RIGHT_HIP]
+                keypoint_list[self.KP_LEFT_SHOULDER],
+                keypoint_list[self.KP_RIGHT_SHOULDER],
+                keypoint_list[self.KP_LEFT_HIP],
+                keypoint_list[self.KP_RIGHT_HIP]
             )
 
             # Increment relevant counters
@@ -1606,7 +1656,7 @@ if __name__ == &#39;__main__&#39;:
                 is_leaning=is_leaning,
                 face_touched=face_touched
             )
-        
+
         self._total_frame_count += 1
 
         # UI config
@@ -1634,51 +1684,348 @@ if __name__ == &#39;__main__&#39;:
 <ul class="hlist">
 <li>peekingduck.pipeline.nodes.abstract_node.AbstractNode</li>
 </ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_EAR"><code class="name">var <span class="ident">KP_LEFT_EAR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_ELBOW"><code class="name">var <span class="ident">KP_LEFT_ELBOW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_EYE"><code class="name">var <span class="ident">KP_LEFT_EYE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_FOOT"><code class="name">var <span class="ident">KP_LEFT_FOOT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_HIP"><code class="name">var <span class="ident">KP_LEFT_HIP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_KNEE"><code class="name">var <span class="ident">KP_LEFT_KNEE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_SHOULDER"><code class="name">var <span class="ident">KP_LEFT_SHOULDER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_WRIST"><code class="name">var <span class="ident">KP_LEFT_WRIST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_NOSE"><code class="name">var <span class="ident">KP_NOSE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_EAR"><code class="name">var <span class="ident">KP_RIGHT_EAR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_ELBOW"><code class="name">var <span class="ident">KP_RIGHT_ELBOW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_EYE"><code class="name">var <span class="ident">KP_RIGHT_EYE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_FOOT"><code class="name">var <span class="ident">KP_RIGHT_FOOT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_HIP"><code class="name">var <span class="ident">KP_RIGHT_HIP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_KNEE"><code class="name">var <span class="ident">KP_RIGHT_KNEE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_SHOULDER"><code class="name">var <span class="ident">KP_RIGHT_SHOULDER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_WRIST"><code class="name">var <span class="ident">KP_RIGHT_WRIST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Instance variables</h3>
 <dl>
 <dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.ERROR_OUTPUT"><code class="name">var <span class="ident">ERROR_OUTPUT</span> : int</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Defines the default output for encountered errors as <code>-1</code></p>
+<p>Computational functions will return non-negative input.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd><code>-1</code>, the default output.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def ERROR_OUTPUT(self) -&gt; int:
-    # Define error return value as -1
-    # Computational functions will return non-negative input
+    &#34;&#34;&#34;Defines the default output for encountered errors as `-1`
+
+    Computational functions will return non-negative input.
+
+    Returns
+    -------
+    int
+        `-1`, the default output.
+    &#34;&#34;&#34;
+
     return -1</code></pre>
 </details>
 </dd>
 <dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.height"><code class="name">var <span class="ident">height</span> : int</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Height of the displayed image, specified in pixels</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>
+<p>Height of the displayed image, specified in pixels.</p>
+<p>Returns <code>ERROR_OUTPUT</code> instead if the image is undefined.</p>
+</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def height(self) -&gt; int:
-    # Height of the displayed image, specified in pixels
+    &#34;&#34;&#34;Height of the displayed image, specified in pixels
+
+    Returns
+    -------
+    int
+        Height of the displayed image, specified in pixels.
+
+        Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+    &#34;&#34;&#34;
+
     return self.ERROR_OUTPUT if self._img is None else self._img.shape[0]</code></pre>
 </details>
 </dd>
 <dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.width"><code class="name">var <span class="ident">width</span> : int</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Width of the displayed image, specified in pixels</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>
+<p>Width of the displayed image, specified in pixels.</p>
+<p>Returns <code>ERROR_OUTPUT</code> instead if the image is undefined.</p>
+</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def width(self) -&gt; int:
-    # Width of the displayed image, specified in pixels
+    &#34;&#34;&#34;Width of the displayed image, specified in pixels
+
+    Returns
+    -------
+    int
+        Width of the displayed image, specified in pixels.
+
+        Returns ``ERROR_OUTPUT`` instead if the image is undefined.
+    &#34;&#34;&#34;
+
     return self.ERROR_OUTPUT if self._img is None else self._img.shape[1]</code></pre>
 </details>
 </dd>
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.angle_between_vectors_in_rad"><code class="name flex">
+<span>def <span class="ident">angle_between_vectors_in_rad</span></span>(<span>self, x1: int, y1: int, x2: int, y2: int) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains the (smaller) angle between two non-zero vectors in radians</p>
+<p>The angle <span><span class="MathJax_Preview"> \Theta </span><script type="math/tex"> \Theta </script></span> is computed via the cosine rule (see the Notes section).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x1</code></strong> :&ensp;<code>int</code></dt>
+<dd>The magnitude of vector <span><span class="MathJax_Preview"> \overrightarrow{ V_{1} } </span><script type="math/tex"> \overrightarrow{ V_{1} } </script></span> in the x-axis</dd>
+<dt><strong><code>y1</code></strong> :&ensp;<code>int</code></dt>
+<dd>The magnitude of vector <span><span class="MathJax_Preview"> \overrightarrow{ V_{1} } </span><script type="math/tex"> \overrightarrow{ V_{1} } </script></span> in the y-axis</dd>
+<dt><strong><code>x2</code></strong> :&ensp;<code>int</code></dt>
+<dd>The magnitude of vector <span><span class="MathJax_Preview"> \overrightarrow{ V_{2} } </span><script type="math/tex"> \overrightarrow{ V_{2} } </script></span> in the x-axis</dd>
+<dt><strong><code>y2</code></strong> :&ensp;<code>int</code></dt>
+<dd>The magnitude of vector <span><span class="MathJax_Preview"> \overrightarrow{ V_{2} } </span><script type="math/tex"> \overrightarrow{ V_{2} } </script></span> in the y-axis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>
+<p>The (smaller) angle <span><span class="MathJax_Preview"> \Theta </span><script type="math/tex"> \Theta </script></span> between
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{1} } </span><script type="math/tex"> \overrightarrow{ V_{1} } </script></span> and
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{2} } </span><script type="math/tex"> \overrightarrow{ V_{2} } </script></span>.</p>
+<p>Returns <code>ERROR_OUTPUT</code> instead if:</p>
+<ul>
+<li>Either one or both of
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{1} } = \overrightarrow{0} </span><script type="math/tex"> \overrightarrow{ V_{1} } = \overrightarrow{0} </script></span> and
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{2} } = \overrightarrow{0} </span><script type="math/tex"> \overrightarrow{ V_{2} } = \overrightarrow{0} </script></span></li>
+<li><span><span class="MathJax_Preview"> \cos \Theta \notin [-1, 1] </span><script type="math/tex"> \cos \Theta \notin [-1, 1] </script></span></li>
+</ul>
+</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>The cosine of the (smaller) angle between two vectors
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{1} } = \begin{pmatrix} x_{1} \\ y_{1} \end{pmatrix} </span><script type="math/tex"> \overrightarrow{ V_{1} } = \begin{pmatrix} x_{1} \\ y_{1} \end{pmatrix} </script></span> and
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{2} } = \begin{pmatrix} x_{2} \\ y_{2} \end{pmatrix} </span><script type="math/tex"> \overrightarrow{ V_{2} } = \begin{pmatrix} x_{2} \\ y_{2} \end{pmatrix} </script></span>
+is calculated by:</p>
+<p><span><span class="MathJax_Preview">
+\cos \Theta
+= \frac { \overrightarrow{ V_{1} } \cdot \overrightarrow{ V_{2} } }
+{\left\| \overrightarrow{V_{1}} \right\| \left\| \overrightarrow{V_{2}} \right\|}
+= \frac {x_{1}x_{2} + y_{1}y_{2}}
+{\sqrt {{x_{1}}^2 + {y_{1}}^2} \sqrt {{x_{2}}^2 + {y_{2}}^2}}
+,\ 0 \le \Theta \le \pi
+</span><script type="math/tex; mode=display">
+\cos \Theta
+= \frac { \overrightarrow{ V_{1} } \cdot \overrightarrow{ V_{2} } }
+{\left\| \overrightarrow{V_{1}} \right\| \left\| \overrightarrow{V_{2}} \right\|}
+= \frac {x_{1}x_{2} + y_{1}y_{2}}
+{\sqrt {{x_{1}}^2 + {y_{1}}^2} \sqrt {{x_{2}}^2 + {y_{2}}^2}}
+,\ 0 \le \Theta \le \pi
+</script></span></p>
+<p>Hence, the angle <span><span class="MathJax_Preview"> \Theta </span><script type="math/tex"> \Theta </script></span> between
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{1} } </span><script type="math/tex"> \overrightarrow{ V_{1} } </script></span> and
+<span><span class="MathJax_Preview"> \overrightarrow{ V_{2} } </span><script type="math/tex"> \overrightarrow{ V_{2} } </script></span>
+can be calculated by taking the inverse cosine of the result.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; node = Node()
+</code></pre>
+<p>The angle between two orthogonal vectors is <span><span class="MathJax_Preview"> \frac {\pi} {2} </span><script type="math/tex"> \frac {\pi} {2} </script></span>.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; v1 = (0, 1)
+&gt;&gt;&gt; v2 = (1, 0)
+&gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v2)
+1.5707963267948966
+&gt;&gt;&gt; node.angle_between_vectors_in_rad(*v2, *v1)
+1.5707963267948966
+</code></pre>
+<p>The angle between two parallel vectors is <code>0</code>.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v1)
+0.0
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def angle_between_vectors_in_rad(
+        self,
+        x1: int,
+        y1: int,
+        x2: int,
+        y2: int
+) -&gt; float:
+    &#34;&#34;&#34;Obtains the (smaller) angle between two non-zero vectors in radians
+
+    The angle \\( \\Theta \\) is computed via the cosine rule (see the Notes section).
+
+    Parameters
+    ----------
+    x1 : int
+        The magnitude of vector \\( \\overrightarrow{ V_{1} } \\) in the x-axis
+    y1 : int
+        The magnitude of vector \\( \\overrightarrow{ V_{1} } \\) in the y-axis
+    x2 : int
+        The magnitude of vector \\( \\overrightarrow{ V_{2} } \\) in the x-axis
+    y2 : int
+        The magnitude of vector \\( \\overrightarrow{ V_{2} } \\) in the y-axis
+
+    Returns
+    -------
+    float
+        The (smaller) angle \\( \\Theta \\) between
+            \\( \\overrightarrow{ V_{1} } \\) and
+            \\( \\overrightarrow{ V_{2} } \\).
+
+        Returns ``ERROR_OUTPUT`` instead if:
+
+        - Either one or both of
+            \\( \\overrightarrow{ V_{1} } = \\overrightarrow{0} \\) and
+            \\( \\overrightarrow{ V_{2} } = \\overrightarrow{0} \\)
+        - \\( \\cos \\Theta \\notin [-1, 1] \\)
+
+    Notes
+    -----
+    The cosine of the (smaller) angle between two vectors
+        \\( \\overrightarrow{ V_{1} } = \\begin{pmatrix} x_{1} \\\\ y_{1} \\end{pmatrix} \\) and
+        \\( \\overrightarrow{ V_{2} } = \\begin{pmatrix} x_{2} \\\\ y_{2} \\end{pmatrix} \\)
+    is calculated by:
+
+    $$
+    \\cos \\Theta
+        = \\frac { \\overrightarrow{ V_{1} } \\cdot \\overrightarrow{ V_{2} } }
+                {\\left\\| \\overrightarrow{V_{1}} \\right\\| \\left\\| \\overrightarrow{V_{2}} \\right\\|}
+        = \\frac {x_{1}x_{2} + y_{1}y_{2}}
+                {\\sqrt {{x_{1}}^2 + {y_{1}}^2} \\sqrt {{x_{2}}^2 + {y_{2}}^2}}
+        ,\\ 0 \\le \\Theta \\le \\pi
+    $$
+
+    Hence, the angle \\( \\Theta \\) between
+        \\( \\overrightarrow{ V_{1} } \\) and
+        \\( \\overrightarrow{ V_{2} } \\)
+    can be calculated by taking the inverse cosine of the result.
+
+    Examples
+    --------
+    &gt;&gt;&gt; node = Node()
+
+    The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\).
+
+    &gt;&gt;&gt; v1 = (0, 1)
+    &gt;&gt;&gt; v2 = (1, 0)
+    &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v2)
+    1.5707963267948966
+    &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v2, *v1)
+    1.5707963267948966
+
+    The angle between two parallel vectors is `0`.
+
+    &gt;&gt;&gt; node.angle_between_vectors_in_rad(*v1, *v1)
+    0.0
+    &#34;&#34;&#34;
+
+    # Check for zero vectors
+    if x1 == y1 == 0 or x2 == y2 == 0:
+        self.logger.error(
+            f&#39;One or more zero vectors v1 = ({x1}, {y1}) and &#39; +
+            f&#39;v2 = ({x2}, {y2}) were passed into angle_between_vectors_in_rad().&#39;
+        )
+        return self.ERROR_OUTPUT
+
+    # Compute the cosine value
+    dot_prod = x1 * x2 + y1 * y2
+    v1_magnitude = sqrt(x1 * x1 + y1 * y1)
+    v2_magnitude = sqrt(x2 * x2 + y2 * y2)
+    cos_value = dot_prod / (v1_magnitude * v2_magnitude)
+
+    # Check if the cosine value is within acos domain of [-1, 1]
+    if abs(cos_value) &gt; 1:
+        self.logger.error(
+            f&#39;angle_between_vectors_in_rad() obtained cosine value {cos_value} &#39; +
+            &#39;that is not within acos domain [-1, 1]. &#39; +
+            f&#39;v1 · v2 = {dot_prod}, ||v1|| = {v1_magnitude}, ||v2|| = {v2_magnitude}&#39;
+        )
+        return self.ERROR_OUTPUT
+
+    return acos(cos_value)</code></pre>
+</details>
+</dd>
 <dt id="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.are_arms_folded"><code class="name flex">
 <span>def <span class="ident">are_arms_folded</span></span>(<span>self, left_shoulder: Optional[Tuple[int, int]], left_elbow: Optional[Tuple[int, int]], left_wrist: Optional[Tuple[int, int]], right_shoulder: Optional[Tuple[int, int]], right_elbow: Optional[Tuple[int, int]], right_wrist: Optional[Tuple[int, int]]) ‑> bool</span>
 </code></dt>
@@ -1747,7 +2094,7 @@ def width(self) -&gt; int:
     -------
     bool
         ``True`` if both arms are folded, ``False`` otherwise
-    
+
     Notes
     -----
     The line from the shoulder to the elbow intersects the line from the wrist to the elbow at the elbow.
@@ -1796,12 +2143,12 @@ def width(self) -&gt; int:
     )
 
     # Calculate angle made between the left shoulder, left elbow, and left wrist
-    left_angle = self._angle_between_vectors_in_rad(
+    left_angle = self.angle_between_vectors_in_rad(
         *left_shoulder_elbow_vec,
         *left_wrist_elbow_vec
     )
     # Calculate angle made between the right shoulder, right elbow, and right wrist
-    right_angle = self._angle_between_vectors_in_rad(
+    right_angle = self.angle_between_vectors_in_rad(
         *right_shoulder_elbow_vec,
         *right_wrist_elbow_vec
     )
@@ -1928,7 +2275,7 @@ def width(self) -&gt; int:
     -------
     bool
         ``True`` if either hand is touching the face, ``False`` otherwise
-    
+
     Notes
     -----
     A pose is considered to be touching the face if the following conditions are satisfied:
@@ -1940,12 +2287,12 @@ def width(self) -&gt; int:
 
     # Define threshold for distance
     threshold = 100
-    
+
     # Obtain coordinates of defined limb
     for limb_coordinate in [left_elbow, right_elbow, left_wrist, right_wrist]:
         if limb_coordinate is None:
             continue
-    
+
         # Obtain coordinates of defined facial feature
         for face_coordinate in [nose, left_eye, right_eye, left_ear, right_ear]:
             if face_coordinate is None:
@@ -1962,7 +2309,7 @@ def width(self) -&gt; int:
             # Check if limb is touching the face
             if dist &lt; threshold:
                 return True
-    
+
     # No pair of coordinates exist that satisfy the distance threshold
     return False</code></pre>
 </details>
@@ -2023,12 +2370,12 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
         Tuple containing the `x` and `y` coordinates of the left knee
     right_knee : `Coord`, optional
         Tuple containing the `x` and `y` coordinates of the right knee
-    
+
     Returns
     -------
     bool
         ``True`` if the pose is leaning towards one side, ``False`` otherwise
-    
+
     Notes
     -----
     The line from the shoulder to the hip intersects the hip line.
@@ -2053,14 +2400,14 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
     right_hip_x, right_hip_y = right_hip
 
     # Calculate the angle between left shoulder to left hip to left knee
-    left_angle = self._angle_between_vectors_in_rad(
+    left_angle = self.angle_between_vectors_in_rad(
         left_shoulder_x - left_hip_x,
         left_shoulder_y - left_hip_y,
         right_hip_x - left_hip_x,
         right_hip_y - left_hip_y
     )
     # Calculate the angle between right shoulder to right hip to right knee
-    right_angle = self._angle_between_vectors_in_rad(
+    right_angle = self.angle_between_vectors_in_rad(
         right_shoulder_x - right_hip_x,
         right_shoulder_y - right_hip_y,
         left_hip_x - right_hip_x,
@@ -2117,11 +2464,11 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
     -------
     dict
         Empty dictionary
-    
+
     Notes
     -----
     This function keeps track of the following statistics:
-    
+
     - Total number of processed frames
     - Total number of frames where the pose had folded arms
     - Total number of frames where the pose was leaning
@@ -2170,7 +2517,8 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
                 font_scale=0.5,
                 font_thickness=1
             )
-        
+
+        # pylint: disable=pointless-string-statement
         &#34;&#34;&#34;
         # Store the keypoints in a temporary text file for further processing
         with open(&#39;test.txt&#39;, &#39;a&#39;) as tmp_file:
@@ -2179,29 +2527,29 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
 
         # Determine if the pose violates any bad presentation poses
         arms_folded = self.are_arms_folded(
-            keypoint_list[self._KP_LEFT_SHOULDER],
-            keypoint_list[self._KP_LEFT_ELBOW],
-            keypoint_list[self._KP_LEFT_WRIST],
-            keypoint_list[self._KP_RIGHT_SHOULDER],
-            keypoint_list[self._KP_RIGHT_ELBOW],
-            keypoint_list[self._KP_RIGHT_WRIST]
+            keypoint_list[self.KP_LEFT_SHOULDER],
+            keypoint_list[self.KP_LEFT_ELBOW],
+            keypoint_list[self.KP_LEFT_WRIST],
+            keypoint_list[self.KP_RIGHT_SHOULDER],
+            keypoint_list[self.KP_RIGHT_ELBOW],
+            keypoint_list[self.KP_RIGHT_WRIST]
         )
         face_touched = self.is_face_touched(
-            keypoint_list[self._KP_LEFT_ELBOW],
-            keypoint_list[self._KP_RIGHT_ELBOW],
-            keypoint_list[self._KP_LEFT_WRIST],
-            keypoint_list[self._KP_RIGHT_WRIST],
-            keypoint_list[self._KP_NOSE],
-            keypoint_list[self._KP_LEFT_EYE],
-            keypoint_list[self._KP_RIGHT_EYE],
-            keypoint_list[self._KP_LEFT_EAR],
-            keypoint_list[self._KP_RIGHT_EAR]
+            keypoint_list[self.KP_LEFT_ELBOW],
+            keypoint_list[self.KP_RIGHT_ELBOW],
+            keypoint_list[self.KP_LEFT_WRIST],
+            keypoint_list[self.KP_RIGHT_WRIST],
+            keypoint_list[self.KP_NOSE],
+            keypoint_list[self.KP_LEFT_EYE],
+            keypoint_list[self.KP_RIGHT_EYE],
+            keypoint_list[self.KP_LEFT_EAR],
+            keypoint_list[self.KP_RIGHT_EAR]
         )
         is_leaning = self.is_leaning(
-            keypoint_list[self._KP_LEFT_SHOULDER],
-            keypoint_list[self._KP_RIGHT_SHOULDER],
-            keypoint_list[self._KP_LEFT_HIP],
-            keypoint_list[self._KP_RIGHT_HIP]
+            keypoint_list[self.KP_LEFT_SHOULDER],
+            keypoint_list[self.KP_RIGHT_SHOULDER],
+            keypoint_list[self.KP_LEFT_HIP],
+            keypoint_list[self.KP_RIGHT_HIP]
         )
 
         # Increment relevant counters
@@ -2217,7 +2565,7 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
             is_leaning=is_leaning,
             face_touched=face_touched
         )
-    
+
     self._total_frame_count += 1
 
     # UI config
@@ -2264,8 +2612,26 @@ falls outside a <code>15</code>-degree tolerance.</p></div>
 <ul>
 <li>
 <h4><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node">Node</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.ERROR_OUTPUT" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.ERROR_OUTPUT">ERROR_OUTPUT</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_EAR" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_EAR">KP_LEFT_EAR</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_ELBOW" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_ELBOW">KP_LEFT_ELBOW</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_EYE" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_EYE">KP_LEFT_EYE</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_FOOT" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_FOOT">KP_LEFT_FOOT</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_HIP" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_HIP">KP_LEFT_HIP</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_KNEE" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_KNEE">KP_LEFT_KNEE</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_SHOULDER" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_SHOULDER">KP_LEFT_SHOULDER</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_WRIST" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_LEFT_WRIST">KP_LEFT_WRIST</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_NOSE" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_NOSE">KP_NOSE</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_EAR" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_EAR">KP_RIGHT_EAR</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_ELBOW" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_ELBOW">KP_RIGHT_ELBOW</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_EYE" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_EYE">KP_RIGHT_EYE</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_FOOT" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_FOOT">KP_RIGHT_FOOT</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_HIP" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_HIP">KP_RIGHT_HIP</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_KNEE" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_KNEE">KP_RIGHT_KNEE</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_SHOULDER" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_SHOULDER">KP_RIGHT_SHOULDER</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_WRIST" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.KP_RIGHT_WRIST">KP_RIGHT_WRIST</a></code></li>
+<li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.angle_between_vectors_in_rad" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.angle_between_vectors_in_rad">angle_between_vectors_in_rad</a></code></li>
 <li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.are_arms_folded" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.are_arms_folded">are_arms_folded</a></code></li>
 <li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.height" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.height">height</a></code></li>
 <li><code><a title="SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.is_face_touched" href="#SpeakEase.analysis_video_pipeline.src.custom_nodes.dabble.movement.Node.is_face_touched">is_face_touched</a></code></li>

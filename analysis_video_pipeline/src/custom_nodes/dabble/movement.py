@@ -356,19 +356,19 @@ class Node(AbstractNode):
         --------
         >>> node = Node()
 
-        _The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\)._
+        The angle between two orthogonal vectors is \\( \\frac {\\pi} {2} \\).
 
         >>> v1 = (0, 1)
         >>> v2 = (1, 0)
         >>> node.angle_between_vectors_in_rad(*v1, *v2)
-        _1.5707963267948966_
+        1.5707963267948966
         >>> node.angle_between_vectors_in_rad(*v2, *v1)
-        _1.5707963267948966_
+        1.5707963267948966
 
-        _The angle between two parallel vectors is `0`._
+        The angle between two parallel vectors is `0`.
 
         >>> node.angle_between_vectors_in_rad(*v1, *v1)
-        _0.0_
+        0.0
         """
 
         # Check for zero vectors
