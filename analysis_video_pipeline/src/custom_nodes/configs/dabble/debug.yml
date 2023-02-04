@@ -1,0 +1,7 @@
+# Custom dabble node for debugging
+
+# It takes in all inputs
+input: ["all"]
+
+# It does not output anything
+output: ["none"]

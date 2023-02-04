@@ -27,9 +27,7 @@ from typing import Optional, Tuple
 import unittest
 from yaml import safe_load
 
-from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
-
-from analysis_video_pipeline.tests.visualise import \
+from analysis_video_pipeline.src.custom_nodes.visualise import \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_OUTSTRETCHED_ARMS, \
     ARE_ARMS_FOLDED_NEGATIVE_CASES_TOUCHING_FACE, \
     ARE_ARMS_FOLDED_POSITIVE_CASES_HALF_CROSS, \

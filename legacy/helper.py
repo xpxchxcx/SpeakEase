@@ -21,7 +21,7 @@ from yaml import safe_load
 
 import matplotlib.pyplot as plt
 
-from analysis_video_pipeline.src.custom_nodes.dabble.movement import Node
+from legacy.movement import Node
 
 
 # Initialise constants

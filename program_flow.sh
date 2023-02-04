@@ -11,6 +11,6 @@ echo "source as raw video on analysis pipeline complete"
 # read -p "Press Enter to continue" </dev/tty
 
 cd "analysis_video_pipeline"
-peekingduck run
+peekingduck run --viewer
 echo "analysis complete"
 read -p "Press Enter to continue" </dev/tty
