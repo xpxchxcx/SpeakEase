@@ -1,0 +1,8 @@
+# Custom dabble node for checking if the person is touching the face
+
+# It takes in tracking IDs and keypoints from model.posenet
+input: ['img', 'keypoints', 'obj_attrs']
+
+# It outputs the total number of frames in which the person is touching the face
+# The output is categorised by tracking IDs
+output: ['is_touching_face']
