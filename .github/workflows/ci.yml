@@ -25,4 +25,6 @@ jobs:
           pip install -U peekingduck
           pip install matplotlib
       - name: Run tests
-        run: python -m unittest -v analysis_video_pipeline/tests/test_node.py
+        run: |
+          cd analysis_video_pipeline/src
+          python -m unittest discover custom_nodes/dabble/tests

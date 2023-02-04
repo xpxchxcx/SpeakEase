@@ -26,4 +26,5 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint --rcfile .pylintrc --fail-under 8.5 $(git ls-files '*.py')
+        pylint --rcfile .pylintrc --fail-under 8.5 raw_transfer.py 
+        pylint --rcfile .pylintrc --fail-under 8.5 analysis_video_pipeline/src/custom_nodes

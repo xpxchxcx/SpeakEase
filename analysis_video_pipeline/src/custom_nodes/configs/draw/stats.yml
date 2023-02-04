@@ -1,0 +1,22 @@
+# Custom draw node for drawing coordinates of PoseNet keypoints
+
+# It takes in the following information:
+#   - Keypoints from model.posenet
+#   - Bounding box and confidence scores from model.yolo
+#   - Tracking IDs from dabble.tracking
+#   - Arms folded dictionary from custom_nodes.dabble.are_arms_folded
+#   - Leaning dictionary from custom_nodes.dabble.is_leaning
+#   - Touching face dictionary from custom_nodes.dabble.is_touching_face
+input: [
+  'arms_folded',
+  'bboxes',
+  'bbox_scores',
+  'img',
+  'is_leaning',
+  'is_touching_face',
+  'keypoints',
+  'obj_attrs'
+]
+
+# It does not output anything
+output: ['none']

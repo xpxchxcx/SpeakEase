@@ -1,13 +1,40 @@
 nodes:
+
+# Use saved video feed from raw_video_pipeline
 - input.visual:
     source: 0
-- model.yolo
-- model.posenet
-- dabble.fps
-- custom_nodes.dabble.movement
+
+# Add YOLOv4 model for human detection to obtain bounding box information
+- model.yolo:
+    score_threshold: 0.6
+# Use the bounding box info to track and count detected humans
+- dabble.tracking
+# Draw the resultant bounding boxes and tracking IDs
+# - draw.bbox
+- draw.tag:
+    show: ["ids"]
+
+# Add PoseNet model for human pose estimation
+- model.posenet:
+    score_threshold: 0.6
+# Draw the resultant poses
 - draw.poses
+
+# Add custom Node model for pose analysis
+# - custom_nodes.dabble.movement
+- custom_nodes.dabble.are_arms_folded
+- custom_nodes.dabble.is_leaning
+- custom_nodes.dabble.is_touching_face
+# - custom_nodes.dabble.debug
+
+# Generate and display metadata
+- dabble.fps
 - draw.legend:
     show: ["fps"]
-- output.screen
-- output.media_writer:  # add new output node
+- custom_nodes.draw.stats
+
+# Generate output video feed
+- output.screen:
+    window_name: "SpeakEase"
+- output.media_writer:
     output_dir: analysed_videos
