@@ -1,8 +1,13 @@
-# SpeakEase 
-![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg)
-![Pylint](https://github.com/xpxchxcx/SpeakEase/actions/workflows/pylint.yml/badge.svg) 
-![Unit tests](https://github.com/xpxchxcx/SpeakEase/actions/workflows/ci.yml/badge.svg) 
- [![Hit Count](https://hits.dwyl.com/xpxchxcx/SpeakEase.svg?style=flat-square&show=unique)](http://hits.dwyl.com/xpxchxcx/SpeakEase)
+<p align="center">
+  <img src="assets/banner.png" alt="SpeakEase" />
+</p>
+
+<p align="center">
+  <img src=https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg alt="Python Versions"/>
+  <img src=https://github.com/xpxchxcx/SpeakEase/actions/workflows/pylint.yml/badge.svg alt="Pylint" />
+  <img src=https://github.com/xpxchxcx/SpeakEase/actions/workflows/ci.yml/badge.svg alt="Unit Tests" />
+  <a href=http://hits.dwyl.com/xpxchxcx/SpeakEase><img src=https://hits.dwyl.com/xpxchxcx/SpeakEase.svg?style=flat-square&show=unique alt="Hit Count" /></a>
+</p>
 
 <h4 align="center">
   <a href="https://good-looking-ostrich.static.app/">Documentation</a>
@@ -13,7 +18,7 @@
 ## Introduction
 
 SpeakEase helps users overcome their fear of public speaking using computer vision to detect body language and provide feedback. 
-It's accessible, cost-effective, and eliminates need for physical mentors. 
+It's accessible, cost-effective, and significantly reduces need for physical mentors. 
 Improving public speaking skills, especially for those affected by glossophobia, SpeakEase empowers users to become confident speakers.
 
 ### How it Works
