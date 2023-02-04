@@ -9,8 +9,6 @@ nodes:
     score_threshold: 0.6
 # Use the bounding box info to track and count detected humans
 - dabble.tracking
-- dabble.statistics:
-    maximum: obj_attrs["ids"]
 # Draw the resultant bounding boxes and tracking IDs
 # - draw.bbox
 - draw.tag:
@@ -23,12 +21,17 @@ nodes:
 - draw.poses
 
 # Add custom Node model for pose analysis
-- custom_nodes.dabble.movement
+# - custom_nodes.dabble.movement
+- custom_nodes.dabble.are_arms_folded
+- custom_nodes.dabble.is_leaning
+- custom_nodes.dabble.is_touching_face
+# - custom_nodes.dabble.debug
 
-# Display metadata
+# Generate and display metadata
 - dabble.fps
 - draw.legend:
-    show: ["cum_max", "fps"]
+    show: ["fps"]
+- custom_nodes.draw.stats
 
 # Generate output video feed
 - output.screen:
