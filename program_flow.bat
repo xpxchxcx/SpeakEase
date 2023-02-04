@@ -11,6 +11,6 @@ echo "source as raw video on analysis pipeline complete"
 rem pause
 
 cd analysis_video_pipeline
-peekingduck run
+peekingduck run --viewer
 echo "analysis complete"
 pause

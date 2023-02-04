@@ -1,6 +1,11 @@
 nodes:
+
+# Use live video feed, preferably from on-board webcam
 - input.visual:
-    source: 0  # use webcam for live video
-- output.screen
-- output.media_writer:  # add new output node
+    source: 0
+
+# Generate output video feed
+- output.screen:
+    window_name: "SpeakEase"
+- output.media_writer:
     output_dir: raw_videos
