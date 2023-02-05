@@ -142,7 +142,9 @@ class Node(AbstractNode):
                 img,
                 bbox,
                 bbox_score,
-                arms_folded=all_arms_folded.get(curr_id, False)
+                arms_folded=all_arms_folded.get(curr_id, False),
+                is_leaning=all_leaning.get(curr_id, False),
+                face_touched=all_touching_face.get(curr_id, False)
             )
 
         # Initialise statistics display
