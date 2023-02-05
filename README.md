@@ -38,15 +38,24 @@ Some of these bad practices currently supported are:
 - **Touching Face** - When the hands are touching the face
 - **Leaning** - When the user is leaning and/or swaying excessively
 
-### Instant Playback for Users
-SpeakEase sends back the users a playback of the analysed presentations after each session and 
-allows them to review the footage in their free time.
-
 <p align="center">
- <img src=https://user-images.githubusercontent.com/87000020/216830154-196a2202-8040-4f20-b64b-6c821b8b7fb0.gif alt="Sample Video"/>
+ <img src=https://user-images.githubusercontent.com/87000020/216830154-196a2202-8040-4f20-b64b-6c821b8b7fb0.gif alt="Sample Video 1"/>
 </p>
 
-## Installation
+### Supports Multiple People in Frame
+SpeakEase supports group presentations by tracking multiple users simultaneously.
+
+<p align="center">
+ <img src=https://user-images.githubusercontent.com/87000020/216838269-130c9264-aab2-4d03-a589-a9aca221ddfe.gif alt="Sample Video 2"/>
+</p>
+
+### Instant Playback for Users
+SpeakEase returns the users a playback of the analysed presentations after each session and 
+allows them to review the footage in their free time.
+
+## Usage
+
+### Installation
 
 1. Refer to the [PeekingDuck installation guide](https://peekingduck.readthedocs.io/en/stable/getting_started/index.html) to install PeekingDuck.
 2. (optional) To satisfy additional dependencies used for code testing, install `matplotlib` via `pip` using the terminal
@@ -56,14 +65,27 @@ pip install matplotlib
 ```
 
 3. [Fork](https://github.com/xpxchxcx/SpeakEase/fork) or clone this repository to access the source code.
-Navigate to the root directory in the terminal and run
+
+### Physical set-up
+
+4. Prepare the physical environment. Some recommendations for setting up prior to deploying SpeakEase include:
+
+- Place the video-capturing device on a level surface at a suitable distance away from the user(s). Ideally, the video should capture the **full body of the user(s) presenting**.
+- Capture the video against a monotone surface such as a wall or a green screen, if possible.
+- The body of each presenter should face the camera directly at all times, if possible. Avoid turning to the side as this will mess with the detection algorithm.
+
+### Deployment
+
+5. Navigate to the root directory in the terminal and run
 
 ```
 [Windows] bash program_flow.bat
 [MacOS/Linux] sh program_flow.sh
 ```
 
-While the video feed window is displayed during the execution of the program, simply press the `q` key to terminate the video.
+The program will start by capturing a live video feed without additional analytics. Execute your presentation attempt during this window. Once complete, press the `q` key to terminate the recording.
+
+The program will then automatically open PeekingDuck viewer to output the result of the processed video. Use the scaling controls to fit the resultant video to the display window and use the horizontal scroller to analyse each frame.
 
 ## Acknowledgements
 
