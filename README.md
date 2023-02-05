@@ -1,4 +1,7 @@
-# SpeakEase 
+![for_github](https://user-images.githubusercontent.com/87000020/216827457-1d03e644-73ef-4f94-a3fb-6150c2c1437a.svg)
+
+---
+
 ![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg)
 ![Pylint](https://github.com/xpxchxcx/SpeakEase/actions/workflows/pylint.yml/badge.svg) 
 ![Unit tests](https://github.com/xpxchxcx/SpeakEase/actions/workflows/ci.yml/badge.svg) 
@@ -9,7 +12,7 @@
   <span> · </span>
   <a href="https://github.com/xpxchxcx/SpeakEase/issues">Report a bug</a>
 </h4>
-
+---
 ## Introduction
 
 SpeakEase helps users overcome their fear of public speaking using computer vision to detect body language and provide feedback. 
