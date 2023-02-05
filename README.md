@@ -5,7 +5,7 @@
 ![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg)
 ![Pylint](https://github.com/xpxchxcx/SpeakEase/actions/workflows/pylint.yml/badge.svg) 
 ![Unit tests](https://github.com/xpxchxcx/SpeakEase/actions/workflows/ci.yml/badge.svg) 
-![Hit Count](https://hits.dwyl.com/xpxchxcx/SpeakEase.svg?style=flat-square&show=unique)](http://hits.dwyl.com/xpxchxcx/SpeakEase)
+ [![Hit Count](https://hits.dwyl.com/xpxchxcx/SpeakEase.svg?style=flat-square&show=unique)](http://hits.dwyl.com/xpxchxcx/SpeakEase)
 
 <h4 align="center">
   <a href="https://good-looking-ostrich.static.app/">Documentation</a>
