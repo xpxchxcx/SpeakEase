@@ -3,6 +3,10 @@ nodes:
 # Use live video feed, preferably from on-board webcam
 - input.visual:
     source: 0
+    resize:
+        do_resizing: True
+        width: 1920
+        height: 1080
 
 # Generate output video feed
 - output.screen:

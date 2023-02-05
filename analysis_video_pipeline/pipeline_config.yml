@@ -2,11 +2,7 @@ nodes:
 
 # Use saved video feed from raw_video_pipeline
 - input.visual:
-    source: /Users/zaynesiew/Documents/SUTD/Competitions/National AI Student Challenge 2023/SpeakEase/raw_video_pipeline/raw_videos/video_230206_021612.mp4
-    resize:
-        do_resizing: False
-        width: 1920
-        height: 1080
+    source: 0
 
 # Add YOLOv4 model for human detection to obtain bounding box information
 - model.yolo:
