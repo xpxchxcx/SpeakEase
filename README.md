@@ -19,18 +19,19 @@
 
 ---
 
-**SpeakEase** helps users develop public speaking skills using computer vision to detect body language and provide feedback. 
-It's accessible, cost-effective, and eliminates need for physical mentors. 
-Improving public speaking skills, especially for those affected by glossophobia, SpeakEase empowers users to become confident speakers.
+**SpeakEase** helps users develop public speaking skills using computer vision to detect poor body postures. 
+An accessible, cost-effective, and smart digital solution, 
+SpeakEase significantly reduces reliance on physical mentorship and/or expensive courses 
+and empowers users to become confident speakers.
 
 ## Features
 
-### Real-time Feedback to Users
-When deployed, SpeakEase records and analyses live presentations / presentation attempts, 
+### Real-time Feedback
+SpeakEase records and analyses live presentations / presentation attempts, 
 providing instant feedback to its users about their presentation postures. 
 
-### Accurate Tracking of Body Languages
-SpeakEase makes use of [PeekingDuck](https://github.com/aisingapore/PeekingDuck) to obtain pose estimations 
+### Accurate Detection of Body Languages
+SpeakEase leverages on [PeekingDuck](https://github.com/aisingapore/PeekingDuck) to obtain pose estimations 
 and determines if the pose **violates common bad practices during public speaking**.
 Some of these bad practices currently supported are:
 
@@ -42,16 +43,18 @@ Some of these bad practices currently supported are:
  <img src=https://user-images.githubusercontent.com/87000020/216830154-196a2202-8040-4f20-b64b-6c821b8b7fb0.gif alt="Sample Video 1"/>
 </p>
 
-### Supports Multiple People in Frame
+### Supports Multi-Person Analyses
 SpeakEase supports group presentations by tracking multiple users simultaneously.
 
 <p align="center">
  <img src=https://user-images.githubusercontent.com/87000020/216838269-130c9264-aab2-4d03-a589-a9aca221ddfe.gif alt="Sample Video 2"/>
 </p>
 
-### Instant Playback for Users
-SpeakEase returns the users a playback of the analysed presentations after each session and 
-allows them to review the footage in their free time.
+### Instant Playback
+SpeakEase returns a playback of the analysed presentations after each session to the user.
+
+Reviews can occur at any time after the session, either complementing feedback from professional mentors, 
+or allowing users to record their progress and track their improvements over time.
 
 ## Usage
 
@@ -89,4 +92,5 @@ The program will then automatically open PeekingDuck viewer to output the result
 
 ## Acknowledgements
 
-This project is an undertaking of the National AI Student Challenge (NAISC) 2022 organised by AI Singapore.
+This project is an undertaking of the National AI Student Challenge (NAISC) 2022 organised by AI Singapore. 
+Read the proposal [here](https://docs.google.com/document/d/1LbN1IhLCAH8XIzLqoWbnzlq0TzxpQlO-R37CZbm0naw/edit#).
