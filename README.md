@@ -19,7 +19,7 @@
 
 ---
 
-**SpeakEase** helps users overcome their fear of public speaking using computer vision to detect body language and provide feedback. 
+**SpeakEase** helps users develop public speaking skills using computer vision to detect body language and provide feedback. 
 It's accessible, cost-effective, and eliminates need for physical mentors. 
 Improving public speaking skills, especially for those affected by glossophobia, SpeakEase empowers users to become confident speakers.
 
