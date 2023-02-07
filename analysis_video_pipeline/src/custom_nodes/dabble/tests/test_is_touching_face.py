@@ -35,15 +35,15 @@ class TestNode(unittest.TestCase):
     -------
     error_msg : str
         Template for unit test error messages
-    test_is_face_touched_all_missing : None
+    test_is_face_touched_all_missing
         hecks that undefined poses return ``False``
-    test_is_face_touched_negative_some_defined : None
+    test_is_face_touched_negative_some_defined
         Checks that poses are undefined if all of the keypoints in a required set are undefined
-    test_is_face_touched_negative_all_defined : None
+    test_is_face_touched_negative_all_defined
         Checks that poses that do not meet the requirement are considered not touching face
-    test_is_face_touched_positive_some_defined : None
+    test_is_face_touched_positive_some_defined
         Checks that poses are considered as touching face even with some undefined keypoints
-    test_is_face_touched_all_defined : None
+    test_is_face_touched_all_defined
         Checks that poses where the face is touched is considered as touching face
     """
 

@@ -44,11 +44,11 @@ class TestNode(unittest.TestCase):
     -------
     error_msg : str
         Template for unit test error messages
-    test_is_leaning_folded_missing : None
+    test_is_leaning_folded_missing
         hecks that the function returns ``False`` if at least one input is missing
-    test_is_leaning_negative : None
+    test_is_leaning_negative
         Checks that non-leaning poses are considered not leaning
-    test_is_leaning_positive : None
+    test_is_leaning_positive
         Checks that true leaning poses are considered leaning
     """
 

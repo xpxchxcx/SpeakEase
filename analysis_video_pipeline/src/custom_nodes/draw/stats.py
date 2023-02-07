@@ -35,8 +35,14 @@ class Node(AbstractNode):
 
     Attributes
     ----------
-    _frame_tracker : dict
+    _total_frames : dict
         Tracks the number of processed frames by ID
+    _arms_folded_frames : dict
+        Tracks the number of frames where the arms are folded, by ID
+    _leaning_frames : dict
+        Tracks the number of frames where the pose is leaning, by ID
+    _touching_face_frames : dict
+        Tracks the number of frames where the face is touched, by ID
 
     Methods
     -------
