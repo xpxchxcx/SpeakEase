@@ -48,15 +48,15 @@ class TestNode(unittest.TestCase):
     -------
     error_msg : str
         Template for unit test error messages
-    test_are_arms_folded_missing : None
+    test_are_arms_folded_missing
         Checks that the function returns ``False`` if at least one input is missing
-    test_are_arms_folded_touching_face : None
+    test_are_arms_folded_touching_face
         Checks that the arms are not considered folded if the pose is touching the face
-    test_are_arms_folded_outstretched_arms : None
+    test_are_arms_folded_outstretched_arms
         Check that outstretched arms are not considered folded
-    test_are_arms_folded_half_cross : None
+    test_are_arms_folded_half_cross
         Checks that half-crossed arms are considered folded
-    test_are_arms_folded_full_cross : None
+    test_are_arms_folded_full_cross
         Checks that fully-crossed arms are considered folded
     """
 

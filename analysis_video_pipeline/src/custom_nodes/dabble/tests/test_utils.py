@@ -40,19 +40,19 @@ class TestNode(unittest.TestCase):
     -------
     error_msg : str
         Template for unit test error messages
-    test_angle_between_vectors_in_rad_zero : None
+    test_angle_between_vectors_in_rad_zero
         Checks if passing a zero vector into the function results in an error
-    test_angle_between_vectors_in_rad_associativity : None
+    test_angle_between_vectors_in_rad_associativity
         Checks that the function is associative
-    test_angle_between_vectors_in_rad_orthogonal : None
+    test_angle_between_vectors_in_rad_orthogonal
         Checks the resultant angle between two orthogonal non-zero vectors
-    test_angle_between_vectors_in_rad_identical : None
+    test_angle_between_vectors_in_rad_identical
         Checks the resultant angle between two identical non-zero vectors
-    test_angle_between_vectors_in_rad_opposite : None
+    test_angle_between_vectors_in_rad_opposite
         Checks the resultant angle between two non-zero vectors of equal magnitude but opposite direction
-    test_angle_between_vectors_in_rad_acute : None
+    test_angle_between_vectors_in_rad_acute
         Checks the resultant angle between vectors \\( (1, 0) \\) and \\( (1, 1) \\)
-    test_angle_between_vectors_in_rad_obtuse : None
+    test_angle_between_vectors_in_rad_obtuse
         Checks the resultant angle between vectors \\( (1, 0) \\) and \\( (-1, 1) \\)
     """
 

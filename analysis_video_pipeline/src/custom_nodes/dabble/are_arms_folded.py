@@ -82,15 +82,15 @@ class Node(AbstractNode):
         left_shoulder : `Coord`, optional
             \\( (x, y) \\) coordinate of the left shoulder
         left_elbow : `Coord`, optional
-            \\( (x, y) \\ coordinate of the left elbow
+            \\( (x, y) \\) coordinate of the left elbow
         left_wrist : `Coord`, optional
-            \\( (x, y) \\ coordinate of the left wrist
+            \\( (x, y) \\) coordinate of the left wrist
         right_shoulder : `Coord`, optional
-            \\( (x, y) \\ coordinate of the right shoulder
+            \\( (x, y) \\) coordinate of the right shoulder
         right_elbow : `Coord`, optional
-            \\( (x, y) \\ coordinate of the right elbow
+            \\( (x, y) \\) coordinate of the right elbow
         right_wrist : `Coord`, optional
-            \\( (x, y) \\ coordinate of the right wrist
+            \\( (x, y) \\) coordinate of the right wrist
 
         Returns
         -------
@@ -103,7 +103,7 @@ class Node(AbstractNode):
 
         An arm is considered folded if:
 
-        - The angle that the two lines make with each other is less than \\( 120 90^{\\circ} \\)
+        - The angle that the two lines make with each other is less than \\( 120^{\\circ} \\)
         - The x-coordinate of the wrist lies in between the x-coordinates of the shoulders
         - The y-coordinate of the wrist lies below the y-coordinate of either shoulder
         - The distance between the wrist and the elbow is at least half that between the shoulders
@@ -205,7 +205,7 @@ class Node(AbstractNode):
         ----------
         inputs : dict
             Dictionary with the following keys:
-            
+
             - 'img' - given image to be displayed
             - 'keypoints' - keypoints from PoseNet model
             - 'obj_attrs' - to obtain tracking IDs from PoseNet model
@@ -214,7 +214,7 @@ class Node(AbstractNode):
         -------
         dict
             Dictionary with the following keys:
-            
+
             - 'arms_folded' - output of the current run
         """
 
@@ -228,7 +228,7 @@ class Node(AbstractNode):
             return {'arms_folded': {}}  # type: ignore
         elif 'keypoints' not in inputs:
             self.logger.warning(error_msg.format("'keypoints'"))
-        
+
         # Get required inputs from pipeline
         height, width, *_ = inputs['img'].shape
         all_ids = inputs.get('obj_attrs', {}).get('ids', [])

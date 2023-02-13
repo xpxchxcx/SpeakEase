@@ -97,7 +97,7 @@ class Node(AbstractNode):
         The line from the shoulder to the hip intersects the hip line.
 
         A pose is considered leaning if the angle that the two lines make with each other
-        falls outside a \\( 15 90^{\\circ} \\) tolerance.
+        falls outside a \\( 15^{\\circ} \\) tolerance.
         """
 
         # Check if keypoints are defined

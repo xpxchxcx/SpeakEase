@@ -25,10 +25,10 @@ Note: OpenCV loads file in BGR format
 """  # pylint: disable=pointless-string-statement
 
 """Defines the colour white for display purposes"""  # pylint: disable=pointless-string-statement
-WHITE = (255, 255, 255)
+WHITE: Tuple[int, int, int] = (255, 255, 255)
 
 """Defines the colour blue for display purposes"""  # pylint: disable=pointless-string-statement
-BLUE = (255, 0, 0)
+BLUE: Tuple[int, int, int] = (255, 0, 0)
 
 
 """Define font properties for display purposes"""  # pylint: disable=pointless-string-statement
