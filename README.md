@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src=https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg alt="Python Versions"/>
+  <img src=https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue.svg alt="Python Versions"/>
   <img src=https://github.com/xpxchxcx/SpeakEase/actions/workflows/pylint.yml/badge.svg alt="Pylint" />
   <img src=https://github.com/xpxchxcx/SpeakEase/actions/workflows/ci.yml/badge.svg alt="Unit Tests" />
   <a href=http://hits.dwyl.com/xpxchxcx/SpeakEase><img src=https://hits.dwyl.com/xpxchxcx/SpeakEase.svg?style=flat-square&show=unique alt="Hit Count" /></a>
