@@ -1,6 +1,6 @@
-<p align="center">
- <img src=https://user-images.githubusercontent.com/87000020/216827457-1d03e644-73ef-4f94-a3fb-6150c2c1437a.svg alt="SpeakEase" width="650" height="300"/>
-</p>
+<br />
+
+<img src="https://user-images.githubusercontent.com/87000020/216827457-1d03e644-73ef-4f94-a3fb-6150c2c1437a.svg">
 
 <p align="center">
   <img src=https://img.shields.io/badge/python-3.8%20%7C%203.9-blue.svg alt="Python Versions"/>
